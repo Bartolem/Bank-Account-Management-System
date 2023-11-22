@@ -3,6 +3,7 @@ import java.util.Random;
 public class Account {
     private final int ACCOUNT_NUMBER;
     private double balance;
+
     private String ownerName;
     private final Random random;
 
@@ -20,6 +21,10 @@ public class Account {
         this.balance = balance;
     }
 
+    public String getOwnerName() {
+        return ownerName;
+    }
+
     public void setOwnerName(String name) {
         this.ownerName = name;
     }
@@ -28,15 +33,17 @@ public class Account {
         this.balance = amount;
     }
 
-    public void deposit(double amount) {
+    public boolean deposit(double amount) {
         if (amount > 0) {
-            setBalance(amount);
+            setBalance(getBalance() + amount);
+            return true;
         }
+        return false;
     }
 
     public boolean withdraw(double amount) {
         if (amount > 0 && (balance - amount) >= 0) {
-            setBalance(amount);
+            setBalance(getBalance() - amount);
             return true;
         }
         return false;
