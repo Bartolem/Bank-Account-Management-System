@@ -1,23 +1,27 @@
 import java.util.Random;
 
 public class Account {
-    private int accountNumber;
+    private final int ACCOUNT_NUMBER;
     private double balance;
     private String ownerName;
-    private Random random;
+    private final Random random;
 
     public Account(String ownerName) {
         this.random = new Random();
-        this.accountNumber = generateRandomAccountNumber();
+        this.ACCOUNT_NUMBER = generateRandomAccountNumber();
         this.balance = 0;
         this.ownerName = ownerName;
     }
 
-    public Account(double balance, String ownerName) {
+    public Account(String ownerName, double balance) {
         this.random = new Random();
-        this.accountNumber = generateRandomAccountNumber();
-        this.balance = balance;
+        this.ACCOUNT_NUMBER = generateRandomAccountNumber();
         this.ownerName = ownerName;
+        this.balance = balance;
+    }
+
+    public void setOwnerName(String name) {
+        this.ownerName = name;
     }
 
     public void setBalance(double amount) {
@@ -48,7 +52,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account number: " + accountNumber +
+        return "Account number: " + ACCOUNT_NUMBER +
                 "\nOwner name: " + ownerName +
                 "\nBalance: " + balance;
     }
