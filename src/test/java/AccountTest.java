@@ -10,7 +10,7 @@ class AccountTest {
     void createAccountObject() {
         account = new Account("Adam", 2000);
     }
-    
+
     @Test
     void setOwnerName() {
         account.setOwnerName("Bartosz");
@@ -60,6 +60,27 @@ class AccountTest {
     void withdrawWhenAmountIsNegativeValue() {
         account.withdraw(-100);
         assertEquals(2000, account.getBalance());
+    }
+
+    @Test
+    void withdrawWhenAmountIs0() {
+        account.withdraw(0);
+        assertEquals(2000, account.getBalance());
+    }
+
+    @Test
+    void withdrawSuccessful() {
+        assertTrue(account.withdraw(100));
+    }
+
+    @Test
+    void withdrawNotSuccessfulWhenAmountIsNegativeValue() {
+        assertFalse(account.withdraw(-100));
+    }
+
+    @Test
+    void withdrawNotSuccessfulWhenAmountIs0() {
+        assertFalse(account.withdraw(0));
     }
 
     @Test
