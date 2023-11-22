@@ -11,6 +11,10 @@ public class CurrentAccount extends Account {
         this.OVERDRAFT_LIMIT = 5000;
     }
 
+    public int getOVERDRAFT_LIMIT() {
+        return OVERDRAFT_LIMIT;
+    }
+
     @Override
     public boolean withdraw(double amount) {
         double availableBalance = getBalance() + OVERDRAFT_LIMIT;
