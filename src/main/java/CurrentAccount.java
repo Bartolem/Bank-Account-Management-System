@@ -6,6 +6,11 @@ public class CurrentAccount extends Account {
         this.OVERDRAFT_LIMIT = 5000;
     }
 
+    public CurrentAccount(String ownerName, double balance) {
+        super(ownerName, balance);
+        this.OVERDRAFT_LIMIT = 5000;
+    }
+
     @Override
     public boolean withdraw(double amount) {
         double availableBalance = getBalance() + OVERDRAFT_LIMIT;
