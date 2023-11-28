@@ -28,6 +28,6 @@ public class CurrentAccount extends Account {
 
     @Override
     public String toString() {
-        return "(Current Account) \n" + super.toString();
+        return "(Current Account) \n" + super.toString() + "\nOverdraft limit: " + getOVERDRAFT_LIMIT();
     }
 }
