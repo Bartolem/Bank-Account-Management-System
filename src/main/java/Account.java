@@ -25,6 +25,10 @@ public class Account {
         return ownerName;
     }
 
+    public int getACCOUNT_NUMBER() {
+        return ACCOUNT_NUMBER;
+    }
+
     public void setOwnerName(String name) {
         this.ownerName = name;
     }
