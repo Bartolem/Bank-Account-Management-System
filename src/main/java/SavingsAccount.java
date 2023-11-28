@@ -2,10 +2,10 @@ public class SavingsAccount extends Account {
     private final double INTEREST_RATE;
     private int minBalance;
 
-    public SavingsAccount(String ownerName, int minBalance) {
+    public SavingsAccount(String ownerName) {
         super(ownerName);
         this.INTEREST_RATE = 0.3;
-        this.minBalance = minBalance;
+        this.minBalance = 0;
     }
 
     public SavingsAccount( String ownerName, double balance, int minBalance) {
@@ -16,6 +16,14 @@ public class SavingsAccount extends Account {
 
     public void calculateInterestRate() {
         setBalance(getBalance() + (getBalance() * INTEREST_RATE / 100));
+    }
+
+    public double getINTEREST_RATE() {
+        return INTEREST_RATE;
+    }
+
+    public int getMinBalance() {
+        return minBalance;
     }
 
     public void setMinBalance(int amount) {
