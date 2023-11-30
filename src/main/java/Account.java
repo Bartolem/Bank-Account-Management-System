@@ -1,17 +1,17 @@
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Random;
 
 public class Account {
-    private final int ACCOUNT_NUMBER;
-    private BigDecimal balance;
-
-    private String ownerName;
     private final Random random;
+    private final int ACCOUNT_NUMBER;
+    protected String type;
+    private BigDecimal balance;
+    private String ownerName;
 
     public Account(String ownerName) {
         this.random = new Random();
         this.ACCOUNT_NUMBER = generateRandomAccountNumber();
+        this.type = "Standard";
         this.balance = new BigDecimal("0");
         this.ownerName = ownerName;
     }
@@ -19,12 +19,17 @@ public class Account {
     public Account(String ownerName, String balance) {
         this.random = new Random();
         this.ACCOUNT_NUMBER = generateRandomAccountNumber();
+        this.type = "Standard";
         this.ownerName = ownerName;
         this.balance = new BigDecimal(balance);
     }
 
     public boolean isPositiveAmount(BigDecimal amount) {
         return amount.doubleValue() > 0;
+    }
+
+    public String getType() {
+        return type;
     }
 
     public String getOwnerName() {
@@ -69,7 +74,8 @@ public class Account {
 
     @Override
     public String toString() {
-        return "Account number: " + ACCOUNT_NUMBER +
+        return  "(" + type + ")" +
+                "\nAccount number: " + ACCOUNT_NUMBER +
                 "\nOwner name: " + ownerName +
                 "\nBalance: " + balance;
     }

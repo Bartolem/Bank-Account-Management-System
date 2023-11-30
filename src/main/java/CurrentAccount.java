@@ -6,11 +6,13 @@ public class CurrentAccount extends Account {
     public CurrentAccount(String ownerName) {
         super(ownerName);
         this.OVERDRAFT_LIMIT = new BigDecimal(5000);
+        this.type = "Current";
     }
 
     public CurrentAccount(String ownerName, String balance) {
         super(ownerName, balance);
         this.OVERDRAFT_LIMIT = new BigDecimal(5000);
+        this.type = "Current";
     }
 
     public BigDecimal getOVERDRAFT_LIMIT() {
@@ -30,6 +32,6 @@ public class CurrentAccount extends Account {
 
     @Override
     public String toString() {
-        return "(Current Account) \n" + super.toString() + "\nOverdraft limit: " + getOVERDRAFT_LIMIT();
+        return super.toString() + "\nOverdraft limit: " + getOVERDRAFT_LIMIT();
     }
 }
