@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class AccountTest {
@@ -8,7 +10,7 @@ class AccountTest {
 
     @BeforeEach
     void createAccountObject() {
-        account = new Account("Adam", 2000);
+        account = new Account("Adam", "2000");
     }
 
     @Test
@@ -19,72 +21,72 @@ class AccountTest {
 
     @Test
     void setBalance() {
-        account.setBalance(500);
-        assertEquals(500, account.getBalance());
+        account.setBalance(BigDecimal.valueOf(500));
+        assertEquals(BigDecimal.valueOf(500), account.getBalance());
     }
 
     @Test
     void deposit() {
-        account.deposit(100);
-        assertEquals(2100, account.getBalance());
+        account.deposit(BigDecimal.valueOf(100));
+        assertEquals(BigDecimal.valueOf(2100), account.getBalance());
     }
 
     @Test
     void depositWhenAmountIsNegativeValue() {
-        account.deposit(-100);
-        assertEquals(2000, account.getBalance());
+        account.deposit(new BigDecimal(-100));
+        assertEquals(BigDecimal.valueOf(2000), account.getBalance());
     }
 
     @Test
     void depositSuccessful() {
-        assertTrue(account.deposit(100));
+        assertTrue(account.deposit(new BigDecimal(100)));
     }
 
     @Test
     void depositNotSuccessfulWhenAmountIsNegativeValue() {
-        assertFalse(account.deposit(-100));
+        assertFalse(account.deposit(new BigDecimal(-100)));
     }
 
     @Test
     void depositNotSuccessfulWhenAmountIs0() {
-        assertFalse(account.deposit(0));
+        assertFalse(account.deposit(new BigDecimal(0)));
     }
 
     @Test
     void withdraw() {
-        account.withdraw(100);
-        assertEquals(1900, account.getBalance());
+        account.withdraw(BigDecimal.valueOf(100));
+        assertEquals(BigDecimal.valueOf(1900), account.getBalance());
     }
 
     @Test
     void withdrawWhenAmountIsNegativeValue() {
-        account.withdraw(-100);
-        assertEquals(2000, account.getBalance());
+        account.withdraw(BigDecimal.valueOf(-100));
+        assertEquals(BigDecimal.valueOf(2000), account.getBalance());
     }
 
     @Test
     void withdrawWhenAmountIs0() {
-        account.withdraw(0);
-        assertEquals(2000, account.getBalance());
+        account.withdraw(BigDecimal.valueOf(0));
+        assertEquals(BigDecimal.valueOf(2000), account.getBalance());
     }
 
     @Test
     void withdrawSuccessful() {
-        assertTrue(account.withdraw(100));
+        assertTrue(account.withdraw(BigDecimal.valueOf(100)));
     }
 
     @Test
     void withdrawNotSuccessfulWhenAmountIsNegativeValue() {
-        assertFalse(account.withdraw(-100));
+        assertFalse(account.withdraw(BigDecimal.valueOf(-100)));
     }
 
     @Test
     void withdrawNotSuccessfulWhenAmountIs0() {
-        assertFalse(account.withdraw(0));
+        assertFalse(account.withdraw(BigDecimal.valueOf(0)));
     }
 
     @Test
     void getBalance() {
-        assertEquals(2000, account.getBalance());
+        assertEquals(BigDecimal.valueOf(2000), account.getBalance());
     }
 }

@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BankTest {
     Bank bank;
-    Account account = new Account("Adam", 2000);
+    Account account = new Account("Adam", "2000");
 
     void addTwoAccounts() {
-        bank.add(new SavingsAccount("Jarek", 1000, 1000));
-        bank.add(new CurrentAccount("Bartolem", 300));
+        bank.add(new SavingsAccount("Jarek", "1000", "1000"));
+        bank.add(new CurrentAccount("Bartolem", "300"));
     }
 
     @BeforeEach
