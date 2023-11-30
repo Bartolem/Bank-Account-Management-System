@@ -1,8 +1,10 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Random;
 
 public class Account {
     private final int ACCOUNT_NUMBER;
-    private double balance;
+    private BigDecimal balance;
 
     private String ownerName;
     private final Random random;
@@ -10,15 +12,19 @@ public class Account {
     public Account(String ownerName) {
         this.random = new Random();
         this.ACCOUNT_NUMBER = generateRandomAccountNumber();
-        this.balance = 0;
+        this.balance = new BigDecimal("0");
         this.ownerName = ownerName;
     }
 
-    public Account(String ownerName, double balance) {
+    public Account(String ownerName, String balance) {
         this.random = new Random();
         this.ACCOUNT_NUMBER = generateRandomAccountNumber();
         this.ownerName = ownerName;
-        this.balance = balance;
+        this.balance = new BigDecimal(balance);
+    }
+
+    public boolean isPositiveAmount(BigDecimal amount) {
+        return amount.doubleValue() > 0;
     }
 
     public String getOwnerName() {
@@ -33,27 +39,27 @@ public class Account {
         this.ownerName = name;
     }
 
-    public void setBalance(double amount) {
+    public void setBalance(BigDecimal amount) {
         this.balance = amount;
     }
 
-    public boolean deposit(double amount) {
-        if (amount > 0) {
-            setBalance(getBalance() + amount);
+    public boolean deposit(BigDecimal amount) {
+        if (isPositiveAmount(amount)) {
+            setBalance(getBalance().add(amount));
             return true;
         }
         return false;
     }
 
-    public boolean withdraw(double amount) {
-        if (amount > 0 && (balance - amount) >= 0) {
-            setBalance(getBalance() - amount);
+    public boolean withdraw(BigDecimal amount) {
+        if (isPositiveAmount(amount) && isPositiveAmount(balance.subtract(amount))) {
+            setBalance(getBalance().subtract(amount));
             return true;
         }
         return false;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
