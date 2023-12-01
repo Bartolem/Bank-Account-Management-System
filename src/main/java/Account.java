@@ -11,11 +11,13 @@ public class Account {
     private BigDecimal balance;
     private String ownerName;
     private final LocalDateTime date;
+    private final DateTimeFormatter dateTimeFormatter;
 
     public Account(String ownerName) {
         this.random = new Random();
         this.accountNumber = generateRandomAccountNumber();
         this.type = "Standard";
+        this.dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         this.balance = new BigDecimal("0");
         this.ownerName = ownerName;
         this.date = LocalDateTime.now();
@@ -27,7 +29,8 @@ public class Account {
         this.type = "Standard";
         this.ownerName = ownerName;
         this.balance = new BigDecimal(balance);
-        this.date = LocalDateTime.parse(date);
+        this.dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        this.date = LocalDateTime.parse(date, dateTimeFormatter);
     }
 
     public boolean isPositiveAmount(BigDecimal amount) {
@@ -51,7 +54,7 @@ public class Account {
     }
 
     public String getDate() {
-        return date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        return date.format(dateTimeFormatter);
     }
 
     public void setOwnerName(String name) {

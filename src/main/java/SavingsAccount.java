@@ -8,6 +8,7 @@ public class SavingsAccount extends Account {
         super(ownerName);
         this.interestRate = new BigDecimal("0.3");
         this.type = "Savings";
+        this.minBalance = new BigDecimal(0);
     }
 
     public SavingsAccount(int accountNumber, String ownerName, String balance, String date) {
