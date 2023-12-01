@@ -1,4 +1,7 @@
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class Account {
@@ -7,6 +10,7 @@ public class Account {
     protected String type;
     private BigDecimal balance;
     private String ownerName;
+    private final LocalDateTime DATE;
 
     public Account(String ownerName) {
         this.random = new Random();
@@ -14,6 +18,7 @@ public class Account {
         this.type = "Standard";
         this.balance = new BigDecimal("0");
         this.ownerName = ownerName;
+        this.DATE = LocalDateTime.now();
     }
 
     public Account(String ownerName, String balance) {
@@ -22,6 +27,7 @@ public class Account {
         this.type = "Standard";
         this.ownerName = ownerName;
         this.balance = new BigDecimal(balance);
+        this.DATE = LocalDateTime.now();
     }
 
     public boolean isPositiveAmount(BigDecimal amount) {
@@ -36,8 +42,16 @@ public class Account {
         return ownerName;
     }
 
+    public BigDecimal getBalance() {
+        return balance.setScale(2, RoundingMode.HALF_UP);
+    }
+
     public int getACCOUNT_NUMBER() {
         return ACCOUNT_NUMBER;
+    }
+
+    public String getDATE() {
+        return DATE.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
     public void setOwnerName(String name) {
@@ -62,10 +76,6 @@ public class Account {
             return true;
         }
         return false;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
     }
 
     private int generateRandomAccountNumber() {
