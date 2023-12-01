@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Bank {
-    private ArrayList<Account> accounts;
+    private final ArrayList<Account> accounts;
 
     public Bank() {
         this.accounts = new ArrayList<>();
@@ -22,7 +22,7 @@ public class Bank {
 
     public Account getAccount(int accountNumber) {
         for (Account account : accounts) {
-            if (account.getACCOUNT_NUMBER() == accountNumber) {
+            if (account.getAccountNumber() == accountNumber) {
                 return account;
             }
         }

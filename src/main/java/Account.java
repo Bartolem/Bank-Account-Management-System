@@ -6,28 +6,28 @@ import java.util.Random;
 
 public class Account {
     private final Random random;
-    private final int ACCOUNT_NUMBER;
+    private final int accountNumber;
     protected String type;
     private BigDecimal balance;
     private String ownerName;
-    private final LocalDateTime DATE;
+    private final LocalDateTime date;
 
     public Account(String ownerName) {
         this.random = new Random();
-        this.ACCOUNT_NUMBER = generateRandomAccountNumber();
+        this.accountNumber = generateRandomAccountNumber();
         this.type = "Standard";
         this.balance = new BigDecimal("0");
         this.ownerName = ownerName;
-        this.DATE = LocalDateTime.now();
+        this.date = LocalDateTime.now();
     }
 
-    public Account(String ownerName, String balance) {
+    public Account(int accountNumber, String ownerName, String balance, String date) {
         this.random = new Random();
-        this.ACCOUNT_NUMBER = generateRandomAccountNumber();
+        this.accountNumber = accountNumber;
         this.type = "Standard";
         this.ownerName = ownerName;
         this.balance = new BigDecimal(balance);
-        this.DATE = LocalDateTime.now();
+        this.date = LocalDateTime.parse(date);
     }
 
     public boolean isPositiveAmount(BigDecimal amount) {
@@ -46,12 +46,12 @@ public class Account {
         return balance.setScale(2, RoundingMode.HALF_UP);
     }
 
-    public int getACCOUNT_NUMBER() {
-        return ACCOUNT_NUMBER;
+    public int getAccountNumber() {
+        return accountNumber;
     }
 
-    public String getDATE() {
-        return DATE.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+    public String getDate() {
+        return date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
     public void setOwnerName(String name) {
@@ -85,7 +85,7 @@ public class Account {
     @Override
     public String toString() {
         return  "(" + type + ")" +
-                "\nAccount number: " + ACCOUNT_NUMBER +
+                "\nAccount number: " + accountNumber +
                 "\nOwner name: " + ownerName +
                 "\nBalance: " + balance;
     }

@@ -1,27 +1,27 @@
 import java.math.BigDecimal;
 
 public class CurrentAccount extends Account {
-    private final BigDecimal OVERDRAFT_LIMIT;
+    private final BigDecimal overdraftLimit;
 
     public CurrentAccount(String ownerName) {
         super(ownerName);
-        this.OVERDRAFT_LIMIT = new BigDecimal(5000);
+        this.overdraftLimit = new BigDecimal(5000);
         this.type = "Current";
     }
 
-    public CurrentAccount(String ownerName, String balance) {
-        super(ownerName, balance);
-        this.OVERDRAFT_LIMIT = new BigDecimal(5000);
+    public CurrentAccount(int accountNumber, String ownerName, String balance, String date) {
+        super(accountNumber, ownerName, balance, date);
+        this.overdraftLimit = new BigDecimal(5000);
         this.type = "Current";
     }
 
-    public BigDecimal getOVERDRAFT_LIMIT() {
-        return OVERDRAFT_LIMIT;
+    public BigDecimal getOverdraftLimit() {
+        return overdraftLimit;
     }
 
     @Override
     public boolean withdraw(BigDecimal amount) {
-        BigDecimal availableBalance = getBalance().add(OVERDRAFT_LIMIT);
+        BigDecimal availableBalance = getBalance().add(overdraftLimit);
 
         if (amount.compareTo(availableBalance) <= availableBalance.doubleValue()) {
             setBalance(getBalance().subtract(amount));
@@ -32,6 +32,6 @@ public class CurrentAccount extends Account {
 
     @Override
     public String toString() {
-        return super.toString() + "\nOverdraft limit: " + getOVERDRAFT_LIMIT();
+        return super.toString() + "\nOverdraft limit: " + getOverdraftLimit();
     }
 }

@@ -32,12 +32,12 @@ class BankTest {
 
     @Test
     void getAccount() {
-        assertNotNull(bank.getAccount(account.getACCOUNT_NUMBER()));
+        assertNotNull(bank.getAccount(account.getAccountNumber()));
     }
 
     @Test
     void getAllAccountsIfThereIsNoAccount() {
-        bank.remove(account.getACCOUNT_NUMBER());
+        bank.remove(account.getAccountNumber());
         assertTrue(bank.isEmpty());
     }
 
@@ -51,14 +51,14 @@ class BankTest {
     @Test
     void remove() {
         addTwoAccounts();
-        bank.remove(account.getACCOUNT_NUMBER());
+        bank.remove(account.getAccountNumber());
         assertFalse(bank.isEmpty());
         assertEquals(2, bank.size());
     }
 
     @Test
     void removeIfThereIsOnlyOneAccount() {
-        bank.remove(account.getACCOUNT_NUMBER());
+        bank.remove(account.getAccountNumber());
         assertTrue(bank.isEmpty());
     }
 }

@@ -1,29 +1,27 @@
 import java.math.BigDecimal;
 
 public class SavingsAccount extends Account {
-    private final BigDecimal INTEREST_RATE;
+    private final BigDecimal interestRate;
     private BigDecimal minBalance;
 
     public SavingsAccount(String ownerName) {
         super(ownerName);
-        this.INTEREST_RATE = new BigDecimal("0.3");
+        this.interestRate = new BigDecimal("0.3");
         this.type = "Savings";
-        this.minBalance = new BigDecimal(0);
     }
 
-    public SavingsAccount( String ownerName, String balance, String minBalance) {
-        super(ownerName, balance);
-        this.INTEREST_RATE = new BigDecimal("0.3");
+    public SavingsAccount(int accountNumber, String ownerName, String balance, String date) {
+        super(accountNumber, ownerName, balance, date);
+        this.interestRate = new BigDecimal("0.3");
         this.type = "Savings";
-        this.minBalance = new BigDecimal(minBalance);
     }
 
     public void calculateInterestRate() {
-        setBalance(getBalance().add(getBalance().multiply(INTEREST_RATE).divide(BigDecimal.valueOf(100))));
+        setBalance(getBalance().add(getBalance().multiply(interestRate).divide(BigDecimal.valueOf(100))));
     }
 
-    public BigDecimal getINTEREST_RATE() {
-        return INTEREST_RATE;
+    public BigDecimal getInterestRate() {
+        return interestRate;
     }
 
     public BigDecimal getMinBalance() {
@@ -48,7 +46,7 @@ public class SavingsAccount extends Account {
     @Override
     public String toString() {
         return  super.toString() +
-                "\nInterest rate: " + getINTEREST_RATE() + "%" +
+                "\nInterest rate: " + getInterestRate() + "%" +
                 "\nMinimal balance allowed: " + getMinBalance();
     }
 }
