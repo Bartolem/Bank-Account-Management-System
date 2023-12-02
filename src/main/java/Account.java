@@ -2,11 +2,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Random;
 
 public class Account {
     private final String currencyCode;
-    private final Random random;
     private final int accountNumber;
     protected String type;
     private BigDecimal balance;
@@ -16,8 +14,7 @@ public class Account {
 
     public Account(String ownerName, String currencyCode, String balance) {
         this.currencyCode = currencyCode;
-        this.random = new Random();
-        this.accountNumber = generateRandomAccountNumber();
+        this.accountNumber = AccountNumber.getNumber();
         this.type = "Standard";
         this.dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         this.balance = new BigDecimal(balance);
@@ -27,7 +24,6 @@ public class Account {
 
     public Account(int accountNumber, String ownerName, String currencyCode, String balance, String date) {
         this.currencyCode = currencyCode;
-        this.random = new Random();
         this.accountNumber = accountNumber;
         this.type = "Standard";
         this.ownerName = ownerName;
@@ -86,10 +82,6 @@ public class Account {
             return true;
         }
         return false;
-    }
-
-    private int generateRandomAccountNumber() {
-        return random.nextInt(1_000_000, 10_000_000);
     }
 
     @Override
