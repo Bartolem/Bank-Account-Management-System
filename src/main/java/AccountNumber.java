@@ -15,7 +15,7 @@ public class AccountNumber {
         return false;
     }
 
-    public static int getUniqueNumber( int randomNumber) {
+    private static int getUniqueNumber( int randomNumber) {
         int accountNumber = 0;
 
         if (isUnique(randomNumber)) {

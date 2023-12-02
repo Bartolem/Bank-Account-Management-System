@@ -20,15 +20,14 @@ public class CSVToAccounts {
                 String balance = fileContent[4];
                 String date = fileContent[5];
 
-                // Create accounts based on types
+                // Create accounts based on type
                 switch (accountType) {
                     case "Standard" -> bank.add(new Account(accountNumber, ownerName, currencyCode, balance, date));
                     case "Current" -> bank.add(new CurrentAccount(accountNumber, ownerName, currencyCode, balance, date));
                     case "Savings" -> bank.add(new SavingsAccount(accountNumber, ownerName, currencyCode, balance, date));
                 }
-
-                System.out.println("Accounts successfully loaded from " + fileName);
             }
+            System.out.println("Accounts successfully loaded from " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }

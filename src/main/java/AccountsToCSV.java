@@ -19,8 +19,12 @@ public class AccountsToCSV {
                         account.getDate());
 
                 writer.write(line);
-            }
 
+                // Save account numbers in accounts array list from AccountNumber class
+//                AccountNumber.getAccountNumbers().add(account.getAccountNumber());
+            }
+            // Save account numbers in account_numbers.csv file
+//            AccountNumberToCSV.write(AccountNumber.getAccountNumbers(), "account_numbers.csv");
             writer.close();
             System.out.println("Accounts successfully saved to " + fileName);
         } catch (IOException e) {
