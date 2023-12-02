@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 public class Account {
+    private final String currencyCode;
     private final Random random;
     private final int accountNumber;
     protected String type;
@@ -13,17 +14,19 @@ public class Account {
     private final LocalDateTime date;
     private final DateTimeFormatter dateTimeFormatter;
 
-    public Account(String ownerName) {
+    public Account(String ownerName, String currencyCode, String balance) {
+        this.currencyCode = currencyCode;
         this.random = new Random();
         this.accountNumber = generateRandomAccountNumber();
         this.type = "Standard";
         this.dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        this.balance = new BigDecimal("0");
+        this.balance = new BigDecimal(balance);
         this.ownerName = ownerName;
         this.date = LocalDateTime.now();
     }
 
-    public Account(int accountNumber, String ownerName, String balance, String date) {
+    public Account(int accountNumber, String ownerName, String currencyCode, String balance, String date) {
+        this.currencyCode = currencyCode;
         this.random = new Random();
         this.accountNumber = accountNumber;
         this.type = "Standard";
@@ -35,6 +38,10 @@ public class Account {
 
     public boolean isPositiveAmount(BigDecimal amount) {
         return amount.doubleValue() > 0;
+    }
+
+    public String getCurrencyCode() {
+        return currencyCode;
     }
 
     public String getType() {
@@ -61,13 +68,13 @@ public class Account {
         this.ownerName = name;
     }
 
-    public void setBalance(BigDecimal amount) {
-        this.balance = amount;
+    public void setBalance(String amount) {
+        this.balance = new BigDecimal(amount);
     }
 
     public boolean deposit(BigDecimal amount) {
         if (isPositiveAmount(amount)) {
-            setBalance(getBalance().add(amount));
+            setBalance(getBalance().add(amount).toString());
             return true;
         }
         return false;
@@ -75,7 +82,7 @@ public class Account {
 
     public boolean withdraw(BigDecimal amount) {
         if (isPositiveAmount(amount) && isPositiveAmount(balance.subtract(amount))) {
-            setBalance(getBalance().subtract(amount));
+            setBalance(getBalance().subtract(amount).toString());
             return true;
         }
         return false;

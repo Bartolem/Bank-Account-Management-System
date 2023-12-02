@@ -4,21 +4,22 @@ public class SavingsAccount extends Account {
     private final BigDecimal interestRate;
     private BigDecimal minBalance;
 
-    public SavingsAccount(String ownerName) {
-        super(ownerName);
+    public SavingsAccount(String ownerName, String currencyCode, String balance) {
+        super(ownerName, currencyCode, balance);
         this.interestRate = new BigDecimal("0.3");
         this.type = "Savings";
         this.minBalance = new BigDecimal(0);
     }
 
-    public SavingsAccount(int accountNumber, String ownerName, String balance, String date) {
-        super(accountNumber, ownerName, balance, date);
+    public SavingsAccount(int accountNumber, String ownerName, String currencyCode, String balance, String date) {
+        super(accountNumber, ownerName, currencyCode, balance, date);
         this.interestRate = new BigDecimal("0.3");
         this.type = "Savings";
+        this.minBalance = new BigDecimal(0);
     }
 
     public void calculateInterestRate() {
-        setBalance(getBalance().add(getBalance().multiply(interestRate).divide(BigDecimal.valueOf(100))));
+        setBalance(getBalance().add(getBalance().multiply(interestRate).divide(BigDecimal.valueOf(100))).toString());
     }
 
     public BigDecimal getInterestRate() {
@@ -37,8 +38,8 @@ public class SavingsAccount extends Account {
 
     @Override
     public boolean withdraw(BigDecimal amount) {
-        if ((getBalance().subtract(amount).compareTo(minBalance) >= minBalance.intValue())) {
-            setBalance(getBalance().subtract(amount));
+        if ((getBalance().subtract(amount).compareTo(minBalance) > -1)) {
+            setBalance(getBalance().subtract(amount).toString());
             return true;
         }
         return false;

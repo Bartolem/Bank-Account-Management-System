@@ -10,25 +10,25 @@ class CurrentAccountTest {
 
     @BeforeEach
     void createCurrentAccountObject() {
-        currentAccount = new CurrentAccount("Marek", "5000");
+        currentAccount = new CurrentAccount("Marek", "PLN", "5000");
     }
 
     @Test
     void withdraw() {
         currentAccount.withdraw(BigDecimal.valueOf(1000));
-        assertEquals(BigDecimal.valueOf(4000), currentAccount.getBalance());
+        assertEquals(new BigDecimal("4000.00"), currentAccount.getBalance());
     }
 
     @Test
     void withdrawWhenAmountIsBiggerThanBalance() {
         currentAccount.withdraw(BigDecimal.valueOf(6000));
-        assertEquals(BigDecimal.valueOf(-1000), currentAccount.getBalance());
+        assertEquals(new BigDecimal("-1000.00"), currentAccount.getBalance());
     }
 
     @Test
     void withdrawWhenAmountIsBiggerThanOverdraftLimit() {
         currentAccount.withdraw(BigDecimal.valueOf(50000));
-        assertEquals(BigDecimal.valueOf(5000), currentAccount.getBalance());
+        assertEquals(new BigDecimal("5000.00"), currentAccount.getBalance());
     }
 
     @Test
@@ -43,6 +43,6 @@ class CurrentAccountTest {
 
     @Test
     void withdrawNotSuccessfulWhenAmountIsBiggerThanOverdraftLimit() {
-        assertFalse( currentAccount.withdraw(BigDecimal.valueOf(50000)));
+        assertFalse(currentAccount.withdraw(BigDecimal.valueOf(50000)));
     }
 }

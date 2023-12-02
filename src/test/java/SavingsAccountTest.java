@@ -10,14 +10,14 @@ class SavingsAccountTest {
 
     @BeforeEach
     void createSavingsAccountObject() {
-        savingsAccount = new SavingsAccount("Michał", "10000", "1000");
+        savingsAccount = new SavingsAccount("Michał", "RU", "10000");
     }
 
     @Test
     void calculateInterestRate() {
         // interest rate (0.3%)
         savingsAccount.calculateInterestRate();
-        assertEquals(BigDecimal.valueOf(10030), savingsAccount.getBalance());
+        assertEquals(new BigDecimal("10030.00"), savingsAccount.getBalance());
     }
 
     @Test
@@ -29,35 +29,36 @@ class SavingsAccountTest {
     @Test
     void setMinBalanceWhenAmountIsNegativeValue() {
         savingsAccount.setMinBalance(BigDecimal.valueOf(-5000));
-        assertEquals(BigDecimal.valueOf(1000), savingsAccount.getMinBalance());
+        assertEquals(new BigDecimal("0"), savingsAccount.getMinBalance());
     }
 
 
     @Test
     void setMinBalanceWhenAmountIs0() {
         savingsAccount.setMinBalance(BigDecimal.valueOf(0));
-        assertEquals(BigDecimal.valueOf(1000), savingsAccount.getMinBalance());
+        assertEquals(new BigDecimal("0"), savingsAccount.getMinBalance());
     }
 
     @Test
     void withdraw() {
         savingsAccount.withdraw(BigDecimal.valueOf(3000));
-        assertEquals(BigDecimal.valueOf(7000), savingsAccount.getBalance());
+        assertEquals(new BigDecimal("7000.00"), savingsAccount.getBalance());
 
         savingsAccount.withdraw(BigDecimal.valueOf(6000));
-        assertEquals(1000, savingsAccount.getBalance());
+        assertEquals(new BigDecimal("1000.00"), savingsAccount.getBalance());
     }
 
     @Test
     void withdrawWhenAmountIsBiggerThanBalance() {
         savingsAccount.withdraw(BigDecimal.valueOf(16000));
-        assertEquals(BigDecimal.valueOf(10000), savingsAccount.getBalance());
+        assertEquals(new BigDecimal("10000.00"), savingsAccount.getBalance());
     }
 
     @Test
     void withdrawWhenAmountIsBiggerThanMinimalBalance() {
+        savingsAccount.setMinBalance(BigDecimal.valueOf(1000));
         savingsAccount.withdraw(BigDecimal.valueOf(9500));
-        assertEquals(BigDecimal.valueOf(10000), savingsAccount.getBalance());
+        assertEquals(new BigDecimal("10000.00"), savingsAccount.getBalance());
     }
 
     @Test
