@@ -3,9 +3,17 @@ import java.util.Objects;
 
 public class Bank {
     private final ArrayList<Account> accounts;
+    private static Bank bank;
 
-    public Bank() {
+    private Bank() {
         this.accounts = new ArrayList<>();
+    }
+
+    public static Bank getInstance() {
+        if (bank == null) {
+            bank = new Bank();
+        }
+        return bank;
     }
 
     public void add(Account account) {
