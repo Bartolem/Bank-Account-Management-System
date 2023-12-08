@@ -1,26 +1,31 @@
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BankTest {
-    Bank bank;
-    Account account = new Account("Adam", "PLN", "0");
+    static Bank bank = Bank.getInstance();
+    static Account account = new Account("Adam", "PLN", "0");
 
     void addTwoAccounts() {
-        bank.add(new SavingsAccount("Jarek", "PLN", "1000"));
-        bank.add(new CurrentAccount("Bartolem", "USD", "300"));
+        SavingsAccount savingsAccount =  new SavingsAccount("Jarek", "PLN", "1000");
+        CurrentAccount currentAccount = new CurrentAccount("Bartolem", "USD", "300");
+
+        bank.add(savingsAccount.getAccountNumber(), savingsAccount);
+        bank.add(currentAccount.getAccountNumber(), currentAccount);
     }
 
-    @BeforeEach
-    void createBankObject() {
-        bank = new Bank();
-        bank.add(account);
+    @BeforeAll
+    static void addOneAccount() {
+        bank.add(account.getAccountNumber(), account);
     }
+
     @Test
-    void addOneAccount() {
+    void addAccount() {
+        bank.add(account.getAccountNumber(), account);
         assertFalse(bank.isEmpty());
-        assertEquals(1, bank.size());
+        assertEquals(3, bank.size());
     }
 
     @Test
@@ -32,6 +37,7 @@ class BankTest {
 
     @Test
     void getAccount() {
+        bank.add(account.getAccountNumber(), account);
         assertNotNull(bank.getAccount(account.getAccountNumber()));
     }
 
@@ -43,6 +49,7 @@ class BankTest {
 
     @Test
     void getAllAccountsIfThereIsAtLeastOne() {
+        bank.add(account.getAccountNumber(), account);
         assertFalse(bank.isEmpty());
         assertNotNull(bank.getAllAccounts());
         assertEquals(1, bank.size());
@@ -50,14 +57,12 @@ class BankTest {
 
     @Test
     void remove() {
-        addTwoAccounts();
         bank.remove(account.getAccountNumber());
-        assertFalse(bank.isEmpty());
-        assertEquals(2, bank.size());
+        assertTrue(bank.isEmpty());
     }
 
     @Test
-    void removeIfThereIsOnlyOneAccount() {
+    void removeIfThereIsOnlyOne() {
         bank.remove(account.getAccountNumber());
         assertTrue(bank.isEmpty());
     }

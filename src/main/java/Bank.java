@@ -1,12 +1,12 @@
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.HashMap;
 
 public class Bank {
-    private final ArrayList<Account> accounts;
+    private final HashMap<Integer, Account> accounts;
     private static Bank bank;
 
     private Bank() {
-        this.accounts = new ArrayList<>();
+        this.accounts = new HashMap<>();
     }
 
     public static Bank getInstance() {
@@ -16,8 +16,8 @@ public class Bank {
         return bank;
     }
 
-    public void add(Account account) {
-        accounts.add(account);
+    public void add(int accountNumber, Account account) {
+        accounts.putIfAbsent(accountNumber, account);
     }
 
     public int size() {
@@ -29,26 +29,23 @@ public class Bank {
     }
 
     public Account getAccount(int accountNumber) {
-        for (Account account : accounts) {
-            if (account.getAccountNumber() == accountNumber) {
-                return account;
-            }
-        }
-        return null;
+        return accounts.get(accountNumber);
     }
 
     public ArrayList<Account> getAllAccounts() {
-        return accounts;
+        return new ArrayList<>(accounts.values());
+    }
+
+    public ArrayList<Integer> getAccountNumbers() {
+        return new ArrayList<>(accounts.keySet());
     }
 
     public void remove(int accountNumber) {
-        if (getAllAccounts() != null) {
-            accounts.remove(getAccount(accountNumber));
-        }
+        accounts.remove(accountNumber);
     }
 
     public void printAccounts() {
-        for (Account account : accounts) {
+        for (Account account : accounts.values()) {
             System.out.println(account + "\n");
         }
     }
@@ -56,17 +53,5 @@ public class Bank {
     @Override
     public String toString() {
         return accounts.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Bank bank)) return false;
-        return accounts.equals(bank.accounts);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(accounts);
     }
 }
