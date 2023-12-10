@@ -7,16 +7,28 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class AccountTest {
     Account account;
+    User user;
+    Address address;
+    Person person;
 
     @BeforeEach
     void createAccountObject() {
-        account = new Account("Adam", "PLN", "2000");
+        address = new Address("Kawowa 72", "Warsaw", "Poland", "27-856");
+        person = new Person("Michał", "Lipa", "1986-04-24", address, "mila@inrt.pl", "906 656 567");
+        user = new User(person);
+        account = new Account(user, "PLN", "2000");
     }
 
     @Test
-    void setOwnerName() {
-        account.setOwnerName("Bartosz");
-        assertEquals("Bartosz", account.getOwnerName());
+    void setOwnerFirstName() {
+        account.setOwnerFirstName("Bartosz");
+        assertEquals("Bartosz", account.getOwnerFirstName());
+    }
+
+    @Test
+    void setOwnerLastName() {
+        account.setOwnerLastName("Rokla");
+        assertEquals("Rokla", account.getOwnerLastName());
     }
 
     @Test

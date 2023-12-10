@@ -7,10 +7,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class SavingsAccountTest {
     SavingsAccount savingsAccount;
+    User user;
+    Address address;
+    Person person;
 
     @BeforeEach
     void createSavingsAccountObject() {
-        savingsAccount = new SavingsAccount("Michał", "RU", "10000");
+        address = new Address("Kawowa 72", "Warsaw", "Poland", "27-856");
+        person = new Person("Michał", "Lipa", "1986-04-26", address, "mila@inrt.pl", "906 656 567");
+        user = new User(person);
+        savingsAccount = new SavingsAccount(user, "RU", "10000");
     }
 
     @Test

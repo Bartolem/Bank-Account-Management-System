@@ -45,6 +45,22 @@ public class Account {
         return user.getPerson().getFullName();
     }
 
+    public String getOwnerFirstName() {
+        return user.getPerson().getFirstName();
+    }
+
+    public void setOwnerFirstName(String firstName) {
+        user.getPerson().setFirstName(firstName);
+    }
+
+    public String getOwnerLastName() {
+        return user.getPerson().getLastName();
+    }
+
+    public void setOwnerLastName(String lastName) {
+        user.getPerson().setLastName(lastName);
+    }
+
     public User getUser() {
         return user;
     }
