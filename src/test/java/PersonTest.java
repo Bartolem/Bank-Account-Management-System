@@ -11,7 +11,7 @@ class PersonTest {
     Person person;
 
     @BeforeEach
-    void initialize() {
+    void createPersonObject() {
         address = new Address("trollop 32", "Lisbon", "Spain", "21-556");
         person = new Person("Lorola", "Eropla", "1956-10-04", address, "eolpor@inrt.ole", "5506 656 567");
     }
