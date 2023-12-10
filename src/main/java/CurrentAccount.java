@@ -3,14 +3,14 @@ import java.math.BigDecimal;
 public class CurrentAccount extends Account {
     private final BigDecimal overdraftLimit;
 
-    public CurrentAccount(String ownerName, String currencyCode, String balance) {
-        super(ownerName, currencyCode, balance);
+    public CurrentAccount(User user, String currencyCode, String balance) {
+        super(user, currencyCode, balance);
         this.overdraftLimit = new BigDecimal(5000);
         this.type = "Current";
     }
 
-    public CurrentAccount(int accountNumber, String ownerName, String currencyCode, String balance, String date) {
-        super(accountNumber, ownerName, currencyCode, balance, date);
+    public CurrentAccount(int accountNumber, User user, String currencyCode, String balance, String date) {
+        super(accountNumber, user, currencyCode, balance, date);
         this.overdraftLimit = new BigDecimal(5000);
         this.type = "Current";
     }

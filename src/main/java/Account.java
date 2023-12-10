@@ -8,28 +8,25 @@ public class Account {
     private final int accountNumber;
     protected String type;
     private BigDecimal balance;
-    private String ownerName;
+    private final User user;
     private final LocalDateTime date;
-    private final DateTimeFormatter dateTimeFormatter;
 
-    public Account(String ownerName, String currencyCode, String balance) {
+    public Account(User user, String currencyCode, String balance) {
         this.currencyCode = currencyCode;
         this.accountNumber = AccountNumber.getNumber();
         this.type = "Standard";
-        this.dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         this.balance = new BigDecimal(balance);
-        this.ownerName = ownerName;
+        this.user = user;
         this.date = LocalDateTime.now();
     }
 
-    public Account(int accountNumber, String ownerName, String currencyCode, String balance, String date) {
+    public Account(int accountNumber, User user, String currencyCode, String balance, String date) {
         this.currencyCode = currencyCode;
         this.accountNumber = accountNumber;
         this.type = "Standard";
-        this.ownerName = ownerName;
+        this.user = user;
         this.balance = new BigDecimal(balance);
-        this.dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        this.date = LocalDateTime.parse(date, dateTimeFormatter);
+        this.date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
     public boolean isPositiveAmount(BigDecimal amount) {
@@ -45,11 +42,19 @@ public class Account {
     }
 
     public String getOwnerName() {
-        return ownerName;
+        return user.getPerson().getFullName();
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public BigDecimal getBalance() {
         return balance.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public void setBalance(String amount) {
+        this.balance = new BigDecimal(amount);
     }
 
     public int getAccountNumber() {
@@ -57,15 +62,7 @@ public class Account {
     }
 
     public String getDate() {
-        return date.format(dateTimeFormatter);
-    }
-
-    public void setOwnerName(String name) {
-        this.ownerName = name;
-    }
-
-    public void setBalance(String amount) {
-        this.balance = new BigDecimal(amount);
+        return date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
     public boolean deposit(BigDecimal amount) {
@@ -88,7 +85,7 @@ public class Account {
     public String toString() {
         return  "(" + type + ")" +
                 "\nAccount number: " + accountNumber +
-                "\nOwner name: " + ownerName +
+                "\nOwner name: " + getOwnerName() +
                 "\nBalance: " + balance;
     }
 }

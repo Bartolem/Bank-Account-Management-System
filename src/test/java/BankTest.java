@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,18 +11,18 @@ class BankTest {
         SavingsAccount savingsAccount =  new SavingsAccount("Jarek", "PLN", "1000");
         CurrentAccount currentAccount = new CurrentAccount("Bartolem", "USD", "300");
 
-        bank.add(savingsAccount.getAccountNumber(), savingsAccount);
-        bank.add(currentAccount.getAccountNumber(), currentAccount);
+        bank.addAccount(savingsAccount.getAccountNumber(), savingsAccount);
+        bank.addAccount(currentAccount.getAccountNumber(), currentAccount);
     }
 
     @BeforeAll
     static void addOneAccount() {
-        bank.add(account.getAccountNumber(), account);
+        bank.addAccount(account.getAccountNumber(), account);
     }
 
     @Test
     void addAccount() {
-        bank.add(account.getAccountNumber(), account);
+        bank.addAccount(account.getAccountNumber(), account);
         assertFalse(bank.isEmpty());
         assertEquals(3, bank.size());
     }
@@ -37,7 +36,7 @@ class BankTest {
 
     @Test
     void getAccount() {
-        bank.add(account.getAccountNumber(), account);
+        bank.addAccount(account.getAccountNumber(), account);
         assertNotNull(bank.getAccount(account.getAccountNumber()));
     }
 
@@ -49,7 +48,7 @@ class BankTest {
 
     @Test
     void getAllAccountsIfThereIsAtLeastOne() {
-        bank.add(account.getAccountNumber(), account);
+        bank.addAccount(account.getAccountNumber(), account);
         assertFalse(bank.isEmpty());
         assertNotNull(bank.getAllAccounts());
         assertEquals(1, bank.size());
