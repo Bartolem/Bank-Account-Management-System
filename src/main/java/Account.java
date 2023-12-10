@@ -18,6 +18,7 @@ public class Account {
         this.balance = new BigDecimal(balance);
         this.user = user;
         this.date = LocalDateTime.now();
+        user.addOwnedAccount(this);
     }
 
     public Account(int accountNumber, User user, String currencyCode, String balance, String date) {
@@ -27,6 +28,7 @@ public class Account {
         this.user = user;
         this.balance = new BigDecimal(balance);
         this.date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        user.addOwnedAccount(this);
     }
 
     public boolean isPositiveAmount(BigDecimal amount) {
