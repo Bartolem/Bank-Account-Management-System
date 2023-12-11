@@ -91,7 +91,7 @@ public class Person {
         return "ID: " + getID() +
                 "\nFirst name: " + firstName +
                 "\nLast name: " + lastName +
-                "\nDay of birth: " + getDateOfBirth() +
+                "\nDay of birth: " + getFormattedDateOfBirth() +
                 "\nE-mail: " + email +
                 "\nPhone number: " + phone;
     }
