@@ -64,6 +64,12 @@ public class Bank {
         }
     }
 
+    public void printUsers() {
+        for (User user : users.values()) {
+            System.out.println(user + "\n");
+        }
+    }
+
     @Override
     public String toString() {
         return accounts.toString();
