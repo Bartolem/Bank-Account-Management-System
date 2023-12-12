@@ -16,8 +16,8 @@ class BankTest {
         savingsAccount =  new SavingsAccount(user, "PLN", "1000");
         currentAccount = new CurrentAccount(user, "USD", "300");
 
-        bank.addAccount(savingsAccount.getAccountNumber(), savingsAccount);
-        bank.addAccount(currentAccount.getAccountNumber(), currentAccount);
+        bank.addAccount(savingsAccount.getAccountNumber(), savingsAccount, Admin.getInstance());
+        bank.addAccount(currentAccount.getAccountNumber(), currentAccount, Admin.getInstance());
     }
 
     @BeforeEach
@@ -29,7 +29,7 @@ class BankTest {
     }
 
     void addOneAccount() {
-        bank.addAccount(account.getAccountNumber(), account);
+        bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
     }
 
     @Test
@@ -48,7 +48,7 @@ class BankTest {
 
     @Test
     void getAccount() {
-        bank.addAccount(account.getAccountNumber(), account);
+        bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
         assertNotNull(bank.getAccount(account.getAccountNumber()));
     }
 
@@ -60,7 +60,7 @@ class BankTest {
 
     @Test
     void getAllAccountsIfThereIsAtLeastOne() {
-        bank.addAccount(account.getAccountNumber(), account);
+        bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
         assertFalse(bank.isEmpty());
         assertNotNull(bank.getAllAccounts());
         assertEquals(2, bank.size());
