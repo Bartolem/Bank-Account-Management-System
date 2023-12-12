@@ -16,16 +16,15 @@ public class CSVToAccounts {
                 String accountType = fileContent[0];
                 int accountNumber = Integer.parseInt(fileContent[1]);
                 String ownerID = fileContent[2];
-                String ownerName = fileContent[3];
                 String currencyCode = fileContent[4];
                 String balance = fileContent[5];
                 String date = fileContent[6];
 
                 // Create accounts based on type
                 switch (accountType) {
-                    case "Standard" -> bank.addAccount(accountNumber, new Account(accountNumber, bank.getUser(ownerID), currencyCode, balance, date));
-                    case "Current" -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date));
-                    case "Savings" -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date));
+                    case "Standard" -> bank.addAccount(accountNumber, new Account(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
+                    case "Current" -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
+                    case "Savings" -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
                 }
             }
             System.out.println("Accounts successfully loaded from " + fileName);
