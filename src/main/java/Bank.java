@@ -18,12 +18,22 @@ public class Bank {
         return bank;
     }
 
-    public void addAccount(int accountNumber, Account account) {
-        accounts.putIfAbsent(accountNumber, account);
+    public void addAccount(int accountNumber, Account account, User user) {
+        if (hasAdminRole(user)) {
+            accounts.putIfAbsent(accountNumber, account);
+        } else System.out.println("Access denied!");
     }
 
     public void addUser(User user) {
         users.putIfAbsent(user.getPerson().getID(), user);
+    }
+
+    public boolean hasAdminRole(User user) {
+        if (user != null) {
+            // Only allow access to admin user
+            return user.hasRole(Role.ADMIN);
+        }
+        return false;
     }
 
     public int size() {
