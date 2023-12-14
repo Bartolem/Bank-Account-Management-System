@@ -36,6 +36,14 @@ public class Bank {
         return false;
     }
 
+    public boolean hasTransactionViewerRole(User user) {
+        if (user != null) {
+            // Only allow access to transaction viewer user
+            return user.hasRole(Role.TRANSACTION_VIEWER);
+        }
+        return false;
+    }
+
     public int size() {
         return accounts.size();
     }
@@ -64,8 +72,10 @@ public class Bank {
         return new ArrayList<>(accounts.keySet());
     }
 
-    public void remove(int accountNumber) {
-        accounts.remove(accountNumber);
+    public void remove(int accountNumber, User user) {
+        if (hasAdminRole(user)) {
+            accounts.remove(accountNumber);
+        } else System.out.println("Access denied!");
     }
 
     public void printAccounts() {

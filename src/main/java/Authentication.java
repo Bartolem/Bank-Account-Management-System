@@ -30,7 +30,7 @@ public class Authentication {
         User user = Bank.getInstance().getUser(ID);
         // Checks if user with provided ID exist
         if (user != null) {
-            if (userCredentials.containsValue(hashPassword(password))) {
+            if (userCredentials.get(ID).equals(hashPassword(password))) {
                 return user;
             }
         }
