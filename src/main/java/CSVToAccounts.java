@@ -22,9 +22,9 @@ public class CSVToAccounts {
 
                 // Create accounts based on type
                 switch (accountType) {
-                    case "Standard" -> bank.addAccount(accountNumber, new Account(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
-                    case "Current" -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
-                    case "Savings" -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
+                    case "STANDARD" -> bank.addAccount(accountNumber, new Account(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
+                    case "CURRENT" -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
+                    case "SAVINGS" -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
                 }
             }
             System.out.println("Accounts successfully loaded from " + fileName);

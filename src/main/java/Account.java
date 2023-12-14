@@ -24,8 +24,8 @@ public class Account {
     public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date) {
         this.currencyCode = currencyCode;
         this.accountNumber = accountNumber;
-        this.type = AccountTypes.STANDARD;
         this.user = user;
+        this.type = AccountTypes.STANDARD;
         this.balance = new BigDecimal(balance);
         this.date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         user.addOwnedAccount(this);
@@ -71,6 +71,10 @@ public class Account {
         return balance.setScale(2, RoundingMode.HALF_UP);
     }
 
+    public String getFormattedBalanceWithCurrency() {
+        return CurrencyFormatter.getFormat(currencyCode, getBalance());
+    }
+
     public void setBalance(String amount) {
         this.balance = new BigDecimal(amount);
     }
@@ -92,9 +96,21 @@ public class Account {
     }
 
     public boolean withdraw(BigDecimal amount) {
-        if (isPositiveAmount(amount) && isPositiveAmount(balance.subtract(amount))) {
+        if (isPositiveAmount(amount) && isPositiveAmount(getBalance().subtract(amount))) {
             setBalance(getBalance().subtract(amount).toString());
             return true;
+        }
+        return false;
+    }
+
+    public boolean transfer(BigDecimal amount, int accountNumber) {
+        if (isPositiveAmount(amount) && isPositiveAmount(getBalance().subtract(amount))) {
+            Account receiver = Bank.getInstance().getAccount(accountNumber);
+            if (receiver != null && !receiver.equals(this) && receiver.getCurrencyCode().equals(this.getCurrencyCode())) {
+                receiver.deposit(amount);
+                withdraw(amount);
+                return true;
+            }
         }
         return false;
     }
