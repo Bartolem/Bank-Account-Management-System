@@ -17,8 +17,8 @@ class UserTest {
         address = new Address("trollop 32", "Lisbon", "Spain", "21-556");
         person = new Person("Lorola", "Eropla", "1956-10-04", address, "eolpor@inrt.ole", "5506 656 567");
         user = new User(person);
-        account = new Account(user, "PLN", "2000");
-        savingsAccount = new SavingsAccount(user, "RU", "10000");
+        account = new Account(user, CurrencyCodes.PLN, "2000");
+        savingsAccount = new SavingsAccount(user, CurrencyCodes.RUB, "10000");
     }
 
     @Test

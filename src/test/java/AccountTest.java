@@ -16,7 +16,7 @@ class AccountTest {
         address = new Address("Kawowa 72", "Warsaw", "Poland", "27-856");
         person = new Person("Michał", "Lipa", "1986-04-24", address, "mila@inrt.pl", "906 656 567");
         user = new User(person);
-        account = new Account(user, "PLN", "2000");
+        account = new Account(user, CurrencyCodes.PLN, "2000");
     }
 
     @Test

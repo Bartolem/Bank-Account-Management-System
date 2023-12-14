@@ -16,7 +16,7 @@ public class CSVToAccounts {
                 String accountType = fileContent[0];
                 int accountNumber = Integer.parseInt(fileContent[1]);
                 String ownerID = fileContent[2];
-                String currencyCode = fileContent[4];
+                CurrencyCodes currencyCode = CurrencyCodes.valueOf(fileContent[4]);
                 String balance = fileContent[5];
                 String date = fileContent[6];
 

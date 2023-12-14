@@ -4,17 +4,17 @@ public class SavingsAccount extends Account {
     private final BigDecimal interestRate;
     private BigDecimal minBalance;
 
-    public SavingsAccount(User user, String currencyCode, String balance) {
+    public SavingsAccount(User user, CurrencyCodes currencyCode, String balance) {
         super(user, currencyCode, balance);
         this.interestRate = new BigDecimal("0.3");
-        this.type = "Savings";
+        this.type = AccountTypes.SAVINGS;
         this.minBalance = new BigDecimal(0);
     }
 
-    public SavingsAccount(int accountNumber, User user, String currencyCode, String balance, String date) {
+    public SavingsAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date) {
         super(accountNumber, user, currencyCode, balance, date);
         this.interestRate = new BigDecimal("0.3");
-        this.type = "Savings";
+        this.type = AccountTypes.SAVINGS;
         this.minBalance = new BigDecimal(0);
     }
 

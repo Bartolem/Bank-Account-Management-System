@@ -13,8 +13,8 @@ class BankTest {
     User user;
 
     void addTwoAccounts() {
-        savingsAccount =  new SavingsAccount(user, "PLN", "1000");
-        currentAccount = new CurrentAccount(user, "USD", "300");
+        savingsAccount =  new SavingsAccount(user, CurrencyCodes.PLN, "1000");
+        currentAccount = new CurrentAccount(user, CurrencyCodes.USD, "300");
 
         bank.addAccount(savingsAccount.getAccountNumber(), savingsAccount, Admin.getInstance());
         bank.addAccount(currentAccount.getAccountNumber(), currentAccount, Admin.getInstance());
@@ -25,7 +25,7 @@ class BankTest {
         address = new Address("trollop 32", "Lisbon", "Spain", "21-556");
         person = new Person("Adam", "Eropla", "1956-10-04", address, "eolpor@inrt.ole", "5506 656 567");
         user = new User(person);
-        account = new Account(user, "PLN", "0");
+        account = new Account(user, CurrencyCodes.PLN, "0");
     }
 
     void addOneAccount() {
@@ -54,7 +54,7 @@ class BankTest {
 
     @Test
     void getAllAccountsIfThereIsNoAccount() {
-        bank.remove(account.getAccountNumber());
+        bank.remove(account.getAccountNumber(), Admin.getInstance());
         assertTrue(bank.isEmpty());
     }
 
@@ -68,13 +68,13 @@ class BankTest {
 
     @Test
     void remove() {
-        bank.remove(account.getAccountNumber());
+        bank.remove(account.getAccountNumber(), Admin.getInstance());
         assertTrue(bank.isEmpty());
     }
 
     @Test
     void removeIfThereIsOnlyOne() {
-        bank.remove(account.getAccountNumber());
+        bank.remove(account.getAccountNumber(), Admin.getInstance());
         assertEquals(1, bank.size());
     }
 }

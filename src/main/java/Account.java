@@ -4,27 +4,27 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Account {
-    private final String currencyCode;
+    private final CurrencyCodes currencyCode;
     private final int accountNumber;
-    protected String type;
+    protected AccountTypes type;
     private BigDecimal balance;
     private final User user;
     private final LocalDateTime date;
 
-    public Account(User user, String currencyCode, String balance) {
+    public Account(User user, CurrencyCodes currencyCode, String balance) {
         this.currencyCode = currencyCode;
         this.accountNumber = AccountNumber.getNumber();
-        this.type = "Standard";
+        this.type = AccountTypes.STANDARD;
         this.balance = new BigDecimal(balance);
         this.user = user;
         this.date = LocalDateTime.now();
         user.addOwnedAccount(this);
     }
 
-    public Account(int accountNumber, User user, String currencyCode, String balance, String date) {
+    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date) {
         this.currencyCode = currencyCode;
         this.accountNumber = accountNumber;
-        this.type = "Standard";
+        this.type = AccountTypes.STANDARD;
         this.user = user;
         this.balance = new BigDecimal(balance);
         this.date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
@@ -35,11 +35,11 @@ public class Account {
         return amount.doubleValue() > 0;
     }
 
-    public String getCurrencyCode() {
+    public CurrencyCodes getCurrencyCode() {
         return currencyCode;
     }
 
-    public String getType() {
+    public AccountTypes getType() {
         return type;
     }
 

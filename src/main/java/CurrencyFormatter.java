@@ -3,9 +3,9 @@ import java.text.NumberFormat;
 import java.util.Currency;
 
 public class CurrencyFormatter {
-    public static String getFormat(String currencyCode, BigDecimal number) {
+    public static String getFormat(CurrencyCodes currencyCode, BigDecimal number) {
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-        currencyFormatter.setCurrency(Currency.getInstance(currencyCode));
+        currencyFormatter.setCurrency(Currency.getInstance(currencyCode.toString()));
         return currencyFormatter.format(number);
     }
 }

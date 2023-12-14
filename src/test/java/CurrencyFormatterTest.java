@@ -8,6 +8,6 @@ class CurrencyFormatterTest {
 
     @Test
     void getFormat() {
-        assertEquals("3 000,52 €", CurrencyFormatter.getFormat("EUR", new BigDecimal("3000.52")));
+        assertEquals("3 000,52 €", CurrencyFormatter.getFormat(CurrencyCodes.EUR, new BigDecimal("3000.52")));
     }
 }

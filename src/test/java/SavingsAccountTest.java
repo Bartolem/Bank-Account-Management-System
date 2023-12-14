@@ -16,7 +16,7 @@ class SavingsAccountTest {
         address = new Address("Kawowa 72", "Warsaw", "Poland", "27-856");
         person = new Person("Michał", "Lipa", "1986-04-26", address, "mila@inrt.pl", "906 656 567");
         user = new User(person);
-        savingsAccount = new SavingsAccount(user, "RU", "10000");
+        savingsAccount = new SavingsAccount(user, CurrencyCodes.RUB, "10000");
     }
 
     @Test
