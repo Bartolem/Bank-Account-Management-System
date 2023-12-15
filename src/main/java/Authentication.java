@@ -21,6 +21,10 @@ public class Authentication {
         return authentication;
     }
 
+    public HashMap<String, String> getUserCredentials() {
+        return userCredentials;
+    }
+
     public void addUserCredentials(String ID, String password) {
         userCredentials.put(ID, hashPassword(password));
         saveUserCredentialsToCSV(userCredentials, fileName);
