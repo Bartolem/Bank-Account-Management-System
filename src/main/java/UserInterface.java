@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserInterface {
     private final Bank bank;
@@ -117,6 +119,20 @@ public class UserInterface {
         return null;
     }
 
+    public boolean validatePhoneNumber(String phoneNumber) {
+        // Allow 9-10 digits and optional whitespace, dots, or hyphens (-) between the numbers
+        Pattern pattern = Pattern.compile("^(\\d{3}[- .]?){2}\\d{3,4}$");
+        Matcher matcher = pattern.matcher(phoneNumber);
+        return matcher.matches();
+    }
+
+    public boolean validateEmail(String email) {
+        // Regular expression for email validation provided by the RFC 5322 standards
+        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
     private String validateDetails(String detail) {
         String input = "";
 
@@ -126,7 +142,21 @@ public class UserInterface {
 
             if (input.isEmpty()) {
                 System.out.println("Enter the " + detail);
-            } else return input;
+            } else {
+                switch (detail) {
+                    case "Phone number" -> {
+                        if (validatePhoneNumber(input)) return input;
+                        else System.out.println("Invalid " + detail);
+                    }
+                    case "E-mail" -> {
+                        if (validateEmail(input)) return input;
+                        else System.out.println("Invalid " + detail);
+                    }
+                    default -> {
+                        return input;
+                    }
+                }
+            }
         }
     }
 
@@ -147,6 +177,7 @@ public class UserInterface {
         addressDetails.add(validateDetails("Zip code"));
         personDetails.add(validateDetails("E-mail"));
         personDetails.add(validateDetails("Phone number"));
+
 
         address = new Address(addressDetails.get(0), addressDetails.get(1), addressDetails.get(2), addressDetails.get(3));
         person = new Person(personDetails.get(0), personDetails.get(1), personDetails.get(2), address, personDetails.get(3), personDetails.get(4));
