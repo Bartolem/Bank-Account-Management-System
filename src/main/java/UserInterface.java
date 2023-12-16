@@ -119,6 +119,12 @@ public class UserInterface {
         return null;
     }
 
+    public boolean validateDateOfBirth(String Date) {
+        Pattern pattern = Pattern.compile("^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$");
+        Matcher matcher = pattern.matcher(Date);
+        return matcher.matches();
+    }
+
     public boolean validatePhoneNumber(String phoneNumber) {
         // Allow 9-10 digits and optional whitespace, dots, or hyphens (-) between the numbers
         Pattern pattern = Pattern.compile("^(\\d{3}[- .]?){2}\\d{3,4}$");
@@ -144,12 +150,19 @@ public class UserInterface {
                 System.out.println("Enter the " + detail);
             } else {
                 switch (detail) {
-                    case "Phone number" -> {
-                        if (validatePhoneNumber(input)) return input;
-                        else System.out.println("Invalid " + detail);
+                    case "Date of birth" -> {
+                        if (validateDateOfBirth(input)) return input;
+                        else {
+                            System.out.println("Invalid " + detail);
+                            System.out.println("Valid date format: yyyy-MM-dd");
+                        }
                     }
                     case "E-mail" -> {
                         if (validateEmail(input)) return input;
+                        else System.out.println("Invalid " + detail);
+                    }
+                    case "Phone number" -> {
+                        if (validatePhoneNumber(input)) return input;
                         else System.out.println("Invalid " + detail);
                     }
                     default -> {
@@ -170,6 +183,7 @@ public class UserInterface {
         printCreateUserMessage();
         personDetails.add(validateDetails("First name"));
         personDetails.add(validateDetails("Last name"));
+        System.out.println("Valid date format: yyyy-MM-dd");
         personDetails.add(validateDetails("Date of birth"));
         addressDetails.add(validateDetails("Street address"));
         addressDetails.add(validateDetails("City"));
