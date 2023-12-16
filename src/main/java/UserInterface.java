@@ -1,6 +1,6 @@
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -14,29 +14,38 @@ public class UserInterface {
 
     public void start() {
         loadDataFromFile();
+        System.out.println();
+        System.out.println("Welcome to Online Banking Application.");
+
         loop: while (true) {
             printStartingMessage();
             printCursor();
             switch (scanner.nextLine()) {
                 case "1":
-                    // Log int to the system
-                    break loop;
+                    // Log in to the system
+                    break;
 
                 case "2":
                     // Create new account
-                    createAccount(createUser());
+                    User user = createUser();
+                    Account account = createAccount(user);
+                    addUserAndAccountToBank(user, account);
+                    break;
+                case "3":
+                    // Exit
                     break loop;
             }
         }
+
+        scanner.close();
+        System.exit(0);
     }
 
     private void printCursor() {
         System.out.print("> ");
     }
 
-    private void createAccount(User user) {
-        Account account;
-        String answer;
+    private AccountTypes chooseAccountType() {
         AccountTypes accountType;
         System.out.println("There are several types of accounts to choose from.");
         System.out.println(Arrays.toString(AccountTypes.values()));
@@ -44,7 +53,7 @@ public class UserInterface {
         loop: while (true) {
             System.out.println("Which one do you choose?");
             printCursor();
-            answer = scanner.nextLine();
+            String answer = scanner.nextLine();
 
             switch (answer.toUpperCase()) {
                 case "STANDARD":
@@ -59,17 +68,66 @@ public class UserInterface {
             }
         }
 
-        CurrencyCodes currencyCode = CurrencyCodes.EUR;
+        return accountType;
+    }
+
+    private CurrencyCodes chooseCurrency() {
+        CurrencyCodes currencyCode;
+        List<CurrencyCodes> currencyCodes = Arrays.asList(CurrencyCodes.values());
+
+        System.out.println("Currently supported currencies: ");
+        System.out.println(currencyCodes);
+        System.out.println("In which currency?");
+
+        while (true) {
+            printCursor();
+            String answer = scanner.nextLine();
+
+            if (currencyCodes.contains(CurrencyCodes.valueOf(answer))) {
+                currencyCode = CurrencyCodes.valueOf(answer);
+                break;
+            }
+        }
+        return currencyCode;
+    }
+
+    private void addUserAndAccountToBank(User user, Account account) {
+        bank.addUser(user);
+        bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
+        saveDataToFile();
+    }
+
+    private Account createAccount(User user) {
+        AccountTypes accountType = chooseAccountType();
+        CurrencyCodes currencyCode = chooseCurrency();
         String openingBalance = "0";
 
         switch (accountType) {
-            case STANDARD -> account = new Account(user, currencyCode, openingBalance);
-            case SAVINGS -> account = new SavingsAccount(user, currencyCode, openingBalance);
+            case STANDARD -> {
+                return new Account(user, currencyCode, openingBalance);
+            }
+            case SAVINGS -> {
+                return new SavingsAccount(user, currencyCode, openingBalance);
+            }
+            case CURRENT -> {
+                return new CurrentAccount(user, currencyCode,openingBalance);
+            }
         }
 
-        bank.addUser(user);
-        //bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        saveDataToFile();
+        return null;
+    }
+
+    private String validateDetails(String detail) {
+        String input = "";
+
+        while (true) {
+            System.out.print(detail + ": ");
+            input = scanner.nextLine();
+
+            if (input.isEmpty()) {
+                System.out.println("Enter the " + detail);
+            } else return input;
+        }
     }
 
     private User createUser() {
@@ -79,57 +137,41 @@ public class UserInterface {
         ArrayList<String> personDetails = new ArrayList<>();
         ArrayList<String> addressDetails = new ArrayList<>();
 
-        loop: while (true) {
-            printCreateUserMessage();
-            System.out.print("First name: ");
-            personDetails.add(scanner.nextLine());
+        printCreateUserMessage();
+        personDetails.add(validateDetails("First name"));
+        personDetails.add(validateDetails("Last name"));
+        personDetails.add(validateDetails("Date of birth"));
+        addressDetails.add(validateDetails("Street address"));
+        addressDetails.add(validateDetails("City"));
+        addressDetails.add(validateDetails("Country"));
+        addressDetails.add(validateDetails("Zip code"));
+        personDetails.add(validateDetails("E-mail"));
+        personDetails.add(validateDetails("Phone number"));
 
-            System.out.print("Last name: ");
-            personDetails.add(scanner.nextLine());
+        address = new Address(addressDetails.get(0), addressDetails.get(1), addressDetails.get(2), addressDetails.get(3));
+        person = new Person(personDetails.get(0), personDetails.get(1), personDetails.get(2), address, personDetails.get(3), personDetails.get(4));
 
-            System.out.print("Date of birth: ");
-            personDetails.add(scanner.nextLine());
+        System.out.print("Are you confirm the provided details? (y/n) ");
+        printCursor();
+        String answer = scanner.nextLine();
 
-            System.out.print("Street address: ");
-            addressDetails.add(scanner.nextLine());
+        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+            user = new User(person);
+            return user;
+        } else if (answer.equalsIgnoreCase("no") || answer.equalsIgnoreCase("n")) {
+            System.out.println("(1) Quit\n(2) Start again\n(3) Correct some details");
+            String secondAnswer = scanner.nextLine();
 
-            System.out.print("City: ");
-            addressDetails.add(scanner.nextLine());
-
-            System.out.print("Country: ");
-            addressDetails.add(scanner.nextLine());
-
-            System.out.print("Zip code: ");
-            addressDetails.add(scanner.nextLine());
-
-            System.out.print("E-mail: ");
-            personDetails.add(scanner.nextLine());
-
-            System.out.print("Phone number: ");
-            personDetails.add(scanner.nextLine());
-
-            address = new Address(addressDetails.get(0), addressDetails.get(1), addressDetails.get(2), addressDetails.get(3));
-            person = new Person(personDetails.get(0), personDetails.get(1), personDetails.get(2), address, personDetails.get(3), personDetails.get(4));
-
-            System.out.print("Are you confirm the provided details? (y/n) ");
-            printCursor();
-            String answer = scanner.nextLine();
-
-            if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
-                user = new User(person);
-                return user;
-            } else if (answer.equalsIgnoreCase("no") || answer.equalsIgnoreCase("n")) {
-                System.out.println("(1) Quit\n(2) Start again\n(3) Correct some details");
-                String secondAnswer = scanner.nextLine();
-
-                switch (secondAnswer) {
-                    case "1":
-                        break loop;
-                    case "2":
-                        break;
-                    case "3":
-                        System.out.print("Which details you want to correct?: ");
-                }
+            switch (secondAnswer) {
+                case "1":
+                    break;
+                case "2":
+                    createUser();
+                    break;
+                case "3":
+                    System.out.print("Which details you want to correct?: ");
+                    // Implement details correcting logic
+                    break;
             }
         }
 
@@ -143,10 +185,10 @@ public class UserInterface {
 
     private void printStartingMessage() {
         System.out.println();
-        System.out.println("Welcome to Online Banking Application.");
         System.out.println("Choose right option.");
-        System.out.println("(1) To open account that is already created.");
-        System.out.println("(2) To create an account.");
+        System.out.println("(1) Open account that is already created.");
+        System.out.println("(2) Create an account.");
+        System.out.println("(3) Exit.");
     }
 
     private void printLoginMessage() {
