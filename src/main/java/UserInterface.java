@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,7 +30,8 @@ public class UserInterface {
                     Account account = createAccount(user);
                     addUserAndAccountToBank(user, account);
                     break;
-                case "3":
+                case "X":
+                case "x":
                     // Exit
                     break loop;
             }
@@ -86,7 +84,7 @@ public class UserInterface {
         while (true) {
             System.out.println("In which currency?");
             printCursor();
-            String answer = scanner.nextLine();
+            String answer = scanner.nextLine().toUpperCase();
 
             try {
                 if (currencyCodes.contains(CurrencyCodes.valueOf(answer))) {
@@ -94,7 +92,7 @@ public class UserInterface {
                     break;
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("There is no " + answer + " in list of supported currencies.");
+                System.out.println("There is no \"" + answer + "\" in list of supported currencies.");
             }
         }
         return currencyCode;
@@ -106,20 +104,46 @@ public class UserInterface {
         saveDataToFile();
     }
 
+    private double setInitialBalance() {
+        double initialBalance = 0;
+        System.out.println("Do you want to provide an initial balance? (y/n)");
+        printCursor();
+
+        String answer = scanner.nextLine();
+
+        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+            while (true) {
+                System.out.println("Initial balance: ");
+                printCursor();
+
+                try {
+                    initialBalance = Double.parseDouble(scanner.nextLine());
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Wrong input. Enter only numbers.");
+                }
+            }
+        } else if (answer.equalsIgnoreCase("no") || answer.equalsIgnoreCase("n")) {
+            return initialBalance;
+        }
+
+        return initialBalance;
+    }
+
     private Account createAccount(User user) {
         AccountTypes accountType = chooseAccountType();
         CurrencyCodes currencyCode = chooseCurrency();
-        String openingBalance = "0";
+        String initialBalance = String.valueOf(setInitialBalance());
 
         switch (accountType) {
             case STANDARD -> {
-                return new Account(user, currencyCode, openingBalance);
+                return new Account(user, currencyCode, initialBalance);
             }
             case SAVINGS -> {
-                return new SavingsAccount(user, currencyCode, openingBalance);
+                return new SavingsAccount(user, currencyCode, initialBalance);
             }
             case CURRENT -> {
-                return new CurrentAccount(user, currencyCode,openingBalance);
+                return new CurrentAccount(user, currencyCode,initialBalance);
             }
         }
 
@@ -203,7 +227,7 @@ public class UserInterface {
         address = new Address(addressDetails.get(0), addressDetails.get(1), addressDetails.get(2), addressDetails.get(3));
         person = new Person(personDetails.get(0), personDetails.get(1), personDetails.get(2), address, personDetails.get(3), personDetails.get(4));
 
-        System.out.print("Are you confirm the provided details? (y/n) ");
+        System.out.println("Are you confirm the provided details? (y/n)");
         printCursor();
         String answer = scanner.nextLine();
 
@@ -240,7 +264,7 @@ public class UserInterface {
         System.out.println("Choose right option.");
         System.out.println("(1) Open account that is already created.");
         System.out.println("(2) Create an account.");
-        System.out.println("(3) Exit.");
+        System.out.println("(X) Exit.");
     }
 
     private void printLoginMessage() {
