@@ -49,22 +49,26 @@ public class UserInterface {
 
     private AccountTypes chooseAccountType() {
         AccountTypes accountType;
-        System.out.println("There are several types of accounts to choose from.");
-        System.out.println(Arrays.toString(AccountTypes.values()));
+        System.out.println("There are several types of accounts to choose from: " + Arrays.toString(AccountTypes.values()));
 
         loop: while (true) {
             System.out.println("Which one do you choose?");
+
+            for (AccountTypes type : AccountTypes.values()) {
+                System.out.println("("+ (type.ordinal() + 1) + ") " + type);
+            }
+
             printCursor();
             String answer = scanner.nextLine();
 
-            switch (answer.toUpperCase()) {
-                case "STANDARD":
+            switch (answer) {
+                case "1":
                     accountType = AccountTypes.STANDARD;
                     break loop;
-                case "SAVINGS":
+                case "2":
                     accountType = AccountTypes.SAVINGS;
                     break loop;
-                case "CURRENT":
+                case "3":
                     accountType = AccountTypes.CURRENT;
                     break loop;
             }
@@ -74,20 +78,23 @@ public class UserInterface {
     }
 
     private CurrencyCodes chooseCurrency() {
-        CurrencyCodes currencyCode;
         List<CurrencyCodes> currencyCodes = Arrays.asList(CurrencyCodes.values());
 
-        System.out.println("Currently supported currencies: ");
-        System.out.println(currencyCodes);
-        System.out.println("In which currency?");
+        System.out.println("Currently supported currencies: " + currencyCodes);
+        CurrencyCodes currencyCode;
 
         while (true) {
+            System.out.println("In which currency?");
             printCursor();
             String answer = scanner.nextLine();
 
-            if (currencyCodes.contains(CurrencyCodes.valueOf(answer))) {
-                currencyCode = CurrencyCodes.valueOf(answer);
-                break;
+            try {
+                if (currencyCodes.contains(CurrencyCodes.valueOf(answer))) {
+                    currencyCode = CurrencyCodes.valueOf(answer);
+                    break;
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("There is no " + answer + " in list of supported currencies.");
             }
         }
         return currencyCode;
