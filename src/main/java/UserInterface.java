@@ -5,18 +5,21 @@ public class UserInterface {
     private final Scanner scanner;
     private final Validation validation;
 
+    private final Authentication authentication;
+
     public UserInterface(Scanner scanner, Validation validation) {
         this.bank = Bank.getInstance();
         this.scanner = scanner;
         this.validation = validation;
+        this.authentication = Authentication.getInstance();
     }
 
     public void start() {
-        loadDataFromFile();
         System.out.println();
         System.out.println("Welcome to Online Banking Application.");
 
         loop: while (true) {
+            loadDataFromFile();
             printStartingMessage();
             printCursor();
             switch (scanner.nextLine()) {
@@ -27,7 +30,10 @@ public class UserInterface {
                 case "2":
                     // Create new account
                     User user = createUser();
-                    addUserAndAccountToBank(user, createAccount(user));
+                    Account account = createAccount(user);
+                    if (register(user, account)) {
+                        addUserAndAccountToBank(user, account);
+                    } else System.out.println("Registration process failed.");
                     break;
                 case "X":
                 case "x":
@@ -38,6 +44,32 @@ public class UserInterface {
 
         scanner.close();
         System.exit(0);
+    }
+
+    private boolean register(User user, Account account) {
+        while (true) {
+            System.out.println("Provide password for your new account.");
+            printCursor();
+            String password = scanner.nextLine();
+
+            if (password.length() < 6) {
+                System.out.println("Password need be at least 5 characters long.");
+            } else {
+                System.out.println("Repeat provided password.");
+                printCursor();
+
+                if (scanner.nextLine().trim().equals(password)) {
+                    String ID = user.getPerson().getID();
+                    authentication.addUserCredentials(ID, password);
+                    System.out.println("You registration process has been successfully completed.");
+                    System.out.println("Account number: " + account.getAccountNumber());
+                    System.out.println("ID: " + ID);
+                    return true;
+                }
+
+                System.out.println("Try again.");
+            }
+        }
     }
 
     private void printCursor() {

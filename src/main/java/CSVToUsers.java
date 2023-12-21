@@ -22,7 +22,7 @@ public class CSVToUsers {
                 String country = fileContent[6];
                 String zipCode = fileContent[7];
                 String email = fileContent[8];
-                String phone = fileContent[9];
+                String phone = fileContent[9].replaceAll("[^0-9]", "");
 
                 // Create users
                 Address address = new Address(street, city, country, zipCode);
