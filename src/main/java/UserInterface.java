@@ -170,29 +170,33 @@ public class UserInterface {
         return matcher.matches();
     }
 
-    private String validateDetails(String detail) {
+    private String validatePersonDetails(PersonDetail detail) {
         String input = "";
 
         while (true) {
+            if (detail.equals(PersonDetail.DATE_OF_BIRTH)) {
+                System.out.println("Valid date format: yyyy-MM-dd");
+            }
+
             System.out.print(detail + ": ");
+
             input = scanner.nextLine();
 
             if (input.isEmpty()) {
                 System.out.println("Enter the " + detail);
             } else {
                 switch (detail) {
-                    case "Date of birth" -> {
+                    case DATE_OF_BIRTH -> {
                         if (validateDateOfBirth(input)) return input;
                         else {
                             System.out.println("Invalid " + detail);
-                            System.out.println("Valid date format: yyyy-MM-dd");
                         }
                     }
-                    case "E-mail" -> {
+                    case EMAIL -> {
                         if (validateEmail(input)) return input;
                         else System.out.println("Invalid " + detail);
                     }
-                    case "Phone number" -> {
+                    case PHONE_NUMBER -> {
                         if (validatePhoneNumber(input)) return input;
                         else System.out.println("Invalid " + detail);
                     }
@@ -209,23 +213,15 @@ public class UserInterface {
         Person person;
         User user;
         ArrayList<String> personDetails = new ArrayList<>();
-        ArrayList<String> addressDetails = new ArrayList<>();
 
         printCreateUserMessage();
-        personDetails.add(validateDetails("First name"));
-        personDetails.add(validateDetails("Last name"));
-        System.out.println("Valid date format: yyyy-MM-dd");
-        personDetails.add(validateDetails("Date of birth"));
-        addressDetails.add(validateDetails("Street address"));
-        addressDetails.add(validateDetails("City"));
-        addressDetails.add(validateDetails("Country"));
-        addressDetails.add(validateDetails("Zip code"));
-        personDetails.add(validateDetails("E-mail"));
-        personDetails.add(validateDetails("Phone number"));
 
+        for (PersonDetail personDetail : PersonDetail.values()) {
+            personDetails.add(validatePersonDetails(personDetail));
+        }
 
-        address = new Address(addressDetails.get(0), addressDetails.get(1), addressDetails.get(2), addressDetails.get(3));
-        person = new Person(personDetails.get(0), personDetails.get(1), personDetails.get(2), address, personDetails.get(3), personDetails.get(4));
+        address = new Address(personDetails.get(3), personDetails.get(4), personDetails.get(5), personDetails.get(6));
+        person = new Person(personDetails.get(0), personDetails.get(1), personDetails.get(2), address, personDetails.get(7), personDetails.get(8));
 
         System.out.println("Are you confirm the provided details? (y/n)");
         printCursor();
