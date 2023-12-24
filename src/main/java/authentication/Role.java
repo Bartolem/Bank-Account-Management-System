@@ -1,3 +1,5 @@
+package authentication;
+
 public enum Role {
     ADMIN,
     ACCOUNT_OWNER,

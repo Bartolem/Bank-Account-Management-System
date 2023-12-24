@@ -1,3 +1,5 @@
+package users;
+
 public enum PersonDetail {
     FIRST_NAME,
     LAST_NAME,

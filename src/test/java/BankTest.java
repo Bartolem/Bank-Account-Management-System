@@ -1,5 +1,14 @@
+import accounts.Account;
+import accounts.CurrentAccount;
+import accounts.SavingsAccount;
+import bank.Bank;
+import currencies.CurrencyCodes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import users.Address;
+import users.Admin;
+import users.Person;
+import users.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 

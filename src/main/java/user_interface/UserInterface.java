@@ -1,3 +1,11 @@
+package user_interface;
+import accounts.*;
+import authentication.*;
+import bank.Bank;
+import users.*;
+import validation.Validation;
+import currencies.*;
+import file_manipulation.*;
 import java.util.*;
 
 public class UserInterface {
@@ -15,25 +23,22 @@ public class UserInterface {
     }
 
     public void start() {
+        loadDataFromFile();
         System.out.println();
         System.out.println("Welcome to Online Banking Application.");
 
         loop: while (true) {
-            loadDataFromFile();
             printStartingMessage();
             printCursor();
             switch (scanner.nextLine()) {
                 case "1":
                     // Log in to the system
+                    loginProcess();
                     break;
-
                 case "2":
                     // Create new account
-                    User user = createUser();
-                    Account account = createAccount(user);
-                    if (register(user, account)) {
-                        addUserAndAccountToBank(user, account);
-                    } else System.out.println("Registration process failed.");
+                    accountCreation();
+                    loadDataFromFile();
                     break;
                 case "X":
                 case "x":
@@ -44,6 +49,63 @@ public class UserInterface {
 
         scanner.close();
         System.exit(0);
+    }
+
+    private void loginProcess() {
+        Role role = chooseRole();
+
+        if (Objects.requireNonNull(role) == Role.ACCOUNT_OWNER) {
+            login(role).verifyAccount();
+        } else login(role).verifyUser();
+    }
+
+    private void accountCreation() {
+        User user = createUser();
+        Account account = createAccount(user);
+        if (register(user, account)) {
+            addUserAndAccountToBank(user, account);
+        } else System.out.println("Registration process failed.");
+    }
+
+    private Role chooseRole() {
+        for (Role role : Role.values()) {
+            System.out.println("(" + (role.ordinal() + 1) + ") " + role);
+        }
+
+        System.out.println("(X) Exit.");
+
+        while (true) {
+            String input = scanner.nextLine();
+
+            switch (input) {
+                case "x":
+                case "X":
+                    break;
+                case "1":
+                    return Role.ADMIN;
+                case "2":
+                    return Role.ACCOUNT_OWNER;
+                case "3":
+                    return Role.TRANSACTION_VIEWER;
+            }
+        }
+    }
+
+    private Login login(Role role) {
+        System.out.print("ID: ");
+        String ID = scanner.nextLine();
+
+        System.out.print("password: ");
+        String password = scanner.nextLine();
+
+        if (Objects.requireNonNull(role) == Role.ACCOUNT_OWNER) {
+            System.out.print("accounts.Account number: ");
+            String accountNumber = scanner.nextLine();
+
+            return new Login(ID, password, Integer.parseInt(accountNumber));
+        }
+
+        return new Login(ID, password);
     }
 
     private boolean register(User user, Account account) {
@@ -62,7 +124,7 @@ public class UserInterface {
                     String ID = user.getPerson().getID();
                     authentication.addUserCredentials(ID, password);
                     System.out.println("You registration process has been successfully completed.");
-                    System.out.println("Account number: " + account.getAccountNumber());
+                    System.out.println("accounts.Account number: " + account.getAccountNumber());
                     System.out.println("ID: " + ID);
                     return true;
                 }

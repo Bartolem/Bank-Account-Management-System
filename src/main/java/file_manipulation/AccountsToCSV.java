@@ -1,3 +1,7 @@
+package file_manipulation;
+
+import accounts.Account;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,7 +10,7 @@ public class AccountsToCSV {
     public static void write(ArrayList<Account> accounts, String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
             // Write headers
-            writer.write("Account type,Account number,Owner ID,Owner personal name,Currency code,Balance,Creation date\n");
+            writer.write("accounts.Account type,accounts.Account number,Owner ID,Owner personal name,Currency code,Balance,Creation date\n");
 
             // Write account details
             for (Account account : accounts) {

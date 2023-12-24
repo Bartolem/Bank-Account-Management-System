@@ -1,3 +1,7 @@
+package users;
+
+import authentication.Role;
+
 public class Admin extends User {
     private static Admin admin;
 

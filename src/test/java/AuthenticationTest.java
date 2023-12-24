@@ -1,5 +1,10 @@
+import authentication.Authentication;
+import bank.Bank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import users.Address;
+import users.Person;
+import users.User;
 
 import static org.junit.jupiter.api.Assertions.*;
 

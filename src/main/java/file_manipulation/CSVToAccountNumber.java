@@ -1,3 +1,5 @@
+package file_manipulation;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,7 +18,7 @@ public class CSVToAccountNumber {
                     accountNumbers.add(Integer.valueOf(number));
                 }
             }
-            System.out.println("Account numbers successfully loaded from " + fileName);
+            System.out.println("accounts.Account numbers successfully loaded from " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }

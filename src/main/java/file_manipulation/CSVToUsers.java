@@ -1,3 +1,10 @@
+package file_manipulation;
+
+import bank.Bank;
+import users.Address;
+import users.Person;
+import users.User;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;

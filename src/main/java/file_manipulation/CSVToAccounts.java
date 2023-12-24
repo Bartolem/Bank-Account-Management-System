@@ -1,3 +1,12 @@
+package file_manipulation;
+
+import accounts.Account;
+import accounts.CurrentAccount;
+import accounts.SavingsAccount;
+import bank.Bank;
+import currencies.CurrencyCodes;
+import users.Admin;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,7 +17,7 @@ public class CSVToAccounts {
             String line = "";
 
             while ((line = reader.readLine()) != null) {
-                if (line.contains("Account type")) {
+                if (line.contains("accounts.Account type")) {
                     continue;
                 }
                 // Read account detail

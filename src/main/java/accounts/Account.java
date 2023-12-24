@@ -1,3 +1,10 @@
+package accounts;
+
+import bank.Bank;
+import currencies.CurrencyCodes;
+import currencies.CurrencyFormatter;
+import users.User;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -118,7 +125,7 @@ public class Account {
     @Override
     public String toString() {
         return  "(" + type + ")" +
-                "\nAccount number: " + accountNumber +
+                "\naccounts.Account number: " + accountNumber +
                 "\nOwner name: " + getOwnerName() +
                 "\nBalance: " + balance;
     }

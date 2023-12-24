@@ -1,3 +1,8 @@
+package authentication;
+
+import bank.Bank;
+import users.User;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,7 +71,7 @@ public class Authentication {
             for (HashMap.Entry<String, String> entry : userCredentials.entrySet()) {
                 writer.println(entry.getKey() + "," + entry.getValue());
             }
-            System.out.println("User credentials saved to " + fileName);
+            System.out.println("users.User credentials saved to " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }

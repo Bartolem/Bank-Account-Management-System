@@ -1,3 +1,9 @@
+package bank;
+
+import accounts.*;
+import authentication.Role;
+import users.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

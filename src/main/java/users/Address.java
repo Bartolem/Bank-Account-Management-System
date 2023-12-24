@@ -1,3 +1,5 @@
+package users;
+
 public class Address {
     private String streetAddress;
     private String city;

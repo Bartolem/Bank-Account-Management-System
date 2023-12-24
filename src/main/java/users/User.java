@@ -1,3 +1,8 @@
+package users;
+
+import accounts.Account;
+import authentication.*;
+
 import java.util.ArrayList;
 
 public class User {

@@ -1,3 +1,5 @@
+package currencies;
+
 public enum CurrencyCodes {
     EUR,
     USD,

@@ -1,3 +1,5 @@
+package file_manipulation;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class AccountNumberToCSV {
             }
 
             writer.close();
-            System.out.println("Account numbers successfully saved to " + fileName);
+            System.out.println("accounts.Account numbers successfully saved to " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }

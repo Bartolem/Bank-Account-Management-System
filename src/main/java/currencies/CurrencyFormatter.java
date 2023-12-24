@@ -1,3 +1,5 @@
+package currencies;
+
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.Currency;

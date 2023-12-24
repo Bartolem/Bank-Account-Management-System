@@ -1,3 +1,8 @@
+package accounts;
+
+import currencies.CurrencyCodes;
+import users.User;
+
 import java.math.BigDecimal;
 
 public class CurrentAccount extends Account {

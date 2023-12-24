@@ -1,3 +1,7 @@
+package accounts;
+
+import bank.Bank;
+
 import java.util.Random;
 
 public class AccountNumber {
