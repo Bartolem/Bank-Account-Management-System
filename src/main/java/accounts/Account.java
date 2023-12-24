@@ -125,7 +125,7 @@ public class Account {
     @Override
     public String toString() {
         return  "(" + type + ")" +
-                "\naccounts.Account number: " + accountNumber +
+                "\nAccount number: " + accountNumber +
                 "\nOwner name: " + getOwnerName() +
                 "\nBalance: " + balance;
     }

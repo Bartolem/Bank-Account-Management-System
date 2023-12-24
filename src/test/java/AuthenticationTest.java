@@ -37,9 +37,8 @@ class AuthenticationTest {
 
         authentication.addUserCredentials(ID, password);
 
-        User authenticateUser = authentication.authenticateUser(ID, password);
+        boolean authenticateUser = authentication.authenticateUser(ID, password);
 
-        assertNotNull(authenticateUser);
-        assertEquals(bank.getUser(ID), authenticateUser);
+        assertTrue(authenticateUser);
     }
 }

@@ -35,15 +35,13 @@ public class Authentication {
         saveUserCredentialsToCSV(userCredentials, fileName);
     }
 
-    public User authenticateUser(String ID, String password) {
+    public boolean authenticateUser(String ID, String password) {
         User user = Bank.getInstance().getUser(ID);
         // Checks if user with provided ID exist
         if (user != null) {
-            if (userCredentials.get(ID).equals(hashPassword(password))) {
-                return user;
-            }
+            return userCredentials.get(ID).equals(hashPassword(password));
         }
-        return null;
+        return false;
     }
 
     // Hashing method for password

@@ -1,4 +1,5 @@
 package user_interface;
+
 import accounts.*;
 import authentication.*;
 import bank.Bank;
@@ -8,18 +9,21 @@ import currencies.*;
 import file_manipulation.*;
 import java.util.*;
 
+import static accounts.AccountTypes.*;
+import static authentication.Role.*;
+import static users.PersonDetail.*;
+
 public class UserInterface {
     private final Bank bank;
     private final Scanner scanner;
     private final Validation validation;
+    private final Registration registration;
 
-    private final Authentication authentication;
-
-    public UserInterface(Scanner scanner, Validation validation) {
+    public UserInterface(Scanner scanner, Validation validation, Registration register) {
         this.bank = Bank.getInstance();
         this.scanner = scanner;
         this.validation = validation;
-        this.authentication = Authentication.getInstance();
+        this.registration = register;
     }
 
     public void start() {
@@ -33,7 +37,7 @@ public class UserInterface {
             switch (scanner.nextLine()) {
                 case "1":
                     // Log in to the system
-                    loginProcess();
+                    login();
                     break;
                 case "2":
                     // Create new account
@@ -49,14 +53,6 @@ public class UserInterface {
 
         scanner.close();
         System.exit(0);
-    }
-
-    private void loginProcess() {
-        Role role = chooseRole();
-
-        if (Objects.requireNonNull(role) == Role.ACCOUNT_OWNER) {
-            login(role).verifyAccount();
-        } else login(role).verifyUser();
     }
 
     private void accountCreation() {
@@ -82,30 +78,39 @@ public class UserInterface {
                 case "X":
                     break;
                 case "1":
-                    return Role.ADMIN;
+                    return ADMIN;
                 case "2":
-                    return Role.ACCOUNT_OWNER;
+                    return ACCOUNT_OWNER;
                 case "3":
-                    return Role.TRANSACTION_VIEWER;
+                    return TRANSACTION_VIEWER;
             }
         }
     }
 
-    private Login login(Role role) {
+    private void login() {
+        Role role = chooseRole();
+
         System.out.print("ID: ");
         String ID = scanner.nextLine();
 
-        System.out.print("password: ");
+        System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        if (Objects.requireNonNull(role) == Role.ACCOUNT_OWNER) {
-            System.out.print("accounts.Account number: ");
-            String accountNumber = scanner.nextLine();
+        Login login = new Login(ID, password);
 
-            return new Login(ID, password, Integer.parseInt(accountNumber));
+        if (Objects.requireNonNull(role) == ACCOUNT_OWNER) {
+            System.out.print("Account number: ");
+            int accountNumber = Integer.parseInt(scanner.nextLine());
+            if (login.verifyAccount(accountNumber)) {
+                // Open account owner panel using ID, and account number
+                AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, accountNumber);
+                ownerPanel.start();
+            } else login();
+        } else {
+            if (login.verifyUser()) {
+                // Open admin panel using only ID
+            } else login();
         }
-
-        return new Login(ID, password);
     }
 
     private boolean register(User user, Account account) {
@@ -114,15 +119,15 @@ public class UserInterface {
             printCursor();
             String password = scanner.nextLine();
 
-            if (password.length() < 6) {
+            if (!registration.checkPasswordLength(password)) {
                 System.out.println("Password need be at least 5 characters long.");
             } else {
-                System.out.println("Repeat provided password.");
+                System.out.println("Confirm provided password.");
                 printCursor();
 
-                if (scanner.nextLine().trim().equals(password)) {
+                if (registration.checkPasswordsEquality(password, scanner.nextLine().trim())) {
                     String ID = user.getPerson().getID();
-                    authentication.addUserCredentials(ID, password);
+                    registration.registerUser(ID, password);
                     System.out.println("You registration process has been successfully completed.");
                     System.out.println("accounts.Account number: " + account.getAccountNumber());
                     System.out.println("ID: " + ID);
@@ -154,13 +159,13 @@ public class UserInterface {
 
             switch (answer) {
                 case "1":
-                    accountType = AccountTypes.STANDARD;
+                    accountType = STANDARD;
                     break loop;
                 case "2":
-                    accountType = AccountTypes.SAVINGS;
+                    accountType = SAVINGS;
                     break loop;
                 case "3":
-                    accountType = AccountTypes.CURRENT;
+                    accountType = CURRENT;
                     break loop;
             }
         }
@@ -245,7 +250,7 @@ public class UserInterface {
 
     private String validatePersonDetails(PersonDetail detail) {
         while (true) {
-            if (detail.equals(PersonDetail.DATE_OF_BIRTH)) {
+            if (detail.equals(DATE_OF_BIRTH)) {
                 System.out.println("Valid date format: yyyy-MM-dd");
             }
 
@@ -339,31 +344,31 @@ public class UserInterface {
 
             switch (answer) {
                 case "1" -> {
-                    return PersonDetail.FIRST_NAME;
+                    return FIRST_NAME;
                 }
                 case "2" -> {
-                    return PersonDetail.LAST_NAME;
+                    return LAST_NAME;
                 }
                 case "3" -> {
-                    return PersonDetail.DATE_OF_BIRTH;
+                    return DATE_OF_BIRTH;
                 }
                 case "4" -> {
-                    return PersonDetail.STREET_ADDRESS;
+                    return STREET_ADDRESS;
                 }
                 case "5" -> {
-                    return PersonDetail.CITY;
+                    return CITY;
                 }
                 case "6" -> {
-                    return PersonDetail.COUNTRY;
+                    return COUNTRY;
                 }
                 case "7" -> {
-                    return PersonDetail.ZIP_CODE;
+                    return ZIP_CODE;
                 }
                 case "8" -> {
-                    return PersonDetail.EMAIL;
+                    return EMAIL;
                 }
                 case "9" -> {
-                    return PersonDetail.PHONE_NUMBER;
+                    return PHONE_NUMBER;
                 }
             }
         }

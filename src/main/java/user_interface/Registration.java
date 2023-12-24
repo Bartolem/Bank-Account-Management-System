@@ -2,10 +2,10 @@ package user_interface;
 
 import authentication.Authentication;
 
-public class Register {
+public class Registration {
     private final Authentication authentication;
 
-    public Register() {
+    public Registration() {
         this.authentication = Authentication.getInstance();
     }
 
