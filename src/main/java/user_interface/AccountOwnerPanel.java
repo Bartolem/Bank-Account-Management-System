@@ -1,22 +1,63 @@
 package user_interface;
 
 import accounts.*;
-import bank.Bank;
 import users.User;
 
-public class AccountOwnerPanel {
-    private final Bank bank;
+import java.util.Scanner;
+
+public class AccountOwnerPanel extends UserPanel {
     private final User user;
     private final Account account;
 
-    public AccountOwnerPanel(String ID, int accountNumber) {
-        this.bank = Bank.getInstance();
-        this.user = bank.getUser(ID);
-        this.account = bank.getAccount(accountNumber);
+    public AccountOwnerPanel(String ID, Scanner scanner, int accountNumber) {
+        super(ID, scanner);
+        this.user = getUser();
+        this.account = getBank().getAccount(accountNumber);
     }
 
+    @Override
     public void start() {
-        System.out.println("Welcome " + user.getPerson().getFullName());
-        System.out.println("Your account: \n" + account);
+        greetings();
+        loop:while (true) {
+            System.out.println("\nChoose action");
+            System.out.println("(1) Deposit");
+            System.out.println("(2) Withdraw");
+            System.out.println("(3) Transfer");
+            System.out.println("(4) Settings");
+            System.out.println("(X) Log out");
+            printCursor();
+            String action = getScanner().nextLine();
+
+            switch (action) {
+                case "1" -> deposit();
+                case "2" -> withdraw();
+                case "3" -> transfer();
+                case "4" -> settings();
+                case "x", "X" -> {
+                    break loop;
+                }
+            }
+        }
+    }
+
+    private void deposit() {
+
+    }
+
+    private void withdraw() {
+
+    }
+
+    private void transfer() {
+
+    }
+
+    private void settings() {
+
+    }
+
+    private void greetings() {
+        System.out.println("\nWelcome " + user.getPerson().getFullName());
+        System.out.println("\nYour account: \n" + account);
     }
 }

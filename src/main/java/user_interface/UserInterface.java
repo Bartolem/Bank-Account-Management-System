@@ -103,12 +103,14 @@ public class UserInterface {
             int accountNumber = Integer.parseInt(scanner.nextLine());
             if (login.verifyAccount(accountNumber)) {
                 // Open account owner panel using ID, and account number
-                AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, accountNumber);
+                AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber);
                 ownerPanel.start();
             } else login();
         } else {
             if (login.verifyUser()) {
                 // Open admin panel using only ID
+                AdminPanel adminPanel = new AdminPanel(ID, scanner);
+                adminPanel.start();
             } else login();
         }
     }
