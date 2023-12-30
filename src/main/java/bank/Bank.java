@@ -2,9 +2,11 @@ package bank;
 
 import accounts.*;
 import authentication.Role;
+import currencies.CurrencyCodes;
 import users.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Bank {
@@ -96,8 +98,24 @@ public class Bank {
         }
     }
 
+    public void printCurrencies() {
+        System.out.println(Arrays.toString(CurrencyCodes.values()));
+    }
+
+    public void printAccountTypes() {
+        System.out.println(Arrays.toString(AccountTypes.values()));
+    }
+
+    public void printRoles() {
+        System.out.println(Arrays.toString(Role.values()));
+    }
+
     @Override
     public String toString() {
-        return accounts.toString();
+        return "Number of \nAccounts: " + accounts.size() +
+                "\nUsers: " + users.size() +
+                "\nSupported currencies: " + CurrencyCodes.values().length +
+                "\nAccount types: " + AccountTypes.values().length +
+                "\nRoles: " + Role.values().length;
     }
 }
