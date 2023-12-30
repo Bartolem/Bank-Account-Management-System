@@ -105,12 +105,14 @@ public class UserInterface {
                 // Open account owner panel using ID, and account number
                 AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber);
                 ownerPanel.start();
+                saveDataToFile();
             } else login();
         } else {
             if (login.verifyUser()) {
                 // Open admin panel using only ID
                 AdminPanel adminPanel = new AdminPanel(ID, scanner);
                 adminPanel.start();
+                saveDataToFile();
             } else login();
         }
     }
