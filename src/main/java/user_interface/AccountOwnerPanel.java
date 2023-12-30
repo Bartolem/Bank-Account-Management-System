@@ -124,14 +124,4 @@ public class AccountOwnerPanel extends UserPanel {
             return null;
         }
     }
-
-    private boolean checkAccountNumber(String number) {
-        try {
-            Integer.parseInt(number);
-            return true;
-        } catch (NumberFormatException e) {
-            System.out.println("Enter only numbers.");
-            return false;
-        }
-    }
 }

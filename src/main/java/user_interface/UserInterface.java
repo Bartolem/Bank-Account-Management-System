@@ -67,6 +67,7 @@ public class UserInterface {
         }
 
         System.out.println("(X) Exit.");
+        printCursor();
 
         while (true) {
             String input = scanner.nextLine();
@@ -74,7 +75,7 @@ public class UserInterface {
             switch (input) {
                 case "x":
                 case "X":
-                    break;
+                    start();
                 case "1":
                     return ADMIN;
                 case "2":
@@ -144,8 +145,6 @@ public class UserInterface {
     private void printCursor() {
         System.out.print("> ");
     }
-
-
 
     private void addUserAndAccountToBank(User user, Account account) {
         bank.addUser(user);

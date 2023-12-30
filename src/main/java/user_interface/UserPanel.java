@@ -33,4 +33,14 @@ public abstract class UserPanel {
     public void printCursor() {
         System.out.print("> ");
     }
+
+    protected boolean checkAccountNumber(String number) {
+        try {
+            Integer.parseInt(number);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println("Enter only numbers.");
+            return false;
+        }
+    }
 }
