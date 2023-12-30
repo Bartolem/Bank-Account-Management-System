@@ -1,7 +1,6 @@
 package user_interface;
 
 import accounts.*;
-import bank.Bank;
 import file_manipulation.AccountsToCSV;
 import users.User;
 
