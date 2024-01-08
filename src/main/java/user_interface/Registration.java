@@ -4,14 +4,14 @@ import authentication.Authentication;
 
 public class Registration {
     private final Authentication authentication;
+    private static final int MIN_ALLOWED_PASSWORD_LENGTH = 6;
 
     public Registration() {
         this.authentication = Authentication.getInstance();
     }
 
     public boolean checkPasswordLength(String password) {
-        int minAllowedPasswordLength = 6;
-        return password.length() >= minAllowedPasswordLength;
+        return password.length() >= MIN_ALLOWED_PASSWORD_LENGTH;
     }
 
     public boolean checkPasswordsEquality(String password, String repeatedPassword) {

@@ -37,10 +37,10 @@ public abstract class UserPanel {
     protected boolean checkAccountNumber(String number) {
         try {
             Integer.parseInt(number);
-            return true;
+            return false;
         } catch (NumberFormatException e) {
             System.out.println("Enter only numbers.");
-            return false;
+            return true;
         }
     }
 }

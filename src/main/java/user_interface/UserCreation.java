@@ -58,7 +58,7 @@ public class UserCreation {
             switch (secondAnswer) {
                 case "1":
                     // Implement details correcting logic
-                    PersonDetail correctedDetail = correctPersonDetail();
+                    PersonDetail correctedDetail = changePersonDetail();
                     int index = correctedDetail.ordinal();
                     String validatedAndCorrectedDetail = validatePersonDetails(correctedDetail);
 
@@ -78,8 +78,8 @@ public class UserCreation {
         return null;
     }
 
-    private PersonDetail correctPersonDetail() {
-        System.out.println("Which details you want to correct?");
+    protected PersonDetail changePersonDetail() {
+        System.out.println("Which details you want to change?");
         for (PersonDetail detail : PersonDetail.values()) {
             System.out.println("(" + (detail.ordinal() + 1) + ") " + detail);
         }
@@ -120,7 +120,7 @@ public class UserCreation {
         }
     }
 
-    private String validatePersonDetails(PersonDetail detail) {
+    protected String validatePersonDetails(PersonDetail detail) {
         while (true) {
             if (detail.equals(DATE_OF_BIRTH)) {
                 System.out.println("Valid date format: yyyy-MM-dd");

@@ -102,7 +102,7 @@ public class UserInterface {
             int accountNumber = Integer.parseInt(scanner.nextLine());
             if (login.verifyAccount(accountNumber)) {
                 // Open account owner panel using ID, and account number
-                AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber);
+                AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber, userCreation);
                 ownerPanel.start();
                 saveDataToFile();
             } else login();

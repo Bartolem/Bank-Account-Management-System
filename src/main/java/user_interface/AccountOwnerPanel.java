@@ -1,6 +1,7 @@
 package user_interface;
 
 import accounts.*;
+import authentication.Authentication;
 import file_manipulation.AccountsToCSV;
 import users.User;
 
@@ -10,11 +11,15 @@ import java.util.Scanner;
 public class AccountOwnerPanel extends UserPanel {
     private final User user;
     private final Account account;
+    private final UserCreation userCreation;
+    private final Authentication authentication;
 
-    public AccountOwnerPanel(String ID, Scanner scanner, int accountNumber) {
+    public AccountOwnerPanel(String ID, Scanner scanner, int accountNumber, UserCreation userCreation) {
         super(ID, scanner);
         this.user = getUser();
         this.account = getBank().getAccount(accountNumber);
+        this.userCreation = userCreation;
+        this.authentication = Authentication.getInstance();
     }
 
     @Override
@@ -84,7 +89,7 @@ public class AccountOwnerPanel extends UserPanel {
         System.out.print("Enter the account number to which you want to make the transfer: ");
         String accountNumber = getScanner().nextLine();
 
-        if (!checkAccountNumber(accountNumber) || accountNumber.length() != 8) {
+        if (checkAccountNumber(accountNumber) || accountNumber.length() != 8) {
             transfer();
         }
 
@@ -95,12 +100,38 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void settings() {
+        System.out.println("(1) Update personal information");
+        System.out.println("(2) Change password");
+        System.out.println("(3) View transfer history");
 
+        switch (getScanner().nextLine()) {
+            case "1" -> userCreation.changePersonDetail();
+            case "2" -> changePassword();
+            case "3" -> viewHistory();
+        }
+    }
+
+    private void viewHistory() {
+
+    }
+
+    private void changePassword() {
+        System.out.print("Enter old password: ");
+        String oldPassword = getScanner().nextLine();
+
+        if (authentication.authenticateUser(user.getPerson().getID(), oldPassword)) {
+            System.out.print("Enter new password: ");
+            String newPassword = getScanner().nextLine();
+            authentication.addUserCredentials(user.getPerson().getID(), newPassword);
+            System.out.println("Password successfully changed");
+        } else {
+            System.out.println("Wrong password");
+        }
     }
 
     private void greetings() {
         System.out.println("\nWelcome " + user.getPerson().getFullName() + ".");
-        System.out.println("\nYour account: " + account.getType() + " " +account.getAccountNumber());
+        System.out.println("\nYour account: " + account.getType() + " " + account.getAccountNumber());
     }
 
     private void provideAmountMessage(String action) {

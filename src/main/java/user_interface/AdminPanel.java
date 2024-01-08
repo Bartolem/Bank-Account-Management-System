@@ -78,7 +78,7 @@ public class AdminPanel extends UserPanel {
         System.out.print("Account number: ");
         String accountNumber = getScanner().nextLine();
 
-        if (!checkAccountNumber(accountNumber) || accountNumber.length() != 8) {
+        if (checkAccountNumber(accountNumber) || accountNumber.length() != 8) {
             System.out.println("Invalid account number.");
             menageAccounts();
         }
