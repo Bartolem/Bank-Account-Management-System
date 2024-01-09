@@ -2,7 +2,11 @@ package user_interface;
 
 import accounts.*;
 import authentication.Authentication;
+import currencies.CurrencyFormatter;
 import file_manipulation.AccountsToCSV;
+import users.Address;
+import users.Person;
+import users.PersonDetail;
 import users.User;
 
 import java.math.BigDecimal;
@@ -105,10 +109,56 @@ public class AccountOwnerPanel extends UserPanel {
         System.out.println("(3) View transfer history");
 
         switch (getScanner().nextLine()) {
-            case "1" -> userCreation.changePersonDetail();
+            case "1" -> updatePersonalInformation();
             case "2" -> changePassword();
             case "3" -> viewHistory();
         }
+    }
+
+    private void updatePersonalInformation() {
+        Person person = user.getPerson();
+        Address address = person.getAddress();
+        PersonDetail personDetail = userCreation.changePersonDetail();
+        String validatedPersonalDetail = userCreation.validatePersonDetails(personDetail);
+        String oldDetail = "";
+
+        switch (personDetail) {
+            case FIRST_NAME -> {
+                oldDetail = person.getFirstName();
+                person.setFirstName(validatedPersonalDetail);
+            }
+            case LAST_NAME -> {
+                oldDetail = person.getLastName();
+                person.setLastName(validatedPersonalDetail);
+            }
+            case STREET_ADDRESS -> {
+                oldDetail = address.getStreetAddress();
+                address.setStreetAddress(validatedPersonalDetail);
+            }
+            case CITY -> {
+                oldDetail = address.getCity();
+                address.setCity(validatedPersonalDetail);
+            }
+            case COUNTRY -> {
+                oldDetail = address.getCountry();
+                address.setCountry(validatedPersonalDetail);
+            }
+            case ZIP_CODE -> {
+                oldDetail = address.getZipCode();
+                address.setZipCode(validatedPersonalDetail);
+            }
+            case EMAIL -> {
+                oldDetail = person.getEmail();
+                person.setEmail(validatedPersonalDetail);
+            }
+            case PHONE_NUMBER -> {
+                oldDetail = person.getPhone();
+                person.setPhone(validatedPersonalDetail);
+            }
+        }
+
+        AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
+        System.out.println(oldDetail + " changed to -> " + validatedPersonalDetail);
     }
 
     private void viewHistory() {
@@ -122,10 +172,15 @@ public class AccountOwnerPanel extends UserPanel {
         if (authentication.authenticateUser(user.getPerson().getID(), oldPassword)) {
             System.out.print("Enter new password: ");
             String newPassword = getScanner().nextLine();
-            authentication.addUserCredentials(user.getPerson().getID(), newPassword);
-            System.out.println("Password successfully changed");
+
+            if (oldPassword.equals(newPassword)) {
+                System.out.println("The new password should be different from the old one.");
+            } else {
+                authentication.addUserCredentials(user.getPerson().getID(), newPassword);
+                System.out.println("Password successfully changed.");
+            }
         } else {
-            System.out.println("Wrong password");
+            System.out.println("Wrong password.");
         }
     }
 
@@ -139,7 +194,7 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void printBalanceAfterTransaction(String operator, BigDecimal amount) {
-        System.out.println(operator + amount);
+        System.out.println(operator + " " + CurrencyFormatter.getFormat(account.getCurrencyCode(), amount));
         System.out.println("Balance: " + account.getFormattedBalanceWithCurrency());
     }
 
