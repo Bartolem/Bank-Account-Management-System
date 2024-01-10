@@ -17,7 +17,8 @@ public class CSVToAccounts {
             String line = "";
 
             while ((line = reader.readLine()) != null) {
-                if (line.contains("accounts.Account type")) {
+                //Ignores the headers
+                if (line.contains("Account type")) {
                     continue;
                 }
                 // Read account detail

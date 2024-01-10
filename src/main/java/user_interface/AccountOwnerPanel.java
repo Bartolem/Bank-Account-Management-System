@@ -4,6 +4,8 @@ import accounts.*;
 import authentication.Authentication;
 import currencies.CurrencyFormatter;
 import file_manipulation.AccountsToCSV;
+import file_manipulation.CSVToTransactionHistory;
+import transaction.Transaction;
 import users.Address;
 import users.Person;
 import users.PersonDetail;
@@ -28,13 +30,15 @@ public class AccountOwnerPanel extends UserPanel {
 
     @Override
     public void start() {
+        loadFromFile();
         greetings();
         loop:while (true) {
             System.out.println("\nChoose action");
             System.out.println("(1) Deposit");
             System.out.println("(2) Withdraw");
             System.out.println("(3) Transfer");
-            System.out.println("(4) Settings");
+            System.out.println("(4) View transactions history");
+            System.out.println("(5) Settings");
             System.out.println("(X) Log out");
             printCursor();
             String action = getScanner().nextLine();
@@ -43,7 +47,8 @@ public class AccountOwnerPanel extends UserPanel {
                 case "1" -> deposit();
                 case "2" -> withdraw();
                 case "3" -> transfer();
-                case "4" -> settings();
+                case "4" -> viewHistory();
+                case "5" -> settings();
                 case "x", "X" -> {
                     break loop;
                 }
@@ -62,7 +67,7 @@ public class AccountOwnerPanel extends UserPanel {
 
         if (account.deposit(amount)) {
             printBalanceAfterTransaction("+", amount);
-            AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
+            saveToFile();
         } else printFailedMessage(action);
     }
 
@@ -77,7 +82,7 @@ public class AccountOwnerPanel extends UserPanel {
 
         if (account.withdraw(amount)) {
             printBalanceAfterTransaction("-", amount);
-            AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
+            saveToFile();
         } else printFailedMessage(action);
     }
 
@@ -99,20 +104,32 @@ public class AccountOwnerPanel extends UserPanel {
 
         if (account.transfer(amount, Integer.parseInt(accountNumber))) {
             printBalanceAfterTransaction("-", amount);
-            AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
+            saveToFile();
         } else printFailedMessage(action);
     }
 
     private void settings() {
         System.out.println("(1) Update personal information");
         System.out.println("(2) Change password");
-        System.out.println("(3) View transfer history");
+        System.out.println("(X) Exit");
+        printCursor();
 
-        switch (getScanner().nextLine()) {
-            case "1" -> updatePersonalInformation();
-            case "2" -> changePassword();
-            case "3" -> viewHistory();
+        while (true) {
+            switch (getScanner().nextLine()) {
+                case "1" -> {
+                    updatePersonalInformation();
+                    return;
+                }
+                case "2" -> {
+                    changePassword();
+                    return;
+                }
+                case "x", "X" -> {
+                    return;
+                }
+            }
         }
+
     }
 
     private void updatePersonalInformation() {
@@ -157,12 +174,14 @@ public class AccountOwnerPanel extends UserPanel {
             }
         }
 
-        AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
+        saveToFile();
         System.out.println(oldDetail + " changed to -> " + validatedPersonalDetail);
     }
 
     private void viewHistory() {
-
+        for (Transaction transaction : account.getTransactionHistory()) {
+            System.out.println(transaction + "\n");
+        }
     }
 
     private void changePassword() {
@@ -209,5 +228,13 @@ public class AccountOwnerPanel extends UserPanel {
             System.out.println("Enter only numbers.");
             return null;
         }
+    }
+
+    private void loadFromFile() {
+        CSVToTransactionHistory.read(account.getTransactionHistory(), "transaction_history_84924257");
+    }
+
+    private void saveToFile() {
+        AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
     }
 }

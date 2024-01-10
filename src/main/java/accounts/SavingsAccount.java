@@ -1,9 +1,13 @@
 package accounts;
 
 import currencies.CurrencyCodes;
+import file_manipulation.TransactionHistoryToCSV;
+import transaction.Transaction;
+import transaction.TransactionTypes;
 import users.User;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class SavingsAccount extends Account {
     private final BigDecimal interestRate;
@@ -45,6 +49,8 @@ public class SavingsAccount extends Account {
     public boolean withdraw(BigDecimal amount) {
         if ((getBalance().subtract(amount).compareTo(minBalance) > -1)) {
             setBalance(getBalance().subtract(amount).toString());
+            super.getTransactionHistory().add(new Transaction(TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, getCurrencyCode()));
+            TransactionHistoryToCSV.write(super.getTransactionHistory(), "transaction_history_" + getAccountNumber());
             return true;
         }
         return false;

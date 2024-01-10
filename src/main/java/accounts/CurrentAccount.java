@@ -1,9 +1,13 @@
 package accounts;
 
 import currencies.CurrencyCodes;
+import file_manipulation.TransactionHistoryToCSV;
+import transaction.Transaction;
+import transaction.TransactionTypes;
 import users.User;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class CurrentAccount extends Account {
     private final BigDecimal overdraftLimit;
@@ -30,6 +34,8 @@ public class CurrentAccount extends Account {
 
         if (amount.compareTo(availableBalance) < 1) {
             setBalance(getBalance().subtract(amount).toString());
+            super.getTransactionHistory().add(new Transaction(TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, getCurrencyCode()));
+            TransactionHistoryToCSV.write(super.getTransactionHistory(), "transaction_history_" + getAccountNumber());
             return true;
         }
         return false;

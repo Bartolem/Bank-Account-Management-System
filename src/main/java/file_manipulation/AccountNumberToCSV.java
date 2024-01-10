@@ -16,7 +16,7 @@ public class AccountNumberToCSV {
             }
 
             writer.close();
-            System.out.println("accounts.Account numbers successfully saved to " + fileName);
+            System.out.println("Account numbers successfully saved to " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
