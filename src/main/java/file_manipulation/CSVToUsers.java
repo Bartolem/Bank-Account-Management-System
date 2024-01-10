@@ -1,6 +1,5 @@
 package file_manipulation;
 
-import authentication.Role;
 import bank.Bank;
 import users.Address;
 import users.Admin;
@@ -10,6 +9,8 @@ import users.User;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+
+import static authentication.Role.*;
 
 public class CSVToUsers {
     public static void read(Bank bank, String fileName) {
@@ -38,10 +39,10 @@ public class CSVToUsers {
                 Person person = new Person(ID, firstName, lastName, dateOfBirth, address, email, phone);
 
                 if (ID.equals(Admin.getInstance().getPerson().getID())) {
-                    bank.addUser(new User(person, Role.ADMIN));
+                    bank.addUser(new User(person, ADMIN));
                 }
 
-                bank.addUser(new User(person, Role.ACCOUNT_OWNER));
+                bank.addUser(new User(person, ACCOUNT_OWNER));
             }
             System.out.println("Users successfully loaded from " + fileName);
         } catch (IOException e) {

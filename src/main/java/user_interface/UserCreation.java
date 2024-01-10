@@ -28,7 +28,6 @@ public class UserCreation {
 
     private void printCreateUserMessage() {
         System.out.println("To create new account, you need to provide your details.");
-        System.out.println(Arrays.toString(PersonDetail.values()));
     }
 
     protected User createUser() {
@@ -82,7 +81,7 @@ public class UserCreation {
     protected PersonDetail changePersonDetail() {
         System.out.println("Which details you want to change?");
         for (PersonDetail detail : PersonDetail.values()) {
-            System.out.println("(" + (detail.ordinal() + 1) + ") " + detail);
+            System.out.println("(" + (detail.ordinal() + 1) + ") " + detail.getName());
         }
 
         while (true) {
@@ -123,31 +122,32 @@ public class UserCreation {
 
     protected String validatePersonDetails(PersonDetail detail) {
         while (true) {
+            String detailName = detail.getName();
             if (detail.equals(DATE_OF_BIRTH)) {
                 System.out.println("Valid date format: yyyy-MM-dd");
             }
 
-            System.out.print(detail + ": ");
+            System.out.print(detailName + ": ");
 
             String input = scanner.nextLine();
 
             if (input.isEmpty()) {
-                System.out.println("Enter the " + detail);
+                System.out.println("Enter the " + detailName);
             } else {
                 switch (detail) {
                     case DATE_OF_BIRTH -> {
                         if (validation.validateDateOfBirth(input)) return input;
                         else {
-                            System.out.println("Invalid " + detail);
+                            System.out.println("Invalid " + detailName);
                         }
                     }
                     case EMAIL -> {
                         if (validation.validateEmail(input)) return input;
-                        else System.out.println("Invalid " + detail);
+                        else System.out.println("Invalid " + detailName);
                     }
                     case PHONE_NUMBER -> {
                         if (validation.validatePhoneNumber(input)) return input.replaceAll("[^0-9]", "");
-                        else System.out.println("Invalid " + detail);
+                        else System.out.println("Invalid " + detailName);
                     }
                     default -> {
                         return input;
