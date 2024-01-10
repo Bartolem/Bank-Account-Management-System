@@ -1,7 +1,9 @@
 package file_manipulation;
 
+import authentication.Role;
 import bank.Bank;
 import users.Address;
+import users.Admin;
 import users.Person;
 import users.User;
 
@@ -34,7 +36,12 @@ public class CSVToUsers {
                 // Create users
                 Address address = new Address(street, city, country, zipCode);
                 Person person = new Person(ID, firstName, lastName, dateOfBirth, address, email, phone);
-                bank.addUser(new User(person));
+
+                if (ID.equals(Admin.getInstance().getPerson().getID())) {
+                    bank.addUser(new User(person, Role.ADMIN));
+                }
+
+                bank.addUser(new User(person, Role.ACCOUNT_OWNER));
             }
             System.out.println("Users successfully loaded from " + fileName);
         } catch (IOException e) {

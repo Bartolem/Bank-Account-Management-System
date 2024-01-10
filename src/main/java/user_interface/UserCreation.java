@@ -1,5 +1,6 @@
 package user_interface;
 
+import authentication.Role;
 import users.Address;
 import users.Person;
 import users.PersonDetail;
@@ -49,7 +50,7 @@ public class UserCreation {
 
         if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
             Address address = new Address(personDetails.get(3), personDetails.get(4), personDetails.get(5), personDetails.get(6));
-            return new User(new Person(personDetails.get(0), personDetails.get(1), personDetails.get(2), address, personDetails.get(7), personDetails.get(8)));
+            return new User(new Person(personDetails.get(0), personDetails.get(1), personDetails.get(2), address, personDetails.get(7), personDetails.get(8)), Role.ACCOUNT_OWNER);
         } else if (answer.equalsIgnoreCase("no") || answer.equalsIgnoreCase("n")) {
             System.out.println("(1) Correct some details\n(2) Start again\n(X) Quit");
             printCursor();

@@ -14,6 +14,8 @@ import users.User;
 import java.math.BigDecimal;
 import java.util.Scanner;
 
+import static transaction.TransactionTypes.*;
+
 public class AccountOwnerPanel extends UserPanel {
     private final User user;
     private final Account account;
@@ -37,8 +39,9 @@ public class AccountOwnerPanel extends UserPanel {
             System.out.println("(1) Deposit");
             System.out.println("(2) Withdraw");
             System.out.println("(3) Transfer");
-            System.out.println("(4) View transactions history");
-            System.out.println("(5) Settings");
+            System.out.println("(4) Show balance");
+            System.out.println("(5) View transactions history");
+            System.out.println("(6) Settings");
             System.out.println("(X) Log out");
             printCursor();
             String action = getScanner().nextLine();
@@ -47,8 +50,9 @@ public class AccountOwnerPanel extends UserPanel {
                 case "1" -> deposit();
                 case "2" -> withdraw();
                 case "3" -> transfer();
-                case "4" -> viewHistory();
-                case "5" -> settings();
+                case "4" -> showBalance();
+                case "5" -> viewHistory();
+                case "6" -> settings();
                 case "x", "X" -> {
                     break loop;
                 }
@@ -56,8 +60,12 @@ public class AccountOwnerPanel extends UserPanel {
         }
     }
 
+    private void showBalance() {
+        System.out.println(account.getFormattedBalanceWithCurrency());
+    }
+
     private void deposit() {
-        String action = "deposit";
+        String action = DEPOSIT.getName();
         provideAmountMessage(action);
         BigDecimal amount = checkAmount(getScanner().nextLine());
 
@@ -66,13 +74,13 @@ public class AccountOwnerPanel extends UserPanel {
         }
 
         if (account.deposit(amount)) {
-            printBalanceAfterTransaction("+", amount);
+            printBalanceAfterTransaction(DEPOSIT.getOperator(), amount);
             saveToFile();
         } else printFailedMessage(action);
     }
 
     private void withdraw() {
-        String action = "withdraw";
+        String action = WITHDRAW.getName();
         provideAmountMessage(action);
         BigDecimal amount = checkAmount(getScanner().nextLine());
 
@@ -81,13 +89,13 @@ public class AccountOwnerPanel extends UserPanel {
         }
 
         if (account.withdraw(amount)) {
-            printBalanceAfterTransaction("-", amount);
+            printBalanceAfterTransaction(WITHDRAW.getOperator(), amount);
             saveToFile();
         } else printFailedMessage(action);
     }
 
     private void transfer() {
-        String action = "transfer";
+        String action = TRANSFER.getName();
         provideAmountMessage(action);
         BigDecimal amount = checkAmount(getScanner().nextLine());
 
@@ -103,7 +111,7 @@ public class AccountOwnerPanel extends UserPanel {
         }
 
         if (account.transfer(amount, Integer.parseInt(accountNumber))) {
-            printBalanceAfterTransaction("-", amount);
+            printBalanceAfterTransaction(TRANSFER.getOperator(), amount);
             saveToFile();
         } else printFailedMessage(action);
     }
@@ -212,13 +220,13 @@ public class AccountOwnerPanel extends UserPanel {
         System.out.print("Provide the amount you want to " + action + ": ");
     }
 
-    private void printBalanceAfterTransaction(String operator, BigDecimal amount) {
+    private void printBalanceAfterTransaction(char operator, BigDecimal amount) {
         System.out.println(operator + " " + CurrencyFormatter.getFormat(account.getCurrencyCode(), amount));
         System.out.println("Balance: " + account.getFormattedBalanceWithCurrency());
     }
 
     private void printFailedMessage(String action) {
-        System.out.println(action.substring(0, 1).toUpperCase() + action.substring(1) + " process failed.");
+        System.out.println(action + " process failed.");
     }
 
     private BigDecimal checkAmount(String amount) {

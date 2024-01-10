@@ -10,13 +10,7 @@ public class User {
     private final Person person;
     private final Role role;
 
-    public User(Person person) {
-        this.ownedAccounts = new ArrayList<>();
-        this.person = person;
-        this.role = Role.ACCOUNT_OWNER;
-    }
-
-    protected User(Person person, Role role) {
+    public User(Person person, Role role) {
         this.ownedAccounts = new ArrayList<>();
         this.person = person;
         this.role = role;
@@ -31,7 +25,7 @@ public class User {
     }
 
     public boolean hasRole(Role role) {
-        return this.role.equals(role);
+        return getRole().equals(role);
     }
 
     public ArrayList<Account> getOwnedAccounts() {
@@ -46,6 +40,6 @@ public class User {
 
     @Override
     public String toString() {
-        return person.toString();
+        return person.toString() + getRole();
     }
 }

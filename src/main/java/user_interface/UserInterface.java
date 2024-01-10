@@ -1,7 +1,6 @@
 package user_interface;
 
 import accounts.*;
-import authentication.*;
 import bank.Bank;
 import users.*;
 import file_manipulation.*;
@@ -61,34 +60,8 @@ public class UserInterface {
         } else System.out.println("Registration process failed.");
     }
 
-    private Role chooseRole() {
-        for (Role role : Role.values()) {
-            System.out.println("(" + (role.ordinal() + 1) + ") " + role);
-        }
-
-        System.out.println("(X) Exit.");
-        printCursor();
-
-        while (true) {
-            String input = scanner.nextLine();
-
-            switch (input) {
-                case "x":
-                case "X":
-                    start();
-                case "1":
-                    return ADMIN;
-                case "2":
-                    return ACCOUNT_OWNER;
-                case "3":
-                    return TRANSACTION_VIEWER;
-            }
-        }
-    }
-
     private void login() {
-        Role role = chooseRole();
-
+        printLoginMessage();
         System.out.print("ID: ");
         String ID = scanner.nextLine();
 
@@ -96,21 +69,20 @@ public class UserInterface {
         String password = scanner.nextLine();
 
         Login login = new Login(ID, password);
-
-        if (Objects.requireNonNull(role) == ACCOUNT_OWNER) {
+        if (bank.getUser(ID).hasRole(ADMIN)) {
+            if (login.verifyUser()) {
+                // Open admin panel using only ID
+                AdminPanel adminPanel = new AdminPanel(ID, scanner);
+                adminPanel.start();
+                saveDataToFile();
+            } else login();
+        } else if (bank.getUser(ID).hasRole(ACCOUNT_OWNER)) {
             System.out.print("Account number: ");
             int accountNumber = Integer.parseInt(scanner.nextLine());
             if (login.verifyAccount(accountNumber)) {
                 // Open account owner panel using ID, and account number
                 AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber, userCreation);
                 ownerPanel.start();
-                saveDataToFile();
-            } else login();
-        } else {
-            if (login.verifyUser()) {
-                // Open admin panel using only ID
-                AdminPanel adminPanel = new AdminPanel(ID, scanner);
-                adminPanel.start();
                 saveDataToFile();
             } else login();
         }
