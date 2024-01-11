@@ -11,8 +11,8 @@ public class Validation {
     }
 
     public boolean validatePhoneNumber(String phoneNumber) {
-        // Allow 9-10 digits and optional whitespace, dots, or hyphens (-) between the numbers
-        Pattern pattern = Pattern.compile("^(\\d{3}[- .]?){2}\\d{3,4}$");
+        // Allow country code prefix (+1-4 digits), 9-10 digits and optional whitespace, dots, or hyphens (-) between the numbers
+        Pattern pattern = Pattern.compile("^\\+\\d{1,4} [\\d\\s\\-._]+");
         Matcher matcher = pattern.matcher(phoneNumber);
         return matcher.matches();
     }

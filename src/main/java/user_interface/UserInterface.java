@@ -26,7 +26,7 @@ public class UserInterface {
     public void start() {
         loadDataFromFile();
         System.out.println();
-        System.out.println("Welcome to Online Banking Application.");
+        System.out.println("Welcome to Bartolem's Online Banking Application.");
 
         loop: while (true) {
             printStartingMessage();

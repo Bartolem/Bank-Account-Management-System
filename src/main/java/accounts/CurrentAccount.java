@@ -18,8 +18,8 @@ public class CurrentAccount extends Account {
         this.type = AccountTypes.CURRENT;
     }
 
-    public CurrentAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date) {
-        super(accountNumber, user, currencyCode, balance, date);
+    public CurrentAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
+        super(accountNumber, user, currencyCode, balance, date, blocked, status);
         this.overdraftLimit = new BigDecimal(5000);
         this.type = AccountTypes.CURRENT;
     }

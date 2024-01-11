@@ -8,7 +8,6 @@ import users.User;
 import validation.Validation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import static users.PersonDetail.*;

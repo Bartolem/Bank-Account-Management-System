@@ -1,8 +1,6 @@
 package file_manipulation;
 
-import accounts.Account;
-import accounts.CurrentAccount;
-import accounts.SavingsAccount;
+import accounts.*;
 import bank.Bank;
 import currencies.CurrencyCodes;
 import users.Admin;
@@ -23,18 +21,20 @@ public class CSVToAccounts {
                 }
                 // Read account detail
                 String[] fileContent = line.split(",");
-                String accountType = fileContent[0];
+                AccountTypes accountType = AccountTypes.valueOf(fileContent[0].toUpperCase());
                 int accountNumber = Integer.parseInt(fileContent[1]);
-                String ownerID = fileContent[2];
-                CurrencyCodes currencyCode = CurrencyCodes.valueOf(fileContent[4]);
-                String balance = fileContent[5];
-                String date = fileContent[6];
+                String status = fileContent[2].toUpperCase();
+                String ownerID = fileContent[3];
+                CurrencyCodes currencyCode = CurrencyCodes.valueOf(fileContent[5]);
+                String balance = fileContent[6];
+                String date = fileContent[7];
+                boolean blocked = status.equals(AccountStatus.BLOCKED.toString());
 
                 // Create accounts based on type
                 switch (accountType) {
-                    case "STANDARD" -> bank.addAccount(accountNumber, new Account(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
-                    case "CURRENT" -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
-                    case "SAVINGS" -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date), Admin.getInstance());
+                    case STANDARD -> bank.addAccount(accountNumber, new Account(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
+                    case CURRENT -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
+                    case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
                 }
             }
             System.out.println("Accounts successfully loaded from " + fileName);

@@ -51,7 +51,7 @@ public class AccountCreation {
             System.out.println("Which one do you choose?");
 
             for (AccountTypes type : AccountTypes.values()) {
-                System.out.println("("+ (type.ordinal() + 1) + ") " + type);
+                System.out.println("("+ (type.ordinal() + 1) + ") " + type.getName());
             }
 
             printCursor();

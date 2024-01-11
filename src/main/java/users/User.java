@@ -40,6 +40,6 @@ public class User {
 
     @Override
     public String toString() {
-        return person.toString() + getRole();
+        return getRole() + "\n" + person.toString();
     }
 }

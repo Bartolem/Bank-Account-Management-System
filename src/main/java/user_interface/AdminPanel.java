@@ -1,5 +1,7 @@
 package user_interface;
 
+import accounts.Account;
+import file_manipulation.*;
 import users.User;
 
 import java.util.Scanner;
@@ -45,33 +47,55 @@ public class AdminPanel extends UserPanel {
     }
 
     private void menageAccounts() {
-        System.out.println("(1) Remove account");
-        System.out.println("(2) Block account");
+        System.out.println("(1) Remove account from bank");
+        System.out.println("(2) Block an account");
         System.out.println("(3) Show account details");
+        System.out.println("(4) Show account transaction history");
         System.out.println("(X) Quit");
 
         switch (getScanner().nextLine()) {
             case "1" -> removeAccount();
             case "2" -> blockAccount();
             case "3" -> showAccountDetail();
+            case "4" -> showTransactionHistory();
             case "X, x" -> start();
         }
     }
 
     private void showAccountDetail() {
-        getBank().getAccount(verifyAccountNumber());
-    }
-
-    private void blockAccount() {
-        // Implement block account function
-    }
-
-    private void setSystemSettings() {
-
+        System.out.println(getBank().getAccount(verifyAccountNumber()));
     }
 
     private void removeAccount() {
         getBank().remove(verifyAccountNumber(), user);
+        saveDataToFile();
+    }
+
+    private void blockAccount() {
+        Account account = getBank().getAccount(verifyAccountNumber());
+        if (account.isBlocked()) {
+            System.out.print("Account is currently blocked, do you want to unlock it? (y/n): ");
+            if (getScanner().nextLine().equals("y") || getScanner().nextLine().equals("yes")) {
+                unlockAccount(account);
+            } else menageAccounts();
+        } else {
+            account.block();
+        }
+        saveDataToFile();
+    }
+
+    private void unlockAccount(Account account) {
+        account.unlock();
+        saveDataToFile();
+    }
+
+    private void showTransactionHistory() {
+        System.out.println(getBank().getAccount(verifyAccountNumber()).getTransactionHistory());
+    }
+
+    private void setSystemSettings() {
+        // Set interest rate for saving accounts (global)
+        // Set overdraft limit for current account (personal)
     }
 
     private int verifyAccountNumber() {
@@ -85,6 +109,12 @@ public class AdminPanel extends UserPanel {
         return Integer.parseInt(accountNumber);
     }
 
+    private void saveDataToFile() {
+        UsersToCSV.write(getBank().getAllUsers(), "users.csv");
+        AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
+        AccountNumberToCSV.write(getBank().getAccountNumbers(), "account_numbers.csv");
+    }
+
     private void bankDetails() {
         System.out.println("(1) Show bank details");
         System.out.println("(2) Print all accounts");
@@ -92,6 +122,7 @@ public class AdminPanel extends UserPanel {
         System.out.println("(4) Print all account types");
         System.out.println("(5) Print all available currencies");
         System.out.println("(X) Quit");
+        printCursor();
 
         switch (getScanner().nextLine()) {
             case "1" -> System.out.println(getBank());

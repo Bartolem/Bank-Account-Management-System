@@ -23,6 +23,8 @@ public class Account {
     private final User user;
     private final LocalDateTime date;
     private final List<Transaction> transactionHistory;
+    private boolean blocked;
+    private AccountStatus status;
 
     public Account(User user, CurrencyCodes currencyCode, String balance) {
         this.currencyCode = currencyCode;
@@ -32,10 +34,12 @@ public class Account {
         this.user = user;
         this.date = LocalDateTime.now();
         this.transactionHistory = new ArrayList<>();
+        this.blocked = false;
+        this.status = AccountStatus.ACTIVE;
         user.addOwnedAccount(this);
     }
 
-    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date) {
+    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
         this.currencyCode = currencyCode;
         this.accountNumber = accountNumber;
         this.user = user;
@@ -43,6 +47,8 @@ public class Account {
         this.balance = new BigDecimal(balance);
         this.date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         this.transactionHistory = new ArrayList<>();
+        this.blocked = blocked;
+        this.status = AccountStatus.valueOf(status);
         user.addOwnedAccount(this);
     }
 
@@ -106,6 +112,28 @@ public class Account {
         return transactionHistory;
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void block() {
+        this.blocked = true;
+        setStatus(AccountStatus.BLOCKED);
+    }
+
+    public void unlock() {
+        this.blocked = false;
+        setStatus(AccountStatus.ACTIVE);
+    }
+
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
     public boolean deposit(BigDecimal amount) {
         if (isPositiveAmount(amount)) {
             setBalance(getBalance().add(amount).toString());
@@ -146,7 +174,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return  "(" + type + ")" +
+        return  "(" + type + ")" + " (" + getStatus() + ")" +
                 "\nAccount number: " + accountNumber +
                 "\nOwner name: " + getOwnerName() +
                 "\nBalance: " + balance;
