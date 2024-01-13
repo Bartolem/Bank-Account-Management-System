@@ -1,4 +1,5 @@
 import authentication.Authentication;
+import authentication.Role;
 import bank.Bank;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class AuthenticationTest {
         Bank bank = Bank.getInstance();
         Address address = new Address("trollop 32", "Lisbon", "Spain", "21-556");
         Person person = new Person(ID,"Lorola", "Eropla", "1956-10-04", address, "eolpor@inrt.ole", "5506 656 567");
-        User user = new User(person);
+        User user = new User(person, Role.ACCOUNT_OWNER);
 
         bank.addUser(user);
 

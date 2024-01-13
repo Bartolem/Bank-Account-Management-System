@@ -60,6 +60,10 @@ public class Bank {
         return accounts.isEmpty();
     }
 
+    public boolean contains(int accountNumber) {
+        return accounts.containsKey(accountNumber);
+    }
+
     public Account getAccount(int accountNumber) {
         return accounts.get(accountNumber);
     }

@@ -18,10 +18,10 @@ import java.util.List;
 public class Account {
     private final CurrencyCodes currencyCode;
     private final int accountNumber;
-    protected AccountTypes type;
+    private static final AccountTypes TYPE = AccountTypes.STANDARD;
     private BigDecimal balance;
     private final User user;
-    private final LocalDateTime date;
+    private final LocalDateTime creationDate;
     private final List<Transaction> transactionHistory;
     private boolean blocked;
     private AccountStatus status;
@@ -29,10 +29,9 @@ public class Account {
     public Account(User user, CurrencyCodes currencyCode, String balance) {
         this.currencyCode = currencyCode;
         this.accountNumber = AccountNumber.getNumber();
-        this.type = AccountTypes.STANDARD;
         this.balance = new BigDecimal(balance);
         this.user = user;
-        this.date = LocalDateTime.now();
+        this.creationDate = LocalDateTime.now();
         this.transactionHistory = new ArrayList<>();
         this.blocked = false;
         this.status = AccountStatus.ACTIVE;
@@ -43,9 +42,8 @@ public class Account {
         this.currencyCode = currencyCode;
         this.accountNumber = accountNumber;
         this.user = user;
-        this.type = AccountTypes.STANDARD;
         this.balance = new BigDecimal(balance);
-        this.date = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        this.creationDate = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         this.transactionHistory = new ArrayList<>();
         this.blocked = blocked;
         this.status = AccountStatus.valueOf(status);
@@ -60,8 +58,8 @@ public class Account {
         return currencyCode;
     }
 
-    public AccountTypes getType() {
-        return type;
+    public static AccountTypes getType() {
+        return TYPE;
     }
 
     public String getOwnerName() {
@@ -104,8 +102,8 @@ public class Account {
         return accountNumber;
     }
 
-    public String getDate() {
-        return date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+    public String getCreationDate() {
+        return creationDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
     public List<Transaction> getTransactionHistory() {
@@ -138,7 +136,10 @@ public class Account {
         if (isPositiveAmount(amount)) {
             setBalance(getBalance().add(amount).toString());
             addTransaction(new Transaction(TransactionTypes.DEPOSIT, LocalDateTime.now(), amount, currencyCode));
-            TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + accountNumber);
+            // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
+            if (Bank.getInstance().contains(accountNumber)) {
+                TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + this.accountNumber);
+            }
             return true;
         }
         return false;
@@ -148,7 +149,10 @@ public class Account {
         if (isPositiveAmount(amount) && isPositiveAmount(getBalance().subtract(amount))) {
             setBalance(getBalance().subtract(amount).toString());
             addTransaction(new Transaction(TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, currencyCode));
-            TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + accountNumber);
+            // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
+            if (Bank.getInstance().contains(accountNumber)) {
+                TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + accountNumber);
+            }
             return true;
         }
         return false;
@@ -161,7 +165,10 @@ public class Account {
                 receiver.deposit(amount);
                 withdraw(amount);
                 addTransaction(new Transaction(TransactionTypes.TRANSFER, LocalDateTime.now(), amount, currencyCode));
-                TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + this.accountNumber);
+                // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
+                if (Bank.getInstance().contains(accountNumber)) {
+                    TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + this.accountNumber);
+                }
                 return true;
             }
         }
@@ -174,7 +181,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return  "(" + type + ")" + " (" + getStatus() + ")" +
+        return  "(" + TYPE + ")" + " (" + getStatus() + ")" +
                 "\nAccount number: " + accountNumber +
                 "\nOwner name: " + getOwnerName() +
                 "\nBalance: " + balance;

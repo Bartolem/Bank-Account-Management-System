@@ -1,5 +1,6 @@
 package accounts;
 
+import bank.Bank;
 import currencies.CurrencyCodes;
 import file_manipulation.TransactionHistoryToCSV;
 import transaction.Transaction;
@@ -10,22 +11,31 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class CurrentAccount extends Account {
-    private final BigDecimal overdraftLimit;
+    private static BigDecimal overdraftLimit;
+    private static final AccountTypes TYPE = AccountTypes.CURRENT;
 
     public CurrentAccount(User user, CurrencyCodes currencyCode, String balance) {
         super(user, currencyCode, balance);
-        this.overdraftLimit = new BigDecimal(5000);
-        this.type = AccountTypes.CURRENT;
+        overdraftLimit = new BigDecimal(500);
     }
 
     public CurrentAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
         super(accountNumber, user, currencyCode, balance, date, blocked, status);
-        this.overdraftLimit = new BigDecimal(5000);
-        this.type = AccountTypes.CURRENT;
     }
 
-    public BigDecimal getOverdraftLimit() {
+    public static BigDecimal getOverdraftLimit() {
         return overdraftLimit;
+    }
+
+    public static void setOverdraftLimit(BigDecimal overdraftLimit) {
+        if (overdraftLimit.compareTo(BigDecimal.valueOf(300)) >= 0
+                && overdraftLimit.compareTo(BigDecimal.valueOf(5000)) <= 0) {
+            CurrentAccount.overdraftLimit = overdraftLimit;
+        }
+    }
+
+    public static AccountTypes getType() {
+        return CurrentAccount.TYPE;
     }
 
     @Override
@@ -35,7 +45,10 @@ public class CurrentAccount extends Account {
         if (amount.compareTo(availableBalance) < 1) {
             setBalance(getBalance().subtract(amount).toString());
             super.getTransactionHistory().add(new Transaction(TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, getCurrencyCode()));
-            TransactionHistoryToCSV.write(super.getTransactionHistory(), "transaction_history_" + getAccountNumber());
+            // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
+            if (Bank.getInstance().contains(getAccountNumber())) {
+                TransactionHistoryToCSV.write(getTransactionHistory(), "transaction_history_" + getAccountNumber());
+            }
             return true;
         }
         return false;

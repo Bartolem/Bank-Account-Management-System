@@ -1,4 +1,5 @@
 import accounts.SavingsAccount;
+import authentication.Role;
 import currencies.CurrencyCodes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,8 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SavingsAccountTest {
+    BigDecimal defaultMinBalance = new BigDecimal("1000");
+    BigDecimal defaultInterestRate = new BigDecimal("4.0");
     SavingsAccount savingsAccount;
     User user;
     Address address;
@@ -20,34 +23,32 @@ class SavingsAccountTest {
     void createSavingsAccountObject() {
         address = new Address("Kawowa 72", "Warsaw", "Poland", "27-856");
         person = new Person("Michał", "Lipa", "1986-04-26", address, "mila@inrt.pl", "906 656 567");
-        user = new User(person);
+        user = new User(person, Role.ACCOUNT_OWNER);
         savingsAccount = new SavingsAccount(user, CurrencyCodes.RUB, "10000");
     }
 
     @Test
     void calculateInterestRate() {
-        // interest rate (0.3%)
         savingsAccount.calculateInterestRate();
-        assertEquals(new BigDecimal("10030.00"), savingsAccount.getBalance());
+        assertEquals(new BigDecimal("10400.00"), savingsAccount.getBalance());
     }
 
     @Test
     void setMinBalance() {
-        savingsAccount.setMinBalance(BigDecimal.valueOf(5000));
-        assertEquals(BigDecimal.valueOf(5000), savingsAccount.getMinBalance());
+        SavingsAccount.setMinBalance(BigDecimal.valueOf(5000));
+        assertEquals(BigDecimal.valueOf(5000), SavingsAccount.getMinBalance());
     }
 
     @Test
     void setMinBalanceWhenAmountIsNegativeValue() {
-        savingsAccount.setMinBalance(BigDecimal.valueOf(-5000));
-        assertEquals(new BigDecimal("0"), savingsAccount.getMinBalance());
+        SavingsAccount.setMinBalance(BigDecimal.valueOf(-5000));
+        assertEquals(defaultMinBalance, SavingsAccount.getMinBalance());
     }
-
 
     @Test
     void setMinBalanceWhenAmountIs0() {
-        savingsAccount.setMinBalance(BigDecimal.valueOf(0));
-        assertEquals(new BigDecimal("0"), savingsAccount.getMinBalance());
+        SavingsAccount.setMinBalance(BigDecimal.valueOf(0));
+        assertEquals(defaultMinBalance, SavingsAccount.getMinBalance());
     }
 
     @Test
@@ -67,7 +68,7 @@ class SavingsAccountTest {
 
     @Test
     void withdrawWhenAmountIsBiggerThanMinimalBalance() {
-        savingsAccount.setMinBalance(BigDecimal.valueOf(1000));
+        SavingsAccount.setMinBalance(BigDecimal.valueOf(1000));
         savingsAccount.withdraw(BigDecimal.valueOf(9500));
         assertEquals(new BigDecimal("10000.00"), savingsAccount.getBalance());
     }

@@ -1,9 +1,12 @@
 package user_interface;
 
 import accounts.Account;
+import accounts.CurrentAccount;
+import accounts.SavingsAccount;
 import file_manipulation.*;
 import users.User;
 
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class AdminPanel extends UserPanel {
@@ -94,8 +97,31 @@ public class AdminPanel extends UserPanel {
     }
 
     private void setSystemSettings() {
-        // Set interest rate for saving accounts (global)
-        // Set overdraft limit for current account (personal)
+        System.out.println("(1) Set interest rate for savings account [0.3-8%] (global)");
+        System.out.println("(2) Set minimal balance required for savings account [0-25000] (global)");
+        System.out.println("(3) Set overdraft limit for current account [300-5000] (global)");
+        printCursor();
+
+        switch (getScanner().nextLine()) {
+            case "1" -> {
+                System.out.println(SavingsAccount.getInterestRate());
+                System.out.print("Interest rate: ");
+                SavingsAccount.setInterestRate(new BigDecimal((getScanner().nextLine())));
+                System.out.println(SavingsAccount.getInterestRate());
+            }
+            case "2" -> {
+                System.out.print("Minimal balance: ");
+                SavingsAccount.setMinBalance(new BigDecimal(getScanner().nextLine()));
+            }
+            case "3" -> {
+                System.out.print("Overdraft limit: ");
+                CurrentAccount.setOverdraftLimit(new BigDecimal(getScanner().nextLine()));
+            }
+        }
+    }
+
+    private void showSettings() {
+
     }
 
     private int verifyAccountNumber() {
@@ -116,20 +142,22 @@ public class AdminPanel extends UserPanel {
     }
 
     private void bankDetails() {
-        System.out.println("(1) Show bank details");
-        System.out.println("(2) Print all accounts");
-        System.out.println("(3) Print all users");
-        System.out.println("(4) Print all account types");
-        System.out.println("(5) Print all available currencies");
+        System.out.println("(1) Show bank statistics");
+        System.out.println("(2) Show system settings (interest rate, overdraft limit etc.)");
+        System.out.println("(3) Print all accounts");
+        System.out.println("(4) Print all users");
+        System.out.println("(5) Print all account types");
+        System.out.println("(6) Print all available currencies");
         System.out.println("(X) Quit");
         printCursor();
 
         switch (getScanner().nextLine()) {
             case "1" -> System.out.println(getBank());
-            case "2" -> getBank().printAccounts();
-            case "3" -> getBank().printUsers();
-            case "4" -> getBank().printAccountTypes();
-            case "5" -> getBank().printCurrencies();
+            case "2" -> showSettings();
+            case "3" -> getBank().printAccounts();
+            case "4" -> getBank().printUsers();
+            case "5" -> getBank().printAccountTypes();
+            case "6" -> getBank().printCurrencies();
             case "X, x" -> start();
         }
     }

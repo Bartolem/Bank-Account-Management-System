@@ -15,14 +15,14 @@ public class AccountsToCSV {
             // Write account details
             for (Account account : accounts) {
                 String line = String.format("%s,%d,%s,%s,%s,%s,%s,%s\n",
-                        account.getType(),
+                        Account.getType(),
                         account.getAccountNumber(),
                         account.getStatus(),
                         account.getUser().getPerson().getID(),
                         account.getOwnerName(),
                         account.getCurrencyCode(),
                         account.getBalance(),
-                        account.getDate());
+                        account.getCreationDate());
 
                 writer.write(line);
             }

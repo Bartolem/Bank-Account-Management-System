@@ -1,5 +1,6 @@
 import accounts.Account;
 import accounts.SavingsAccount;
+import authentication.Role;
 import currencies.CurrencyCodes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class UserTest {
     void createUserObject() {
         address = new Address("trollop 32", "Lisbon", "Spain", "21-556");
         person = new Person("Lorola", "Eropla", "1956-10-04", address, "eolpor@inrt.ole", "5506 656 567");
-        user = new User(person);
+        user = new User(person, Role.ACCOUNT_OWNER);
         account = new Account(user, CurrencyCodes.PLN, "2000");
         savingsAccount = new SavingsAccount(user, CurrencyCodes.RUB, "10000");
     }
