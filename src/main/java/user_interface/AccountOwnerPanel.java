@@ -10,6 +10,7 @@ import users.Address;
 import users.Person;
 import users.PersonDetail;
 import users.User;
+import validation.NumberValidator;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -67,12 +68,14 @@ public class AccountOwnerPanel extends UserPanel {
     private void deposit() {
         String action = DEPOSIT.getName();
         provideAmountMessage(action);
-        BigDecimal amount = checkAmount(getScanner().nextLine());
+        String input = getScanner().nextLine();
+        BigDecimal amount = new BigDecimal(0);
 
-        if (amount == null) {
+        if (NumberValidator.validate(input)) {
+            amount = new BigDecimal(input);
+        } else {
             deposit();
         }
-
         if (account.deposit(amount)) {
             printBalanceAfterTransaction(DEPOSIT.getOperator(), amount);
             saveToFile();
@@ -82,12 +85,14 @@ public class AccountOwnerPanel extends UserPanel {
     private void withdraw() {
         String action = WITHDRAW.getName();
         provideAmountMessage(action);
-        BigDecimal amount = checkAmount(getScanner().nextLine());
+        String input = getScanner().nextLine();
+        BigDecimal amount = new BigDecimal(0);
 
-        if (amount == null) {
+        if (NumberValidator.validate(input)) {
+            amount = new BigDecimal(input);
+        } else {
             withdraw();
         }
-
         if (account.withdraw(amount)) {
             printBalanceAfterTransaction(WITHDRAW.getOperator(), amount);
             saveToFile();
@@ -97,9 +102,12 @@ public class AccountOwnerPanel extends UserPanel {
     private void transfer() {
         String action = TRANSFER.getName();
         provideAmountMessage(action);
-        BigDecimal amount = checkAmount(getScanner().nextLine());
+        String input = getScanner().nextLine();
+        BigDecimal amount = new BigDecimal(0);
 
-        if (amount == null) {
+        if (NumberValidator.validate(input)) {
+            amount = new BigDecimal(input);
+        } else {
             transfer();
         }
 
@@ -109,7 +117,6 @@ public class AccountOwnerPanel extends UserPanel {
         if (checkAccountNumber(accountNumber) || accountNumber.length() != 8) {
             transfer();
         }
-
         if (account.transfer(amount, Integer.parseInt(accountNumber))) {
             printBalanceAfterTransaction(TRANSFER.getOperator(), amount);
             saveToFile();
@@ -213,7 +220,7 @@ public class AccountOwnerPanel extends UserPanel {
 
     private void greetings() {
         System.out.println("\nWelcome " + user.getPerson().getFullName() + ".");
-        System.out.println("\nYour account: " + account.getType() + " " + account.getAccountNumber());
+        System.out.println("\nYour account: " + Account.getType() + " " + account.getAccountNumber());
     }
 
     private void provideAmountMessage(String action) {
@@ -227,15 +234,6 @@ public class AccountOwnerPanel extends UserPanel {
 
     private void printFailedMessage(String action) {
         System.out.println(action + " process failed.");
-    }
-
-    private BigDecimal checkAmount(String amount) {
-        try {
-            return new BigDecimal(amount);
-        } catch (NumberFormatException e) {
-            System.out.println("Enter only numbers.");
-            return null;
-        }
     }
 
     private void loadFromFile() {

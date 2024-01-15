@@ -6,7 +6,9 @@ import accounts.CurrentAccount;
 import accounts.SavingsAccount;
 import currencies.CurrencyCodes;
 import users.User;
+import validation.NumberValidator;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -96,8 +98,8 @@ public class AccountCreation {
         return currencyCode;
     }
 
-    private double setInitialBalance() {
-        double initialBalance = 0;
+    private BigDecimal setInitialBalance() {
+        BigDecimal initialBalance = new BigDecimal(0);
         System.out.println("Do you want to provide an initial balance? (y/n)");
         printCursor();
 
@@ -108,11 +110,10 @@ public class AccountCreation {
                 System.out.println("Initial balance: ");
                 printCursor();
 
-                try {
-                    initialBalance = Double.parseDouble(scanner.nextLine());
+                String input = scanner.nextLine();
+                if (NumberValidator.validate(input)) {
+                    initialBalance = new BigDecimal(input);
                     break;
-                } catch (NumberFormatException e) {
-                    System.out.println("Wrong input. Enter only numbers.");
                 }
             }
         } else if (answer.equalsIgnoreCase("no") || answer.equalsIgnoreCase("n")) {
