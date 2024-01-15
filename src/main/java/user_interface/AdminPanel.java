@@ -5,6 +5,7 @@ import accounts.CurrentAccount;
 import accounts.SavingsAccount;
 import file_manipulation.*;
 import users.User;
+import validation.NumberValidator;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -101,27 +102,37 @@ public class AdminPanel extends UserPanel {
         System.out.println("(2) Set minimal balance required for savings account [0-25000] (global)");
         System.out.println("(3) Set overdraft limit for current account [300-5000] (global)");
         printCursor();
+        String input;
 
         switch (getScanner().nextLine()) {
             case "1" -> {
-                System.out.println(SavingsAccount.getInterestRate());
                 System.out.print("Interest rate: ");
-                SavingsAccount.setInterestRate(new BigDecimal((getScanner().nextLine())));
-                System.out.println(SavingsAccount.getInterestRate());
+                input = getScanner().nextLine();
+                if (NumberValidator.validate(input)) {
+                    SavingsAccount.setInterestRate(new BigDecimal((input)));
+                }
             }
             case "2" -> {
                 System.out.print("Minimal balance: ");
-                SavingsAccount.setMinBalance(new BigDecimal(getScanner().nextLine()));
+                input = getScanner().nextLine();
+                if (NumberValidator.validate(input)) {
+                    SavingsAccount.setMinBalance(new BigDecimal(input));
+                }
             }
             case "3" -> {
                 System.out.print("Overdraft limit: ");
-                CurrentAccount.setOverdraftLimit(new BigDecimal(getScanner().nextLine()));
+                input = getScanner().nextLine();
+                if (NumberValidator.validate(input)) {
+                    CurrentAccount.setOverdraftLimit(new BigDecimal(input));
+                }
             }
         }
     }
 
     private void showSettings() {
-
+        System.out.println("Interest rate (Savings): " + SavingsAccount.getInterestRate() + "%");
+        System.out.println("Minimal balance (Savings): " + SavingsAccount.getMinBalance());
+        System.out.println("Overdraft limit (Current): " + CurrentAccount.getOverdraftLimit());
     }
 
     private int verifyAccountNumber() {

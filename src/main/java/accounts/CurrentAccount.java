@@ -11,12 +11,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class CurrentAccount extends Account {
-    private static BigDecimal overdraftLimit;
+    private static BigDecimal overdraftLimit = new BigDecimal(500);
     private static final AccountTypes TYPE = AccountTypes.CURRENT;
 
     public CurrentAccount(User user, CurrencyCodes currencyCode, String balance) {
         super(user, currencyCode, balance);
-        overdraftLimit = new BigDecimal(500);
     }
 
     public CurrentAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
