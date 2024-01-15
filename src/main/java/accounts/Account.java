@@ -17,12 +17,12 @@ import java.util.List;
 
 public class Account {
     private final CurrencyCodes currencyCode;
-    private final int accountNumber;
+    private int accountNumber;
     private static final AccountTypes TYPE = AccountTypes.STANDARD;
     private BigDecimal balance;
     private final User user;
-    private final LocalDateTime creationDate;
-    private final List<Transaction> transactionHistory;
+    private LocalDateTime creationDate;
+    private List<Transaction> transactionHistory;
     private boolean blocked;
     private AccountStatus status;
 
@@ -39,10 +39,8 @@ public class Account {
     }
 
     public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
-        this.currencyCode = currencyCode;
+        this(user, currencyCode, balance);
         this.accountNumber = accountNumber;
-        this.user = user;
-        this.balance = new BigDecimal(balance);
         this.creationDate = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         this.transactionHistory = new ArrayList<>();
         this.blocked = blocked;

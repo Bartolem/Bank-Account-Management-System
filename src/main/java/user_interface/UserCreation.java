@@ -14,11 +14,9 @@ import static users.PersonDetail.*;
 
 public class UserCreation {
     private final Scanner scanner;
-    private final Validation validation;
 
-    public UserCreation(Scanner scanner, Validation validation) {
+    public UserCreation(Scanner scanner) {
         this.scanner = scanner;
-        this.validation = validation;
     }
 
     private void printCursor() {
@@ -135,17 +133,17 @@ public class UserCreation {
             } else {
                 switch (detail) {
                     case DATE_OF_BIRTH -> {
-                        if (validation.validateDateOfBirth(input)) return input;
+                        if (Validation.validateDateOfBirth(input)) return input;
                         else {
                             System.out.println("Invalid " + detailName);
                         }
                     }
                     case EMAIL -> {
-                        if (validation.validateEmail(input)) return input;
+                        if (Validation.validateEmail(input)) return input;
                         else System.out.println("Invalid " + detailName);
                     }
                     case PHONE_NUMBER -> {
-                        if (validation.validatePhoneNumber(input)) return input.replaceAll("[^0-9]", "");
+                        if (Validation.validatePhoneNumber(input)) return input.replaceAll("[^0-9]", "");
                         else System.out.println("Invalid " + detailName);
                     }
                     default -> {

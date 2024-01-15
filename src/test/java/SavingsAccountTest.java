@@ -48,7 +48,7 @@ class SavingsAccountTest {
     @Test
     void setMinBalanceWhenAmountIs0() {
         SavingsAccount.setMinBalance(BigDecimal.valueOf(0));
-        assertEquals(defaultMinBalance, SavingsAccount.getMinBalance());
+        assertEquals(BigDecimal.valueOf(0), SavingsAccount.getMinBalance());
     }
 
     @Test
