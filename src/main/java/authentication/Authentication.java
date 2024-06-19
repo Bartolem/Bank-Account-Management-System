@@ -1,12 +1,14 @@
 package authentication;
 
 import bank.Bank;
+import file_manipulation.LogoLoader;
 import users.User;
 
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Authentication {
     private final HashMap<String, String> userCredentials;
@@ -15,7 +17,7 @@ public class Authentication {
 
     private Authentication() {
         this.userCredentials = new HashMap<>();
-        this.fileName = "src/main/resources/user_credentials.csv";
+        this.fileName = "user_credentials.csv";
         loadUserCredentialsFromCSV(fileName);
     }
 
@@ -59,8 +61,7 @@ public class Authentication {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -69,14 +70,14 @@ public class Authentication {
             for (HashMap.Entry<String, String> entry : userCredentials.entrySet()) {
                 writer.println(entry.getKey() + "," + entry.getValue());
             }
-            System.out.println("users.User credentials saved to " + fileName);
+            System.out.println("User credentials saved to " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
     private void loadUserCredentialsFromCSV(String fileName) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Authentication.class.getClassLoader().getResourceAsStream(fileName))))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -85,7 +86,7 @@ public class Authentication {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

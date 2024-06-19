@@ -8,10 +8,12 @@ import users.Admin;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class CSVToAccounts {
     public static void read(Bank bank, String fileName) {
-        try (BufferedReader reader =  new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader reader =  new BufferedReader(new InputStreamReader(Objects.requireNonNull(CSVToAccounts.class.getClassLoader().getResourceAsStream(fileName))))) {
             String line = "";
 
             while ((line = reader.readLine()) != null) {

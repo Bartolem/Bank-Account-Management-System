@@ -4,9 +4,9 @@ import bank.Bank;
 
 public class FileManipulator {
     public static void loadDataFromFile() {
-        CSVToUsers.read(Bank.getInstance(), "src/main/resources/users.csv");
-        CSVToAccounts.read(Bank.getInstance(), "src/main/resources/accounts.csv");
-        CSVToAccountNumber.read(Bank.getInstance().getAccountNumbers(), "src/main/resources/account_numbers.csv");
+        CSVToUsers.read(Bank.getInstance(), "users.csv");
+        CSVToAccounts.read(Bank.getInstance(), "accounts.csv");
+        CSVToAccountNumber.read(Bank.getInstance().getAccountNumbers(), "account_numbers.csv");
     }
 
     public static void saveDataToFile() {

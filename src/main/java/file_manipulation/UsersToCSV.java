@@ -36,7 +36,7 @@ public class UsersToCSV {
             writer.close();
             System.out.println("Users successfully saved to " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
