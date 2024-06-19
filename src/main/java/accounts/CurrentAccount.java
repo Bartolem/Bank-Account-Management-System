@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 public class CurrentAccount extends Account {
     private static BigDecimal overdraftLimit = new BigDecimal(500);
-    private static final AccountTypes TYPE = AccountTypes.CURRENT;
+    public static final AccountTypes TYPE = AccountTypes.CURRENT;
 
     public CurrentAccount(User user, CurrencyCodes currencyCode, String balance) {
         super(user, currencyCode, balance);
@@ -20,6 +20,11 @@ public class CurrentAccount extends Account {
 
     public CurrentAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
         super(accountNumber, user, currencyCode, balance, date, blocked, status);
+    }
+
+    @Override
+    public AccountTypes getType() {
+        return TYPE;
     }
 
     public static BigDecimal getOverdraftLimit() {
@@ -31,10 +36,6 @@ public class CurrentAccount extends Account {
                 && overdraftLimit.compareTo(BigDecimal.valueOf(5000)) <= 0) {
             CurrentAccount.overdraftLimit = overdraftLimit;
         }
-    }
-
-    public static AccountTypes getType() {
-        return CurrentAccount.TYPE;
     }
 
     @Override
@@ -55,6 +56,7 @@ public class CurrentAccount extends Account {
 
     @Override
     public String toString() {
-        return super.toString() + "\nOverdraft limit: " + getOverdraftLimit();
+        return super.toString() + "(" + TYPE + ")" + " (" + getStatus() + ")" +
+                "\nOverdraft limit: " + getOverdraftLimit();
     }
 }

@@ -15,10 +15,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Account {
+public abstract class Account {
     private final CurrencyCodes currencyCode;
     private int accountNumber;
-    private static final AccountTypes TYPE = AccountTypes.STANDARD;
     private BigDecimal balance;
     private final User user;
     private LocalDateTime creationDate;
@@ -54,10 +53,6 @@ public class Account {
 
     public CurrencyCodes getCurrencyCode() {
         return currencyCode;
-    }
-
-    public static AccountTypes getType() {
-        return TYPE;
     }
 
     public String getOwnerName() {
@@ -130,6 +125,8 @@ public class Account {
         this.status = status;
     }
 
+    public abstract AccountTypes getType();
+
     public boolean deposit(BigDecimal amount) {
         if (isPositiveAmount(amount)) {
             setBalance(getBalance().add(amount).toString());
@@ -179,8 +176,7 @@ public class Account {
 
     @Override
     public String toString() {
-        return  "(" + TYPE + ")" + " (" + getStatus() + ")" +
-                "\nAccount number: " + accountNumber +
+        return "\nAccount number: " + accountNumber +
                 "\nOwner name: " + getOwnerName() +
                 "\nBalance: " + balance;
     }

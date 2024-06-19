@@ -220,7 +220,7 @@ public class AccountOwnerPanel extends UserPanel {
 
     private void greetings() {
         System.out.println("\nWelcome " + user.getPerson().getFullName() + ".");
-        System.out.println("\nYour account: " + Account.getType() + " " + account.getAccountNumber());
+        System.out.println("\nYour account: " + account.getType() + " " + account.getAccountNumber());
     }
 
     private void provideAmountMessage(String action) {

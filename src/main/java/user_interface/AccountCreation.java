@@ -1,9 +1,6 @@
 package user_interface;
 
-import accounts.Account;
-import accounts.AccountTypes;
-import accounts.CurrentAccount;
-import accounts.SavingsAccount;
+import accounts.*;
 import currencies.CurrencyCodes;
 import users.User;
 import validation.NumberValidator;
@@ -33,7 +30,7 @@ public class AccountCreation {
 
         switch (accountType) {
             case STANDARD -> {
-                return new Account(user, currencyCode, initialBalance);
+                return new StandardAccount(user, currencyCode, initialBalance);
             }
             case SAVINGS -> {
                 return new SavingsAccount(user, currencyCode, initialBalance);

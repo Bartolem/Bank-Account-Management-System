@@ -32,7 +32,7 @@ public class CSVToAccounts {
 
                 // Create accounts based on type
                 switch (accountType) {
-                    case STANDARD -> bank.addAccount(accountNumber, new Account(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
+                    case STANDARD -> bank.addAccount(accountNumber, new StandardAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
                     case CURRENT -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
                     case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
                 }

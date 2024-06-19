@@ -1,4 +1,4 @@
-import accounts.Account;
+import accounts.StandardAccount;
 import authentication.Role;
 import currencies.CurrencyCodes;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AccountTest {
-    Account account;
+    StandardAccount account;
     User user;
     Address address;
     Person person;
@@ -22,7 +22,7 @@ class AccountTest {
         address = new Address("Kawowa 72", "Warsaw", "Poland", "27-856");
         person = new Person("Michał", "Lipa", "1986-04-24", address, "mila@inrt.pl", "906 656 567");
         user = new User(person, Role.ACCOUNT_OWNER);
-        account = new Account(user, CurrencyCodes.PLN, "2000");
+        account = new StandardAccount(user, CurrencyCodes.PLN, "2000");
     }
 
     @Test

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class SavingsAccount extends Account {
     private static BigDecimal interestRate =  new BigDecimal("4.0");
     private static BigDecimal minBalance = new BigDecimal("1000");
-    private static final AccountTypes TYPE = AccountTypes.SAVINGS;
+    public static final AccountTypes TYPE = AccountTypes.SAVINGS;
 
     public SavingsAccount(User user, CurrencyCodes currencyCode, String balance) {
         super(user, currencyCode, balance);
@@ -22,6 +22,11 @@ public class SavingsAccount extends Account {
 
     public SavingsAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
         super(accountNumber, user, currencyCode, balance, date, blocked, status);
+    }
+
+    @Override
+    public AccountTypes getType() {
+        return TYPE;
     }
 
     public void calculateInterestRate() {
@@ -50,10 +55,6 @@ public class SavingsAccount extends Account {
         }
     }
 
-    public static AccountTypes getType() {
-        return TYPE;
-    }
-
     @Override
     public boolean withdraw(BigDecimal amount) {
         if ((getBalance().subtract(amount).compareTo(SavingsAccount.minBalance) > -1)) {
@@ -70,7 +71,7 @@ public class SavingsAccount extends Account {
 
     @Override
     public String toString() {
-        return  super.toString() +
+        return  super.toString() + "(" + TYPE + ")" + " (" + getStatus() + ")" +
                 "\nInterest rate: " + getInterestRate() + "%" +
                 "\nMinimal balance allowed: " + getMinBalance();
     }

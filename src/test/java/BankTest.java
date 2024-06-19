@@ -1,6 +1,6 @@
-import accounts.Account;
 import accounts.CurrentAccount;
 import accounts.SavingsAccount;
+import accounts.StandardAccount;
 import authentication.Role;
 import bank.Bank;
 import currencies.CurrencyCodes;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BankTest {
     Bank bank = Bank.getInstance();
-    Account account;
+    StandardAccount account;
     SavingsAccount savingsAccount;
     CurrentAccount currentAccount;
     Address address;
@@ -35,7 +35,7 @@ class BankTest {
         address = new Address("trollop 32", "Lisbon", "Spain", "21-556");
         person = new Person("Adam", "Eropla", "1956-10-04", address, "eolpor@inrt.ole", "5506 656 567");
         user = new User(person, Role.ACCOUNT_OWNER);
-        account = new Account(user, CurrencyCodes.PLN, "0");
+        account = new StandardAccount(user, CurrencyCodes.PLN, "0");
     }
 
     void addOneAccount() {

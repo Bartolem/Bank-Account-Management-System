@@ -15,7 +15,7 @@ public class AccountsToCSV {
             // Write account details
             for (Account account : accounts) {
                 String line = String.format("%s,%d,%s,%s,%s,%s,%s,%s\n",
-                        Account.getType(),
+                        account.getType(),
                         account.getAccountNumber(),
                         account.getStatus(),
                         account.getUser().getPerson().getID(),
