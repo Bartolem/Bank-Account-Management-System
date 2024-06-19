@@ -11,10 +11,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class CSVToTransactionHistory {
-    public static void read(List<Transaction> transaction, String fileName) {
+    public static void read(String fileName) {
         try (BufferedReader reader =  new BufferedReader(new FileReader(fileName))) {
             String line = "";
 
@@ -33,7 +32,7 @@ public class CSVToTransactionHistory {
             }
             System.out.println("Account numbers successfully loaded from " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

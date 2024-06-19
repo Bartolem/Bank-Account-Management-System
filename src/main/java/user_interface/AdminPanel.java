@@ -72,7 +72,7 @@ public class AdminPanel extends UserPanel {
 
     private void removeAccount() {
         getBank().remove(verifyAccountNumber(), user);
-        saveDataToFile();
+        FileManipulator.saveDataToFile();
     }
 
     private void blockAccount() {
@@ -85,12 +85,12 @@ public class AdminPanel extends UserPanel {
         } else {
             account.block();
         }
-        saveDataToFile();
+        FileManipulator.saveDataToFile();
     }
 
     private void unlockAccount(Account account) {
         account.unlock();
-        saveDataToFile();
+        FileManipulator.saveDataToFile();
     }
 
     private void showTransactionHistory() {
@@ -144,12 +144,6 @@ public class AdminPanel extends UserPanel {
             menageAccounts();
         }
         return Integer.parseInt(accountNumber);
-    }
-
-    private void saveDataToFile() {
-        UsersToCSV.write(getBank().getAllUsers(), "users.csv");
-        AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
-        AccountNumberToCSV.write(getBank().getAccountNumbers(), "account_numbers.csv");
     }
 
     private void bankDetails() {

@@ -24,7 +24,7 @@ public class UserInterface {
     }
 
     public void start() {
-        loadDataFromFile();
+        FileManipulator.loadDataFromFile();
         printLogo();
         System.out.println("Welcome to Bartolem's Online Banking Application.");
 
@@ -39,7 +39,7 @@ public class UserInterface {
                 case "2":
                     // Create new account
                     accountCreation();
-                    loadDataFromFile();
+                    FileManipulator.loadDataFromFile();
                     break;
                 case "X":
                 case "x":
@@ -74,7 +74,7 @@ public class UserInterface {
                 // Open admin panel using only ID
                 AdminPanel adminPanel = new AdminPanel(ID, scanner);
                 adminPanel.start();
-                saveDataToFile();
+                FileManipulator.saveDataToFile();
             } else login();
         } else if (bank.getUser(ID).hasRole(ACCOUNT_OWNER)) {
             System.out.print("Account number: ");
@@ -83,7 +83,7 @@ public class UserInterface {
                 // Open account owner panel using ID, and account number
                 AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber, userCreation);
                 ownerPanel.start();
-                saveDataToFile();
+                FileManipulator.saveDataToFile();
             } else login();
         }
     }
@@ -121,7 +121,7 @@ public class UserInterface {
     private void addUserAndAccountToBank(User user, Account account) {
         bank.addUser(user);
         bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        saveDataToFile();
+        FileManipulator.saveDataToFile();
     }
 
     private void printStartingMessage() {
@@ -138,17 +138,5 @@ public class UserInterface {
 
     private void printLogo() {
         System.out.println(LogoLoader.read("ascii logo.txt"));
-    }
-
-    private void loadDataFromFile() {
-        CSVToUsers.read(bank, "src/main/resources/users.csv");
-        CSVToAccounts.read(bank, "src/main/resources/accounts.csv");
-        CSVToAccountNumber.read(bank.getAccountNumbers(), "src/main/resources/account_numbers.csv");
-    }
-
-    private void saveDataToFile() {
-        UsersToCSV.write(bank.getAllUsers(), "src/main/resources/users.csv");
-        AccountsToCSV.write(bank.getAllAccounts(), "src/main/resources/accounts.csv");
-        AccountNumberToCSV.write(bank.getAccountNumbers(), "src/main/resources/account_numbers.csv");
     }
 }

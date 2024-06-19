@@ -39,7 +39,7 @@ public class CSVToAccounts {
             }
             System.out.println("Accounts successfully loaded from " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

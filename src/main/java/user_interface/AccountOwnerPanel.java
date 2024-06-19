@@ -237,7 +237,7 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void loadFromFile() {
-        CSVToTransactionHistory.read(account.getTransactionHistory(), "transaction_history_84924257");
+        CSVToTransactionHistory.read("transaction_history_" + account.getAccountNumber());
     }
 
     private void saveToFile() {
