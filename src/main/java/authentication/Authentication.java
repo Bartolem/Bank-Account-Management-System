@@ -15,7 +15,7 @@ public class Authentication {
 
     private Authentication() {
         this.userCredentials = new HashMap<>();
-        this.fileName = "user_credentials.csv";
+        this.fileName = "src/main/resources/user_credentials.csv";
         loadUserCredentialsFromCSV(fileName);
     }
 

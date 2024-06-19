@@ -25,7 +25,7 @@ public class UserInterface {
 
     public void start() {
         loadDataFromFile();
-        System.out.println();
+        printLogo();
         System.out.println("Welcome to Bartolem's Online Banking Application.");
 
         loop: while (true) {
@@ -136,15 +136,19 @@ public class UserInterface {
         System.out.println("Enter your user ID and password, to log in.");
     }
 
+    private void printLogo() {
+        System.out.println(LogoLoader.read("ascii logo.txt"));
+    }
+
     private void loadDataFromFile() {
-        CSVToUsers.read(bank, "users.csv");
-        CSVToAccounts.read(bank, "accounts.csv");
-        CSVToAccountNumber.read(bank.getAccountNumbers(), "account_numbers.csv");
+        CSVToUsers.read(bank, "src/main/resources/users.csv");
+        CSVToAccounts.read(bank, "src/main/resources/accounts.csv");
+        CSVToAccountNumber.read(bank.getAccountNumbers(), "src/main/resources/account_numbers.csv");
     }
 
     private void saveDataToFile() {
-        UsersToCSV.write(bank.getAllUsers(), "users.csv");
-        AccountsToCSV.write(bank.getAllAccounts(), "accounts.csv");
-        AccountNumberToCSV.write(bank.getAccountNumbers(), "account_numbers.csv");
+        UsersToCSV.write(bank.getAllUsers(), "src/main/resources/users.csv");
+        AccountsToCSV.write(bank.getAllAccounts(), "src/main/resources/accounts.csv");
+        AccountNumberToCSV.write(bank.getAccountNumbers(), "src/main/resources/account_numbers.csv");
     }
 }
