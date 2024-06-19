@@ -31,7 +31,7 @@ public class CSVToTransactionHistory {
                 Bank.getInstance().getAccount(Integer.parseInt(fileName.substring(20)))
                         .addTransaction(new Transaction(type, date, amount, currency));
             }
-            System.out.println("Account numbers successfully loaded from " + fileName);
+            System.out.println("Transaction history successfully loaded from " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }

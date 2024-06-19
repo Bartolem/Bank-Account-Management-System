@@ -137,14 +137,14 @@ public class UserInterface {
     }
 
     private void loadDataFromFile() {
-        CSVToUsers.read(bank, "users.csv");
-        CSVToAccounts.read(bank, "accounts.csv");
-        CSVToAccountNumber.read(bank.getAccountNumbers(), "account_numbers.csv");
+        CSVToUsers.read(bank, "src/main/resources/users.csv");
+        CSVToAccounts.read(bank, "src/main/resources/accounts.csv");
+        CSVToAccountNumber.read(bank.getAccountNumbers(), "src/main/resources/account_numbers.csv");
     }
 
     private void saveDataToFile() {
-        UsersToCSV.write(bank.getAllUsers(), "users.csv");
-        AccountsToCSV.write(bank.getAllAccounts(), "accounts.csv");
-        AccountNumberToCSV.write(bank.getAccountNumbers(), "account_numbers.csv");
+        UsersToCSV.write(bank.getAllUsers(), "src/main/resources/users.csv");
+        AccountsToCSV.write(bank.getAllAccounts(), "src/main/resources/accounts.csv");
+        AccountNumberToCSV.write(bank.getAccountNumbers(), "src/main/resources/account_numbers.csv");
     }
 }

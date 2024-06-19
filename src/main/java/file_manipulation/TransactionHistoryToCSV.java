@@ -22,7 +22,7 @@ public class TransactionHistoryToCSV {
                 writer.write(line);
             }
             writer.close();
-            System.out.println("Transactions successfully saved to " + fileName);
+            System.out.println("Transaction history successfully saved to " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
