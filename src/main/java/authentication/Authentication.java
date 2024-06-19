@@ -11,12 +11,12 @@ import java.util.HashMap;
 public class Authentication {
     private final HashMap<String, String> userCredentials;
     private static Authentication authentication;
-    private final String fileName;
+    private final String filePath;
 
     private Authentication() {
         this.userCredentials = new HashMap<>();
-        this.fileName = "user_credentials.csv";
-        loadUserCredentialsFromCSV(fileName);
+        this.filePath = "src/main/resources/user_credentials.csv";
+        loadUserCredentialsFromCSV(filePath);
     }
 
     public static Authentication getInstance() {
@@ -32,7 +32,7 @@ public class Authentication {
 
     public void addUserCredentials(String ID, String password) {
         userCredentials.put(ID, hashPassword(password));
-        saveUserCredentialsToCSV(userCredentials, fileName);
+        saveUserCredentialsToCSV(userCredentials, filePath);
     }
 
     public boolean authenticateUser(String ID, String password) {
@@ -69,7 +69,7 @@ public class Authentication {
             for (HashMap.Entry<String, String> entry : userCredentials.entrySet()) {
                 writer.println(entry.getKey() + "," + entry.getValue());
             }
-            System.out.println("users.User credentials saved to " + fileName);
+            System.out.println("User credentials saved to " + fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }

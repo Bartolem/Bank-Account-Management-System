@@ -133,7 +133,7 @@ public abstract class Account {
             addTransaction(new Transaction(TransactionTypes.DEPOSIT, LocalDateTime.now(), amount, currencyCode));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
             if (Bank.getInstance().contains(accountNumber)) {
-                TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + this.accountNumber);
+                TransactionHistoryToCSV.write(transactionHistory, "src/main/resources/transactions/transaction_history_" + this.accountNumber);
             }
             return true;
         }
@@ -146,7 +146,7 @@ public abstract class Account {
             addTransaction(new Transaction(TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, currencyCode));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
             if (Bank.getInstance().contains(accountNumber)) {
-                TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + accountNumber);
+                TransactionHistoryToCSV.write(transactionHistory, "src/main/resources/transactions/transaction_history_" + accountNumber);
             }
             return true;
         }
@@ -162,7 +162,7 @@ public abstract class Account {
                 addTransaction(new Transaction(TransactionTypes.TRANSFER, LocalDateTime.now(), amount, currencyCode));
                 // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
                 if (Bank.getInstance().contains(accountNumber)) {
-                    TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + this.accountNumber);
+                    TransactionHistoryToCSV.write(transactionHistory, "src/main/resources/transactions/transaction_history_" + this.accountNumber);
                 }
                 return true;
             }
