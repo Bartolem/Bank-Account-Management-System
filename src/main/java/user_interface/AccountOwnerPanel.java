@@ -44,7 +44,7 @@ public class AccountOwnerPanel extends UserPanel {
             System.out.println("(5) View transactions history");
             System.out.println("(6) Settings");
             System.out.println("(X) Log out");
-            printCursor();
+            UserInterface.printCursor();
             String action = getScanner().nextLine();
 
             switch (action) {
@@ -127,7 +127,7 @@ public class AccountOwnerPanel extends UserPanel {
         System.out.println("(1) Update personal information");
         System.out.println("(2) Change password");
         System.out.println("(X) Exit");
-        printCursor();
+        UserInterface.printCursor();
 
         while (true) {
             switch (getScanner().nextLine()) {
@@ -237,7 +237,7 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void loadFromFile() {
-        CSVToTransactionHistory.read("transaction_history_" + account.getAccountNumber());
+        CSVToTransactionHistory.read("transactions/transaction_history_" + account.getAccountNumber() + ".csv");
     }
 
     private void saveToFile() {

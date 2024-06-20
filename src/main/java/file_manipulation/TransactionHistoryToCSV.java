@@ -9,7 +9,7 @@ public class TransactionHistoryToCSV {
     public static void write(List<Transaction> transactions, String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
             // Write headers
-            writer.write("Type,Date,Amount,Currency\n");
+            writer.write("Account number,Type,Date,Amount,Currency\n");
 
             // Write transaction details
             for (Transaction transaction : transactions) {

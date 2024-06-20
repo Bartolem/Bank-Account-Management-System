@@ -44,7 +44,7 @@ public class CurrentAccount extends Account {
 
         if (amount.compareTo(availableBalance) < 1) {
             setBalance(getBalance().subtract(amount).toString());
-            super.getTransactionHistory().add(new Transaction(TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, getCurrencyCode()));
+            super.getTransactionHistory().add(new Transaction(getAccountNumber(), TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, getCurrencyCode()));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
             if (Bank.getInstance().contains(getAccountNumber())) {
                 TransactionHistoryToCSV.write(getTransactionHistory(), "transaction_history_" + getAccountNumber());

@@ -6,7 +6,6 @@ import transaction.Transaction;
 import transaction.TransactionTypes;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -25,12 +24,12 @@ public class CSVToTransactionHistory {
                 }
                 // Read transaction details
                 String[] fileContent = line.split(",");
-                TransactionTypes type = TransactionTypes.valueOf(fileContent[0]);
-                LocalDateTime date = LocalDateTime.parse(fileContent[1], DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-                BigDecimal amount = new BigDecimal(fileContent[2]);
-                CurrencyCodes currency = CurrencyCodes.valueOf(fileContent[3]);
-                Bank.getInstance().getAccount(Integer.parseInt(fileName.substring(20)))
-                        .addTransaction(new Transaction(type, date, amount, currency));
+                int accountNumber = Integer.parseInt(fileContent[0]);
+                TransactionTypes type = TransactionTypes.valueOf(fileContent[1]);
+                LocalDateTime date = LocalDateTime.parse(fileContent[2], DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+                BigDecimal amount = new BigDecimal(fileContent[3]);
+                CurrencyCodes currency = CurrencyCodes.valueOf(fileContent[4]);
+                Bank.getInstance().getAccount(accountNumber).addTransaction(new Transaction(accountNumber, type, date, amount, currency));
             }
             System.out.println("Account numbers successfully loaded from " + fileName);
         } catch (IOException e) {

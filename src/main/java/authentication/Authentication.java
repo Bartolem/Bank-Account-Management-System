@@ -34,7 +34,7 @@ public class Authentication {
 
     public void addUserCredentials(String ID, String password) {
         userCredentials.put(ID, hashPassword(password));
-        saveUserCredentialsToCSV(userCredentials, fileName);
+        saveUserCredentialsToCSV(userCredentials, "src/main/resources/" + fileName);
     }
 
     public boolean authenticateUser(String ID, String password) {

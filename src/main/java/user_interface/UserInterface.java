@@ -1,12 +1,19 @@
 package user_interface;
 
-import accounts.*;
+import accounts.Account;
 import bank.Bank;
-import users.*;
-import file_manipulation.*;
-import java.util.*;
+import file_manipulation.FileManipulator;
+import file_manipulation.LogoLoader;
+import file_manipulation.TransactionHistoryToCSV;
+import users.Admin;
+import users.User;
 
-import static authentication.Role.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+import static authentication.Role.ACCOUNT_OWNER;
+import static authentication.Role.ADMIN;
 
 public class UserInterface {
     private final Bank bank;
@@ -54,6 +61,7 @@ public class UserInterface {
 
     private void accountCreation() {
         User user = userCreation.createUser();
+        System.out.println(user);
         Account account = accountCreation.createAccount(user);
         if (register(user, account)) {
             addUserAndAccountToBank(user, account);
@@ -65,8 +73,12 @@ public class UserInterface {
         System.out.print("ID: ");
         String ID = scanner.nextLine();
 
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        if (bank.getUser(ID) == null) {
+            System.out.println("There is no account with provided ID.");
+            login();
+        }
+
+        String password = Arrays.toString(System.console().readPassword());
 
         Login login = new Login(ID, password);
         if (bank.getUser(ID).hasRole(ADMIN)) {
@@ -92,7 +104,7 @@ public class UserInterface {
         while (true) {
             System.out.println("Provide password for your new account.");
             printCursor();
-            String password = scanner.nextLine();
+            String password = Arrays.toString(System.console().readPassword());
 
             if (!registration.checkPasswordLength(password)) {
                 System.out.println("Password need be at least 5 characters long.");
@@ -100,7 +112,7 @@ public class UserInterface {
                 System.out.println("Confirm provided password.");
                 printCursor();
 
-                if (registration.checkPasswordsEquality(password, scanner.nextLine().trim())) {
+                if (registration.checkPasswordsEquality(password, Arrays.toString(System.console().readPassword()))) {
                     String ID = user.getPerson().getID();
                     registration.registerUser(ID, password);
                     System.out.println("You registration process has been successfully completed.");
@@ -114,13 +126,14 @@ public class UserInterface {
         }
     }
 
-    private void printCursor() {
+    protected static void printCursor() {
         System.out.print("> ");
     }
 
     private void addUserAndAccountToBank(User user, Account account) {
         bank.addUser(user);
         bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
+        TransactionHistoryToCSV.write(new ArrayList<>(), "transaction_history_" + account.getAccountNumber());
         FileManipulator.saveDataToFile();
     }
 
@@ -136,7 +149,7 @@ public class UserInterface {
         System.out.println("Enter your user ID and password, to log in.");
     }
 
-    private void printLogo() {
+    protected static void printLogo() {
         System.out.println(LogoLoader.read("ascii logo.txt"));
     }
 }

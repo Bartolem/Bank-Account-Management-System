@@ -130,10 +130,10 @@ public abstract class Account {
     public boolean deposit(BigDecimal amount) {
         if (isPositiveAmount(amount)) {
             setBalance(getBalance().add(amount).toString());
-            addTransaction(new Transaction(TransactionTypes.DEPOSIT, LocalDateTime.now(), amount, currencyCode));
+            addTransaction(new Transaction(accountNumber, TransactionTypes.DEPOSIT, LocalDateTime.now(), amount, currencyCode));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
             if (Bank.getInstance().contains(accountNumber)) {
-                TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + this.accountNumber);
+                saveTransactionHistoryToFile();
             }
             return true;
         }
@@ -143,10 +143,10 @@ public abstract class Account {
     public boolean withdraw(BigDecimal amount) {
         if (isPositiveAmount(amount) && isPositiveAmount(getBalance().subtract(amount))) {
             setBalance(getBalance().subtract(amount).toString());
-            addTransaction(new Transaction(TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, currencyCode));
+            addTransaction(new Transaction(accountNumber, TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, currencyCode));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
             if (Bank.getInstance().contains(accountNumber)) {
-                TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + accountNumber);
+                saveTransactionHistoryToFile();
             }
             return true;
         }
@@ -159,10 +159,10 @@ public abstract class Account {
             if (receiver != null && !receiver.equals(this) && receiver.getCurrencyCode().equals(this.getCurrencyCode())) {
                 receiver.deposit(amount);
                 withdraw(amount);
-                addTransaction(new Transaction(TransactionTypes.TRANSFER, LocalDateTime.now(), amount, currencyCode));
+                addTransaction(new Transaction(accountNumber, TransactionTypes.TRANSFER, LocalDateTime.now(), amount, currencyCode));
                 // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
                 if (Bank.getInstance().contains(accountNumber)) {
-                    TransactionHistoryToCSV.write(transactionHistory, "transaction_history_" + this.accountNumber);
+                    saveTransactionHistoryToFile();
                 }
                 return true;
             }
@@ -172,6 +172,10 @@ public abstract class Account {
 
     public void addTransaction(Transaction transaction) {
         transactionHistory.add(transaction);
+    }
+
+    protected void saveTransactionHistoryToFile() {
+        TransactionHistoryToCSV.write(transactionHistory, "src/main/resources/transactions/transaction_history_" + this.accountNumber + ".csv");
     }
 
     @Override

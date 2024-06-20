@@ -7,16 +7,22 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Transaction {
+    private final int accountNumber;
     private final TransactionTypes type;
     private final LocalDateTime date;
     private final BigDecimal amount;
     private final CurrencyCodes currencyCode;
 
-    public Transaction(TransactionTypes type, LocalDateTime date, BigDecimal amount, CurrencyCodes currencyCode) {
+    public Transaction(int accountNumber, TransactionTypes type, LocalDateTime date, BigDecimal amount, CurrencyCodes currencyCode) {
+        this.accountNumber = accountNumber;
         this.type = type;
         this.date = date;
         this.amount = amount;
         this.currencyCode = currencyCode;
+    }
+
+    public int getAccountNumber() {
+        return accountNumber;
     }
 
     public TransactionTypes getType() {
