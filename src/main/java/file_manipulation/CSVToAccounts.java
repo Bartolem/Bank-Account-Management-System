@@ -13,7 +13,7 @@ import java.util.Objects;
 
 public class CSVToAccounts {
     public static void read(Bank bank, String fileName) {
-        try (BufferedReader reader =  new BufferedReader(new InputStreamReader(Objects.requireNonNull(CSVToAccounts.class.getClassLoader().getResourceAsStream(fileName))))) {
+        try (BufferedReader reader =  new BufferedReader(new FileReader(fileName))) {
             String line = "";
 
             while ((line = reader.readLine()) != null) {

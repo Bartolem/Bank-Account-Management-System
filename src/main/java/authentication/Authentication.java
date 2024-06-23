@@ -1,7 +1,6 @@
 package authentication;
 
 import bank.Bank;
-import file_manipulation.LogoLoader;
 import users.User;
 
 import java.io.*;
@@ -34,7 +33,7 @@ public class Authentication {
 
     public void addUserCredentials(String ID, String password) {
         userCredentials.put(ID, hashPassword(password));
-        saveUserCredentialsToCSV(userCredentials, "src/main/resources/" + fileName);
+        saveUserCredentialsToCSV(userCredentials, fileName);
     }
 
     public boolean authenticateUser(String ID, String password) {
@@ -77,7 +76,7 @@ public class Authentication {
     }
 
     private void loadUserCredentialsFromCSV(String fileName) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(Authentication.class.getClassLoader().getResourceAsStream(fileName))))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");

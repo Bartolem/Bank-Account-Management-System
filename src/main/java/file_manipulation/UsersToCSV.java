@@ -4,13 +4,14 @@ import users.Address;
 import users.Person;
 import users.User;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class UsersToCSV {
     public static void write(ArrayList<User> users, String fileName) {
-        try (FileWriter writer = new FileWriter(fileName)) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             // Write headers
             writer.write("ID,First name,Last name,Date of birth,Street Address,City,Country,Zip code,E-mail,Phone number\n");
 

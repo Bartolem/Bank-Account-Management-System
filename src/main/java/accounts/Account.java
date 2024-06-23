@@ -175,7 +175,7 @@ public abstract class Account {
     }
 
     protected void saveTransactionHistoryToFile() {
-        TransactionHistoryToCSV.write(transactionHistory, "src/main/resources/transactions/transaction_history_" + this.accountNumber + ".csv");
+        TransactionHistoryToCSV.write(transactionHistory, "transactions/transaction_history_" + this.accountNumber + ".csv");
     }
 
     @Override

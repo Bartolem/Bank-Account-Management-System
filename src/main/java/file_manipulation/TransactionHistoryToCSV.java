@@ -1,19 +1,22 @@
 package file_manipulation;
 
 import transaction.Transaction;
+
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
 public class TransactionHistoryToCSV {
     public static void write(List<Transaction> transactions, String fileName) {
-        try (FileWriter writer = new FileWriter(fileName)) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             // Write headers
             writer.write("Account number,Type,Date,Amount,Currency\n");
 
             // Write transaction details
             for (Transaction transaction : transactions) {
-                String line = String.format("%s,%s,%s,%s\n",
+                String line = String.format("%d,%s,%s,%s,%s\n",
+                        transaction.getAccountNumber(),
                         transaction.getType(),
                         transaction.getDate(),
                         transaction.getAmount(),

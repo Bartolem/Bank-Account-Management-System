@@ -78,9 +78,10 @@ public class UserInterface {
             login();
         }
 
-        String password = Arrays.toString(System.console().readPassword());
+        printCursor();
+        char[] password = System.console().readPassword("Enter your password: ");
 
-        Login login = new Login(ID, password);
+        Login login = new Login(ID, Arrays.toString(password));
         if (bank.getUser(ID).hasRole(ADMIN)) {
             if (login.verifyUser()) {
                 // Open admin panel using only ID
@@ -104,17 +105,17 @@ public class UserInterface {
         while (true) {
             System.out.println("Provide password for your new account.");
             printCursor();
-            String password = Arrays.toString(System.console().readPassword());
+            char[] password = System.console().readPassword("Enter your password: ");
 
-            if (!registration.checkPasswordLength(password)) {
+            if (!registration.checkPasswordLength(Arrays.toString(password))) {
                 System.out.println("Password need be at least 5 characters long.");
             } else {
                 System.out.println("Confirm provided password.");
                 printCursor();
 
-                if (registration.checkPasswordsEquality(password, Arrays.toString(System.console().readPassword()))) {
+                if (registration.checkPasswordsEquality(Arrays.toString(password), Arrays.toString(System.console().readPassword()))) {
                     String ID = user.getPerson().getID();
-                    registration.registerUser(ID, password);
+                    registration.registerUser(ID, Arrays.toString(password));
                     System.out.println("You registration process has been successfully completed.");
                     System.out.println("accounts.Account number: " + account.getAccountNumber());
                     System.out.println("ID: " + ID);

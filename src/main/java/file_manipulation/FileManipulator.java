@@ -2,16 +2,27 @@ package file_manipulation;
 
 import bank.Bank;
 
+import java.io.File;
+import java.io.IOException;
+
 public class FileManipulator {
     public static void loadDataFromFile() {
-        CSVToUsers.read(Bank.getInstance(), "users.csv");
+        try {
+            CSVToUsers.read(Bank.getInstance(), new File("users.csv").getCanonicalPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
         CSVToAccounts.read(Bank.getInstance(), "accounts.csv");
         CSVToAccountNumber.read(Bank.getInstance().getAccountNumbers(), "account_numbers.csv");
     }
 
     public static void saveDataToFile() {
-        UsersToCSV.write(Bank.getInstance().getAllUsers(), "src/main/resources/users.csv");
-        AccountsToCSV.write(Bank.getInstance().getAllAccounts(), "src/main/resources/accounts.csv");
-        AccountNumberToCSV.write(Bank.getInstance().getAccountNumbers(), "src/main/resources/account_numbers.csv");
+        try {
+            UsersToCSV.write(Bank.getInstance().getAllUsers(), new File("users.csv").getCanonicalPath());
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        AccountsToCSV.write(Bank.getInstance().getAllAccounts(), "accounts.csv");
+        AccountNumberToCSV.write(Bank.getInstance().getAccountNumbers(), "account_numbers.csv");
     }
 }

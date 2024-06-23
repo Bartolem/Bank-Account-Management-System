@@ -12,6 +12,7 @@ import users.PersonDetail;
 import users.User;
 import validation.NumberValidator;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.Scanner;
 
@@ -237,7 +238,7 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void loadFromFile() {
-        CSVToTransactionHistory.read("transactions/transaction_history_" + account.getAccountNumber() + ".csv");
+        CSVToTransactionHistory.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
     }
 
     private void saveToFile() {

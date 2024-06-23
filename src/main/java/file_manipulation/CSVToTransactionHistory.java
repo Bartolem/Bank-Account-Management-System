@@ -6,17 +6,16 @@ import transaction.Transaction;
 import transaction.TransactionTypes;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 
 public class CSVToTransactionHistory {
     public static void read(String fileName) {
-        try (BufferedReader reader =  new BufferedReader(new InputStreamReader(Objects.requireNonNull(CSVToTransactionHistory.class.getClassLoader().getResourceAsStream(fileName))))) {
-            String line = "";
+        try (BufferedReader reader =  new BufferedReader(new FileReader(fileName))) {
+            String line;
 
             while ((line = reader.readLine()) != null) {
                 if (line.contains("Type")) {

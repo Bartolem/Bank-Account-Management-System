@@ -2,13 +2,14 @@ package file_manipulation;
 
 import accounts.Account;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class AccountsToCSV {
     public static void write(ArrayList<Account> accounts, String fileName) {
-        try (FileWriter writer = new FileWriter(fileName)) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             // Write headers
             writer.write("Account type,Account number,Status,Owner ID,Owner personal name,Currency code,Balance,Creation date\n");
 

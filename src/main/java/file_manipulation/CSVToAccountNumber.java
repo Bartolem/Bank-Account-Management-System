@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class CSVToAccountNumber {
     public static void read(ArrayList<Integer> accountNumbers, String fileName) {
-        try (BufferedReader reader =  new BufferedReader(new InputStreamReader(Objects.requireNonNull(CSVToAccountNumber.class.getClassLoader().getResourceAsStream(fileName))))) {
+        try (BufferedReader reader =  new BufferedReader(new FileReader(fileName))) {
             String line = "";
 
             while ((line = reader.readLine()) != null) {
@@ -22,7 +22,7 @@ public class CSVToAccountNumber {
             }
             System.out.println("Account numbers successfully loaded from " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
