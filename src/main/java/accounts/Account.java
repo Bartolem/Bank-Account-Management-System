@@ -8,6 +8,7 @@ import transaction.Transaction;
 import transaction.TransactionTypes;
 import users.User;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -175,7 +176,7 @@ public abstract class Account {
     }
 
     protected void saveTransactionHistoryToFile() {
-        TransactionHistoryToCSV.write(transactionHistory, "transactions/transaction_history_" + this.accountNumber + ".csv");
+        TransactionHistoryToCSV.write(transactionHistory, new File("transactions/transaction_history_" + this.accountNumber + ".csv").getAbsolutePath());
     }
 
     @Override

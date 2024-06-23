@@ -7,6 +7,7 @@ import transaction.Transaction;
 import transaction.TransactionTypes;
 import users.User;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -62,7 +63,7 @@ public class SavingsAccount extends Account {
             super.getTransactionHistory().add(new Transaction(getAccountNumber(), TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, getCurrencyCode()));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
             if (Bank.getInstance().contains(getAccountNumber())) {
-                TransactionHistoryToCSV.write(getTransactionHistory(), "transaction_history_" + getAccountNumber());
+                TransactionHistoryToCSV.write(getTransactionHistory(), new File("transactions/transaction_history_" + getAccountNumber() + ".csv").getAbsolutePath());
             }
             return true;
         }

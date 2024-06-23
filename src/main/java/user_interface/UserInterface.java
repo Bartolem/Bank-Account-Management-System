@@ -78,7 +78,6 @@ public class UserInterface {
             login();
         }
 
-        printCursor();
         char[] password = System.console().readPassword("Enter your password: ");
 
         Login login = new Login(ID, Arrays.toString(password));
@@ -129,6 +128,10 @@ public class UserInterface {
 
     protected static void printCursor() {
         System.out.print("> ");
+    }
+
+    protected static void  printBorder() {
+        System.out.println("==================================================");
     }
 
     private void addUserAndAccountToBank(User user, Account account) {

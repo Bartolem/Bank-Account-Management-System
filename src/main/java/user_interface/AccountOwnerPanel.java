@@ -14,6 +14,7 @@ import validation.NumberValidator;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import static transaction.TransactionTypes.*;
@@ -37,13 +38,17 @@ public class AccountOwnerPanel extends UserPanel {
         loadFromFile();
         greetings();
         loop:while (true) {
+            UserInterface.printBorder();
+            System.out.printf("Account number: %32d \n", account.getAccountNumber());
+            UserInterface.printBorder();
+            System.out.printf("Balance: %40s \n", account.getFormattedBalanceWithCurrency());
+            UserInterface.printBorder();
             System.out.println("\nChoose action");
             System.out.println("(1) Deposit");
             System.out.println("(2) Withdraw");
             System.out.println("(3) Transfer");
-            System.out.println("(4) Show balance");
-            System.out.println("(5) View transactions history");
-            System.out.println("(6) Settings");
+            System.out.println("(4) View transactions history");
+            System.out.println("(5) Settings");
             System.out.println("(X) Log out");
             UserInterface.printCursor();
             String action = getScanner().nextLine();
@@ -52,18 +57,13 @@ public class AccountOwnerPanel extends UserPanel {
                 case "1" -> deposit();
                 case "2" -> withdraw();
                 case "3" -> transfer();
-                case "4" -> showBalance();
-                case "5" -> viewHistory();
-                case "6" -> settings();
+                case "4" -> viewHistory();
+                case "5" -> settings();
                 case "x", "X" -> {
                     break loop;
                 }
             }
         }
-    }
-
-    private void showBalance() {
-        System.out.println(account.getFormattedBalanceWithCurrency());
     }
 
     private void deposit() {
@@ -201,18 +201,19 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void changePassword() {
-        System.out.print("Enter old password: ");
-        String oldPassword = getScanner().nextLine();
+        char[] oldPassword = System.console().readPassword("Enter your password: ");
 
-        if (authentication.authenticateUser(user.getPerson().getID(), oldPassword)) {
-            System.out.print("Enter new password: ");
-            String newPassword = getScanner().nextLine();
+        if (authentication.authenticateUser(user.getPerson().getID(), Arrays.toString(oldPassword))) {
+            char[] newPassword = System.console().readPassword("Enter new password: ");
 
-            if (oldPassword.equals(newPassword)) {
+            if (Arrays.equals(oldPassword, newPassword)) {
                 System.out.println("The new password should be different from the old one.");
             } else {
-                authentication.addUserCredentials(user.getPerson().getID(), newPassword);
-                System.out.println("Password successfully changed.");
+                char[] repeatedPassword = System.console().readPassword("Repeat new password: ");
+                if (Arrays.equals(repeatedPassword, newPassword)) {
+                    authentication.addUserCredentials(user.getPerson().getID(), Arrays.toString(newPassword));
+                    System.out.println("Password successfully changed.");
+                } else System.out.println("The repeated password should be the same.");
             }
         } else {
             System.out.println("Wrong password.");
@@ -221,7 +222,6 @@ public class AccountOwnerPanel extends UserPanel {
 
     private void greetings() {
         System.out.println("\nWelcome " + user.getPerson().getFullName() + ".");
-        System.out.println("\nYour account: " + account.getType() + " " + account.getAccountNumber());
     }
 
     private void provideAmountMessage(String action) {
@@ -230,7 +230,7 @@ public class AccountOwnerPanel extends UserPanel {
 
     private void printBalanceAfterTransaction(char operator, BigDecimal amount) {
         System.out.println(operator + " " + CurrencyFormatter.getFormat(account.getCurrencyCode(), amount));
-        System.out.println("Balance: " + account.getFormattedBalanceWithCurrency());
+        System.out.println("Balance after transaction: " + account.getFormattedBalanceWithCurrency());
     }
 
     private void printFailedMessage(String action) {
