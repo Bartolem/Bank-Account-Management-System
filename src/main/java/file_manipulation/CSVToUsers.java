@@ -10,7 +10,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-import static authentication.Role.*;
+import static authentication.Role.ACCOUNT_OWNER;
+import static authentication.Role.ADMIN;
 
 public class CSVToUsers {
     public static void read(Bank bank, String fileName) {
@@ -46,7 +47,7 @@ public class CSVToUsers {
             }
             System.out.println("Users successfully loaded from " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

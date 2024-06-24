@@ -6,6 +6,7 @@ import authentication.*;
 import java.util.ArrayList;
 
 public class User {
+    public static int MAX_NUMBER_OF_ACCOUNTS = 5;
     private final ArrayList<Account> ownedAccounts;
     private final Person person;
     private final Role role;
@@ -32,8 +33,17 @@ public class User {
         return ownedAccounts;
     }
 
+    public int getNumberOfOwnedAccounts() {
+        return ownedAccounts.size();
+    }
+
     public void addOwnedAccount(Account account) {
-        if (!ownedAccounts.contains(account) && account.getUser().getPerson().getID().equals(person.getID())) {
+        if (!ownedAccounts.contains(account) &&
+                account.getUser()
+                        .getPerson()
+                        .getID()
+                        .equals(person.getID()) &&
+        getNumberOfOwnedAccounts() < MAX_NUMBER_OF_ACCOUNTS) {
             ownedAccounts.add(account);
         }
     }

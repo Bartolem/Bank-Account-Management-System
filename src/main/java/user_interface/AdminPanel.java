@@ -28,7 +28,7 @@ public class AdminPanel extends UserPanel {
             System.out.println("(3) Set bank system settings");
             System.out.println("(4) View bank details");
             System.out.println("(X) Log out");
-            printCursor();
+            UserInterface.printCursor();
             String action = getScanner().nextLine();
 
             switch (action) {
@@ -72,7 +72,7 @@ public class AdminPanel extends UserPanel {
 
     private void removeAccount() {
         getBank().remove(verifyAccountNumber(), user);
-        saveDataToFile();
+        FileManipulator.saveDataToFile();
     }
 
     private void blockAccount() {
@@ -85,12 +85,12 @@ public class AdminPanel extends UserPanel {
         } else {
             account.block();
         }
-        saveDataToFile();
+        FileManipulator.saveDataToFile();
     }
 
     private void unlockAccount(Account account) {
         account.unlock();
-        saveDataToFile();
+        FileManipulator.saveDataToFile();
     }
 
     private void showTransactionHistory() {
@@ -101,7 +101,7 @@ public class AdminPanel extends UserPanel {
         System.out.println("(1) Set interest rate for savings account [0.3-8%] (global)");
         System.out.println("(2) Set minimal balance required for savings account [0-25000] (global)");
         System.out.println("(3) Set overdraft limit for current account [300-5000] (global)");
-        printCursor();
+        UserInterface.printCursor();
         String input;
 
         switch (getScanner().nextLine()) {
@@ -146,12 +146,6 @@ public class AdminPanel extends UserPanel {
         return Integer.parseInt(accountNumber);
     }
 
-    private void saveDataToFile() {
-        UsersToCSV.write(getBank().getAllUsers(), "users.csv");
-        AccountsToCSV.write(getBank().getAllAccounts(), "accounts.csv");
-        AccountNumberToCSV.write(getBank().getAccountNumbers(), "account_numbers.csv");
-    }
-
     private void bankDetails() {
         System.out.println("(1) Show bank statistics");
         System.out.println("(2) Show system settings (interest rate, overdraft limit etc.)");
@@ -160,7 +154,7 @@ public class AdminPanel extends UserPanel {
         System.out.println("(5) Print all account types");
         System.out.println("(6) Print all available currencies");
         System.out.println("(X) Quit");
-        printCursor();
+        UserInterface.printCursor();
 
         switch (getScanner().nextLine()) {
             case "1" -> System.out.println(getBank());

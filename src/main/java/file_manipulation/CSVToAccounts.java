@@ -8,6 +8,8 @@ import users.Admin;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class CSVToAccounts {
     public static void read(Bank bank, String fileName) {
@@ -28,18 +30,22 @@ public class CSVToAccounts {
                 CurrencyCodes currencyCode = CurrencyCodes.valueOf(fileContent[5]);
                 String balance = fileContent[6];
                 String date = fileContent[7];
+                String dailyLimit = fileContent[8];
+                String monthlyLimit = fileContent[9];
+                String dailyUsage = fileContent[10];
+                String monthlyUsage = fileContent[11];
                 boolean blocked = status.equals(AccountStatus.BLOCKED.toString());
 
                 // Create accounts based on type
                 switch (accountType) {
-                    case STANDARD -> bank.addAccount(accountNumber, new StandardAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
-                    case CURRENT -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
-                    case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
+                    case STANDARD -> bank.addAccount(accountNumber, new StandardAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
+                    case CURRENT -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
+                    case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
                 }
             }
             System.out.println("Accounts successfully loaded from " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

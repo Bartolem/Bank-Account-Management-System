@@ -7,6 +7,7 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class Authentication {
     private final HashMap<String, String> userCredentials;
@@ -15,8 +16,8 @@ public class Authentication {
 
     private Authentication() {
         this.userCredentials = new HashMap<>();
-        this.filePath = "src/main/resources/user_credentials.csv";
-        loadUserCredentialsFromCSV(filePath);
+        this.fileName = new File("user_credentials.csv").getAbsolutePath();
+        loadUserCredentialsFromCSV(fileName);
     }
 
     public static Authentication getInstance() {
@@ -59,8 +60,7 @@ public class Authentication {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -71,7 +71,7 @@ public class Authentication {
             }
             System.out.println("User credentials saved to " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 
@@ -85,7 +85,7 @@ public class Authentication {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

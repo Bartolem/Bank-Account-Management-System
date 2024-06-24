@@ -1,12 +1,21 @@
 package user_interface;
 
-import accounts.*;
+import accounts.Account;
 import bank.Bank;
-import users.*;
-import file_manipulation.*;
-import java.util.*;
+import file_manipulation.CSVToTransactionHistory;
+import file_manipulation.FileManipulator;
+import file_manipulation.LogoLoader;
+import file_manipulation.TransactionHistoryToCSV;
+import users.Admin;
+import users.User;
 
-import static authentication.Role.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+import static authentication.Role.ACCOUNT_OWNER;
+import static authentication.Role.ADMIN;
 
 public class UserInterface {
     private final Bank bank;
@@ -15,17 +24,17 @@ public class UserInterface {
     private final UserCreation userCreation;
     private final AccountCreation accountCreation;
 
-    public UserInterface(Scanner scanner, Registration register, UserCreation userCreation, AccountCreation accountCreation) {
+    public UserInterface() {
         this.bank = Bank.getInstance();
-        this.scanner = scanner;
-        this.registration = register;
-        this.userCreation = userCreation;
-        this.accountCreation = accountCreation;
+        this.scanner = new Scanner(System.in);
+        this.registration = new Registration();
+        this.userCreation = new UserCreation(scanner, this);
+        this.accountCreation = new AccountCreation(scanner);
     }
 
     public void start() {
-        loadDataFromFile();
-        System.out.println();
+        FileManipulator.loadDataFromFile();
+        printLogo();
         System.out.println("Welcome to Bartolem's Online Banking Application.");
 
         loop: while (true) {
@@ -39,7 +48,7 @@ public class UserInterface {
                 case "2":
                     // Create new account
                     accountCreation();
-                    loadDataFromFile();
+                    FileManipulator.loadDataFromFile();
                     break;
                 case "X":
                 case "x":
@@ -53,10 +62,34 @@ public class UserInterface {
     }
 
     private void accountCreation() {
-        User user = userCreation.createUser();
+        System.out.println("Have you used our bank's services before? (y/n)");
+        printCursor();
+        String answer = scanner.nextLine();
+
+        User user;
+
+        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+            System.out.println("Enter your user ID: ");
+            printCursor();
+
+            String ID = scanner.nextLine();
+            user = bank.getUser(ID);
+
+            if (user == null) {
+                System.out.println("There is no user with provided ID.");
+                start();
+            } else if (user.getNumberOfOwnedAccounts() == User.MAX_NUMBER_OF_ACCOUNTS) {
+                System.out.println("The limit for the maximum number of accounts to be created has been reached");
+                start();
+            }
+        } else {
+            user = userCreation.createUser();
+            bank.addUser(user);
+            System.out.println(user);
+        }
         Account account = accountCreation.createAccount(user);
         if (register(user, account)) {
-            addUserAndAccountToBank(user, account);
+            addAccountToBank(account);
         } else System.out.println("Registration process failed.");
     }
 
@@ -65,16 +98,23 @@ public class UserInterface {
         System.out.print("ID: ");
         String ID = scanner.nextLine();
 
-        System.out.print("Password: ");
-        String password = scanner.nextLine();
+        if (ID.equalsIgnoreCase("X")) {
+            start();
+        }
+        if (bank.getUser(ID) == null) {
+            System.out.println("There is no account with provided ID.");
+            login();
+        }
 
-        Login login = new Login(ID, password);
+        char[] password = System.console().readPassword("Enter your password: ");
+
+        Login login = new Login(ID, Arrays.toString(password));
         if (bank.getUser(ID).hasRole(ADMIN)) {
             if (login.verifyUser()) {
                 // Open admin panel using only ID
                 AdminPanel adminPanel = new AdminPanel(ID, scanner);
                 adminPanel.start();
-                saveDataToFile();
+                FileManipulator.saveDataToFile();
             } else login();
         } else if (bank.getUser(ID).hasRole(ACCOUNT_OWNER)) {
             System.out.print("Account number: ");
@@ -83,7 +123,7 @@ public class UserInterface {
                 // Open account owner panel using ID, and account number
                 AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber, userCreation);
                 ownerPanel.start();
-                saveDataToFile();
+                FileManipulator.saveDataToFile();
             } else login();
         }
     }
@@ -92,19 +132,19 @@ public class UserInterface {
         while (true) {
             System.out.println("Provide password for your new account.");
             printCursor();
-            String password = scanner.nextLine();
+            char[] password = System.console().readPassword("Enter your password: ");
 
-            if (!registration.checkPasswordLength(password)) {
+            if (!registration.checkPasswordLength(Arrays.toString(password))) {
                 System.out.println("Password need be at least 5 characters long.");
             } else {
                 System.out.println("Confirm provided password.");
                 printCursor();
 
-                if (registration.checkPasswordsEquality(password, scanner.nextLine().trim())) {
+                if (registration.checkPasswordsEquality(Arrays.toString(password), Arrays.toString(System.console().readPassword()))) {
                     String ID = user.getPerson().getID();
-                    registration.registerUser(ID, password);
+                    registration.registerUser(ID, Arrays.toString(password));
                     System.out.println("You registration process has been successfully completed.");
-                    System.out.println("accounts.Account number: " + account.getAccountNumber());
+                    System.out.println("Account number: " + account.getAccountNumber());
                     System.out.println("ID: " + ID);
                     return true;
                 }
@@ -114,14 +154,19 @@ public class UserInterface {
         }
     }
 
-    private void printCursor() {
+    protected static void printCursor() {
         System.out.print("> ");
     }
 
-    private void addUserAndAccountToBank(User user, Account account) {
-        bank.addUser(user);
+    protected static void  printBorder() {
+        System.out.println("==================================================");
+    }
+
+    private void addAccountToBank(Account account) {
         bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        saveDataToFile();
+        TransactionHistoryToCSV.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        CSVToTransactionHistory.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        FileManipulator.saveDataToFile();
     }
 
     private void printStartingMessage() {
@@ -133,18 +178,10 @@ public class UserInterface {
     }
 
     private void printLoginMessage() {
-        System.out.println("Enter your user ID and password, to log in.");
+        System.out.println("Enter your user ID and password, to log in. Type (X) to exit.");
     }
 
-    private void loadDataFromFile() {
-        CSVToUsers.read(bank, "src/main/resources/users.csv");
-        CSVToAccounts.read(bank, "src/main/resources/accounts.csv");
-        CSVToAccountNumber.read(bank.getAccountNumbers(), "src/main/resources/account_numbers.csv");
-    }
-
-    private void saveDataToFile() {
-        UsersToCSV.write(bank.getAllUsers(), "src/main/resources/users.csv");
-        AccountsToCSV.write(bank.getAllAccounts(), "src/main/resources/accounts.csv");
-        AccountNumberToCSV.write(bank.getAccountNumbers(), "src/main/resources/account_numbers.csv");
+    protected static void printLogo() {
+        System.out.println(LogoLoader.read("ascii logo.txt"));
     }
 }

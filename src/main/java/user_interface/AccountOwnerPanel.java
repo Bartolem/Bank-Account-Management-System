@@ -12,7 +12,9 @@ import users.PersonDetail;
 import users.User;
 import validation.NumberValidator;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import static transaction.TransactionTypes.*;
@@ -36,33 +38,32 @@ public class AccountOwnerPanel extends UserPanel {
         loadFromFile();
         greetings();
         loop:while (true) {
+            UserInterface.printBorder();
+            System.out.printf("Account number: %32d \n", account.getAccountNumber());
+            UserInterface.printBorder();
+            System.out.printf("Balance: %40s \n", account.getFormattedBalanceWithCurrency());
+            UserInterface.printBorder();
             System.out.println("\nChoose action");
             System.out.println("(1) Deposit");
             System.out.println("(2) Withdraw");
             System.out.println("(3) Transfer");
-            System.out.println("(4) Show balance");
-            System.out.println("(5) View transactions history");
-            System.out.println("(6) Settings");
+            System.out.println("(4) View transactions history");
+            System.out.println("(5) Settings");
             System.out.println("(X) Log out");
-            printCursor();
+            UserInterface.printCursor();
             String action = getScanner().nextLine();
 
             switch (action) {
                 case "1" -> deposit();
                 case "2" -> withdraw();
                 case "3" -> transfer();
-                case "4" -> showBalance();
-                case "5" -> viewHistory();
-                case "6" -> settings();
+                case "4" -> viewHistory();
+                case "5" -> settings();
                 case "x", "X" -> {
                     break loop;
                 }
             }
         }
-    }
-
-    private void showBalance() {
-        System.out.println(account.getFormattedBalanceWithCurrency());
     }
 
     private void deposit() {
@@ -124,18 +125,28 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void settings() {
-        System.out.println("(1) Update personal information");
-        System.out.println("(2) Change password");
+        System.out.println("(1) Change daily limit");
+        System.out.println("(2) Change monthly limit");
+        System.out.println("(3) Update personal information");
+        System.out.println("(4) Change password");
         System.out.println("(X) Exit");
-        printCursor();
+        UserInterface.printCursor();
 
         while (true) {
             switch (getScanner().nextLine()) {
                 case "1" -> {
-                    updatePersonalInformation();
+                    changeDailyLimit();
                     return;
                 }
                 case "2" -> {
+                    changeMonthlyLimit();
+                    return;
+                }
+                case "3" -> {
+                    updatePersonalInformation();
+                    return;
+                }
+                case "4" -> {
                     changePassword();
                     return;
                 }
@@ -145,6 +156,32 @@ public class AccountOwnerPanel extends UserPanel {
             }
         }
 
+    }
+
+    private void changeMonthlyLimit() {
+        System.out.println("Current monthly transfer limit: " + account.getMonthlyLimit());
+        System.out.print("Provide new monthly limit: ");
+
+        String input = getScanner().nextLine();
+
+        if (input.isEmpty()) {
+            System.out.print("Provided new monthly limit is empty! Try again.");
+            settings();
+        }
+        if (NumberValidator.validate(input)) account.setMonthlyLimit(new BigDecimal(input));
+    }
+
+    private void changeDailyLimit() {
+        System.out.println("Current daily transfer limit: " + account.getDailyLimit());
+        System.out.print("Provide new daily limit: ");
+
+        String input = getScanner().nextLine();
+
+        if (input.isEmpty()) {
+            System.out.print("Provided new daily limit is empty! Try again.");
+            settings();
+        }
+        if (NumberValidator.validate(input)) account.setDailyLimit(new BigDecimal(input));
     }
 
     private void updatePersonalInformation() {
@@ -200,18 +237,19 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void changePassword() {
-        System.out.print("Enter old password: ");
-        String oldPassword = getScanner().nextLine();
+        char[] oldPassword = System.console().readPassword("Enter your password: ");
 
-        if (authentication.authenticateUser(user.getPerson().getID(), oldPassword)) {
-            System.out.print("Enter new password: ");
-            String newPassword = getScanner().nextLine();
+        if (authentication.authenticateUser(user.getPerson().getID(), Arrays.toString(oldPassword))) {
+            char[] newPassword = System.console().readPassword("Enter new password: ");
 
-            if (oldPassword.equals(newPassword)) {
+            if (Arrays.equals(oldPassword, newPassword)) {
                 System.out.println("The new password should be different from the old one.");
             } else {
-                authentication.addUserCredentials(user.getPerson().getID(), newPassword);
-                System.out.println("Password successfully changed.");
+                char[] repeatedPassword = System.console().readPassword("Repeat new password: ");
+                if (Arrays.equals(repeatedPassword, newPassword)) {
+                    authentication.addUserCredentials(user.getPerson().getID(), Arrays.toString(newPassword));
+                    System.out.println("Password successfully changed.");
+                } else System.out.println("The repeated password should be the same.");
             }
         } else {
             System.out.println("Wrong password.");
@@ -220,7 +258,6 @@ public class AccountOwnerPanel extends UserPanel {
 
     private void greetings() {
         System.out.println("\nWelcome " + user.getPerson().getFullName() + ".");
-        System.out.println("\nYour account: " + account.getType() + " " + account.getAccountNumber());
     }
 
     private void provideAmountMessage(String action) {
@@ -229,7 +266,7 @@ public class AccountOwnerPanel extends UserPanel {
 
     private void printBalanceAfterTransaction(char operator, BigDecimal amount) {
         System.out.println(operator + " " + CurrencyFormatter.getFormat(account.getCurrencyCode(), amount));
-        System.out.println("Balance: " + account.getFormattedBalanceWithCurrency());
+        System.out.println("Balance after transaction: " + account.getFormattedBalanceWithCurrency());
     }
 
     private void printFailedMessage(String action) {
@@ -237,7 +274,7 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void loadFromFile() {
-        CSVToTransactionHistory.read(account.getTransactionHistory(), "transaction_history_84924257");
+        CSVToTransactionHistory.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
     }
 
     private void saveToFile() {

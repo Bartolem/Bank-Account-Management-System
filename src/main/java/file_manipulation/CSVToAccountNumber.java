@@ -3,7 +3,9 @@ package file_manipulation;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CSVToAccountNumber {
     public static void read(ArrayList<Integer> accountNumbers, String fileName) {
@@ -20,7 +22,7 @@ public class CSVToAccountNumber {
             }
             System.out.println("Account numbers successfully loaded from " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

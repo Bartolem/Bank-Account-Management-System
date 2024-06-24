@@ -11,12 +11,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class CSVToTransactionHistory {
-    public static void read(List<Transaction> transaction, String fileName) {
+    public static void read(String fileName) {
         try (BufferedReader reader =  new BufferedReader(new FileReader(fileName))) {
-            String line = "";
+            String line;
 
             while ((line = reader.readLine()) != null) {
                 if (line.contains("Type")) {
@@ -24,16 +23,16 @@ public class CSVToTransactionHistory {
                 }
                 // Read transaction details
                 String[] fileContent = line.split(",");
-                TransactionTypes type = TransactionTypes.valueOf(fileContent[0]);
-                LocalDateTime date = LocalDateTime.parse(fileContent[1], DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-                BigDecimal amount = new BigDecimal(fileContent[2]);
-                CurrencyCodes currency = CurrencyCodes.valueOf(fileContent[3]);
-                Bank.getInstance().getAccount(Integer.parseInt(fileName.substring(20)))
-                        .addTransaction(new Transaction(type, date, amount, currency));
+                int accountNumber = Integer.parseInt(fileContent[0]);
+                TransactionTypes type = TransactionTypes.valueOf(fileContent[1]);
+                LocalDateTime date = LocalDateTime.parse(fileContent[2], DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+                BigDecimal amount = new BigDecimal(fileContent[3]);
+                CurrencyCodes currency = CurrencyCodes.valueOf(fileContent[4]);
+                Bank.getInstance().getAccount(accountNumber).addTransaction(new Transaction(accountNumber, type, date, amount, currency));
             }
             System.out.println("Transaction history successfully loaded from " + fileName);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
