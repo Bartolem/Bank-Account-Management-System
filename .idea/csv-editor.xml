@@ -31,6 +31,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\out\artifacts\BankAccountManagementSystem_jar\transactions\transaction_history_59816073.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\out\artifacts\BankAccountManagementSystem_jar\transactions\transaction_history_88910118.csv">
           <value>
             <Attribute>

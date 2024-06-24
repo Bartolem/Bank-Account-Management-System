@@ -31,8 +31,8 @@ public abstract class Account {
     private AccountStatus status;
     private BigDecimal dailyLimit;
     private BigDecimal monthlyLimit;
-    private Map<LocalDate, BigDecimal> dailyUsage;
-    private Map<YearMonth, BigDecimal> monthlyUsage;
+    private final Map<LocalDate, BigDecimal> dailyUsage;
+    private final Map<YearMonth, BigDecimal> monthlyUsage;
 
     public Account(User user, CurrencyCodes currencyCode, String balance) {
         this.currencyCode = currencyCode;
@@ -50,13 +50,17 @@ public abstract class Account {
         user.addOwnedAccount(this);
     }
 
-    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
+    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status, String dailyLimit, String monthlyLimit, String dailyUsage, String monthlyUsage) {
         this(user, currencyCode, balance);
         this.accountNumber = accountNumber;
         this.creationDate = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         this.transactionHistory = new ArrayList<>();
         this.blocked = blocked;
         this.status = AccountStatus.valueOf(status);
+        this.dailyLimit = new BigDecimal(dailyLimit);
+        this.monthlyLimit = new BigDecimal(monthlyLimit);
+        updateDailyUsage(LocalDate.now(), new BigDecimal(dailyUsage));
+        updateMonthlyUsage(YearMonth.now(), new BigDecimal(monthlyUsage));
         user.addOwnedAccount(this);
     }
 

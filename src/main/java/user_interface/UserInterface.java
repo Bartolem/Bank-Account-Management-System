@@ -77,10 +77,10 @@ public class UserInterface {
 
             if (user == null) {
                 System.out.println("There is no user with provided ID.");
-                login();
+                start();
             } else if (user.getNumberOfOwnedAccounts() == User.MAX_NUMBER_OF_ACCOUNTS) {
                 System.out.println("The limit for the maximum number of accounts to be created has been reached");
-                login();
+                start();
             }
         } else {
             user = userCreation.createUser();

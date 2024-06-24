@@ -125,18 +125,28 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void settings() {
-        System.out.println("(1) Update personal information");
-        System.out.println("(2) Change password");
+        System.out.println("(1) Change daily limit");
+        System.out.println("(2) Change monthly limit");
+        System.out.println("(3) Update personal information");
+        System.out.println("(4) Change password");
         System.out.println("(X) Exit");
         UserInterface.printCursor();
 
         while (true) {
             switch (getScanner().nextLine()) {
                 case "1" -> {
-                    updatePersonalInformation();
+                    changeDailyLimit();
                     return;
                 }
                 case "2" -> {
+                    changeMonthlyLimit();
+                    return;
+                }
+                case "3" -> {
+                    updatePersonalInformation();
+                    return;
+                }
+                case "4" -> {
                     changePassword();
                     return;
                 }
@@ -146,6 +156,32 @@ public class AccountOwnerPanel extends UserPanel {
             }
         }
 
+    }
+
+    private void changeMonthlyLimit() {
+        System.out.println("Current monthly transfer limit: " + account.getMonthlyLimit());
+        System.out.print("Provide new monthly limit: ");
+
+        String input = getScanner().nextLine();
+
+        if (input.isEmpty()) {
+            System.out.print("Provided new monthly limit is empty! Try again.");
+            settings();
+        }
+        if (NumberValidator.validate(input)) account.setMonthlyLimit(new BigDecimal(input));
+    }
+
+    private void changeDailyLimit() {
+        System.out.println("Current daily transfer limit: " + account.getDailyLimit());
+        System.out.print("Provide new daily limit: ");
+
+        String input = getScanner().nextLine();
+
+        if (input.isEmpty()) {
+            System.out.print("Provided new daily limit is empty! Try again.");
+            settings();
+        }
+        if (NumberValidator.validate(input)) account.setDailyLimit(new BigDecimal(input));
     }
 
     private void updatePersonalInformation() {
