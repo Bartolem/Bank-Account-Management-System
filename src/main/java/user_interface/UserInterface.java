@@ -2,6 +2,7 @@ package user_interface;
 
 import accounts.Account;
 import bank.Bank;
+import file_manipulation.CSVToTransactionHistory;
 import file_manipulation.FileManipulator;
 import file_manipulation.LogoLoader;
 import file_manipulation.TransactionHistoryToCSV;
@@ -163,7 +164,8 @@ public class UserInterface {
 
     private void addAccountToBank(Account account) {
         bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        TransactionHistoryToCSV.write(new ArrayList<>(), new File("transaction_history_" + account.getAccountNumber()).getAbsolutePath());
+        TransactionHistoryToCSV.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        CSVToTransactionHistory.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
         FileManipulator.saveDataToFile();
     }
 
