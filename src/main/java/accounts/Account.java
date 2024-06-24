@@ -11,10 +11,14 @@ import users.User;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Account {
     private final CurrencyCodes currencyCode;
@@ -25,6 +29,10 @@ public abstract class Account {
     private List<Transaction> transactionHistory;
     private boolean blocked;
     private AccountStatus status;
+    private BigDecimal dailyLimit;
+    private BigDecimal monthlyLimit;
+    private Map<LocalDate, BigDecimal> dailyUsage;
+    private Map<YearMonth, BigDecimal> monthlyUsage;
 
     public Account(User user, CurrencyCodes currencyCode, String balance) {
         this.currencyCode = currencyCode;
@@ -35,6 +43,10 @@ public abstract class Account {
         this.transactionHistory = new ArrayList<>();
         this.blocked = false;
         this.status = AccountStatus.ACTIVE;
+        this.dailyLimit = new BigDecimal("5000");
+        this.monthlyLimit = new BigDecimal("30000");
+        this.dailyUsage = new HashMap<>();
+        this.monthlyUsage = new HashMap<>();
         user.addOwnedAccount(this);
     }
 
@@ -108,6 +120,48 @@ public abstract class Account {
         return blocked;
     }
 
+    public BigDecimal getDailyLimit() {
+        return dailyLimit;
+    }
+
+    public void setDailyLimit(BigDecimal dailyLimit) {
+        if (dailyLimit.compareTo(BigDecimal.valueOf(0)) >= 0) this.dailyLimit = dailyLimit;
+    }
+
+    public BigDecimal getMonthlyLimit() {
+        return monthlyLimit;
+    }
+
+    public void setMonthlyLimit(BigDecimal monthlyLimit) {
+        if (monthlyLimit.compareTo(BigDecimal.valueOf(0)) >= 0) this.monthlyLimit = monthlyLimit;
+    }
+
+    public BigDecimal getDailyUsage(LocalDate date) {
+        return dailyUsage.getOrDefault(date, BigDecimal.ZERO);
+    }
+
+    public BigDecimal getMonthlyUsage(YearMonth month) {
+        return monthlyUsage.getOrDefault(month, BigDecimal.ZERO);
+    }
+
+    protected void updateDailyUsage(LocalDate date, BigDecimal amount) {
+        dailyUsage.put(date, getDailyUsage(date).add(amount));
+    }
+
+    protected void updateMonthlyUsage(YearMonth month, BigDecimal amount) {
+        monthlyUsage.put(month, getMonthlyUsage(month).add(amount));
+    }
+
+    public boolean checkDailyLimit(BigDecimal amount) {
+        LocalDate today = LocalDate.now();
+        return getDailyUsage(today).add(amount).compareTo(dailyLimit) <= 0;
+    }
+
+    public boolean checkMonthlyLimit(BigDecimal amount) {
+        YearMonth currentMonth = YearMonth.now();
+        return getMonthlyUsage(currentMonth).add(amount).compareTo(monthlyLimit) <= 0;
+    }
+
     public void block() {
         this.blocked = true;
         setStatus(AccountStatus.BLOCKED);
@@ -143,6 +197,19 @@ public abstract class Account {
 
     public boolean withdraw(BigDecimal amount) {
         if (isPositiveAmount(amount) && isPositiveAmount(getBalance().subtract(amount))) {
+            if (!checkDailyLimit(amount)) {
+                System.out.println("Daily limit exceeded");
+                return false;
+            }
+            if (!checkMonthlyLimit(amount)) {
+                System.out.println("Monthly limit exceeded");
+                return false;
+            }
+
+            LocalDate today = LocalDate.now();
+
+            updateDailyUsage(today, amount);
+            updateMonthlyUsage(YearMonth.from(today), amount);
             setBalance(getBalance().subtract(amount).toString());
             addTransaction(new Transaction(accountNumber, TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, currencyCode));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.

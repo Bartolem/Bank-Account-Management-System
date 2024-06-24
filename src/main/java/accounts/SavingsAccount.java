@@ -10,7 +10,9 @@ import users.User;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 public class SavingsAccount extends Account {
     private static BigDecimal interestRate =  new BigDecimal("4.0");
@@ -59,6 +61,19 @@ public class SavingsAccount extends Account {
     @Override
     public boolean withdraw(BigDecimal amount) {
         if ((getBalance().subtract(amount).compareTo(SavingsAccount.minBalance) > -1)) {
+            if (!checkDailyLimit(amount)) {
+                System.out.println("Daily limit exceeded");
+                return false;
+            }
+            if (!checkMonthlyLimit(amount)) {
+                System.out.println("Monthly limit exceeded");
+                return false;
+            }
+
+            LocalDate today = LocalDate.now();
+
+            updateDailyUsage(today, amount);
+            updateMonthlyUsage(YearMonth.from(today), amount);
             setBalance(getBalance().subtract(amount).toString());
             super.getTransactionHistory().add(new Transaction(getAccountNumber(), TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, getCurrencyCode()));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
