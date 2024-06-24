@@ -30,7 +30,7 @@ public class CSVToTransactionHistory {
                 CurrencyCodes currency = CurrencyCodes.valueOf(fileContent[4]);
                 Bank.getInstance().getAccount(accountNumber).addTransaction(new Transaction(accountNumber, type, date, amount, currency));
             }
-            System.out.println("Account numbers successfully loaded from " + fileName);
+            System.out.println("Transaction history successfully loaded from " + fileName);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }

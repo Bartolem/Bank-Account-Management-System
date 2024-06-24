@@ -12,7 +12,7 @@ import java.util.Objects;
 public class Authentication {
     private final HashMap<String, String> userCredentials;
     private static Authentication authentication;
-    private final String fileName;
+    private final String filePath;
 
     private Authentication() {
         this.userCredentials = new HashMap<>();
@@ -33,7 +33,7 @@ public class Authentication {
 
     public void addUserCredentials(String ID, String password) {
         userCredentials.put(ID, hashPassword(password));
-        saveUserCredentialsToCSV(userCredentials, fileName);
+        saveUserCredentialsToCSV(userCredentials, filePath);
     }
 
     public boolean authenticateUser(String ID, String password) {
