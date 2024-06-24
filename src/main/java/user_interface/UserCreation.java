@@ -14,13 +14,15 @@ import static users.PersonDetail.*;
 
 public class UserCreation {
     private final Scanner scanner;
+    private final UserInterface userInterface;
 
-    public UserCreation(Scanner scanner) {
+    public UserCreation(Scanner scanner, UserInterface userInterface) {
         this.scanner = scanner;
+        this.userInterface = userInterface;
     }
 
     private void printCreateUserMessage() {
-        System.out.println("To create new account, you need to provide your details.");
+        System.out.println("To create new account, you need to provide your details. Type (X) to exit.");
     }
 
     protected User createUser() {
@@ -29,7 +31,11 @@ public class UserCreation {
         printCreateUserMessage();
 
         for (PersonDetail personDetail : PersonDetail.values()) {
-            personDetails.add(validatePersonDetails(personDetail));
+            String detail = validatePersonDetails(personDetail);
+
+            if (detail.equalsIgnoreCase("x")) {
+                return null;
+            } else personDetails.add(detail);
         }
 
         return confirmDetails(personDetails);
@@ -123,6 +129,10 @@ public class UserCreation {
             System.out.print(detailName + ": ");
 
             String input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("x")) {
+                userInterface.start();
+            }
 
             if (input.isEmpty()) {
                 System.out.println("Enter the " + detailName);

@@ -8,6 +8,7 @@ import file_manipulation.TransactionHistoryToCSV;
 import users.Admin;
 import users.User;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -22,12 +23,12 @@ public class UserInterface {
     private final UserCreation userCreation;
     private final AccountCreation accountCreation;
 
-    public UserInterface(Scanner scanner, Registration register, UserCreation userCreation, AccountCreation accountCreation) {
+    public UserInterface() {
         this.bank = Bank.getInstance();
-        this.scanner = scanner;
-        this.registration = register;
-        this.userCreation = userCreation;
-        this.accountCreation = accountCreation;
+        this.scanner = new Scanner(System.in);
+        this.registration = new Registration();
+        this.userCreation = new UserCreation(scanner, this);
+        this.accountCreation = new AccountCreation(scanner);
     }
 
     public void start() {
@@ -60,11 +61,34 @@ public class UserInterface {
     }
 
     private void accountCreation() {
-        User user = userCreation.createUser();
-        System.out.println(user);
+        System.out.println("Have you used our bank's services before? (y/n)");
+        printCursor();
+        String answer = scanner.nextLine();
+
+        User user;
+
+        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+            System.out.println("Enter your user ID: ");
+            printCursor();
+
+            String ID = scanner.nextLine();
+            user = bank.getUser(ID);
+
+            if (user == null) {
+                System.out.println("There is no user with provided ID.");
+                login();
+            } else if (user.getNumberOfOwnedAccounts() == User.MAX_NUMBER_OF_ACCOUNTS) {
+                System.out.println("The limit for the maximum number of accounts to be created has been reached");
+                login();
+            }
+        } else {
+            user = userCreation.createUser();
+            bank.addUser(user);
+            System.out.println(user);
+        }
         Account account = accountCreation.createAccount(user);
         if (register(user, account)) {
-            addUserAndAccountToBank(user, account);
+            addAccountToBank(account);
         } else System.out.println("Registration process failed.");
     }
 
@@ -73,6 +97,9 @@ public class UserInterface {
         System.out.print("ID: ");
         String ID = scanner.nextLine();
 
+        if (ID.equalsIgnoreCase("X")) {
+            start();
+        }
         if (bank.getUser(ID) == null) {
             System.out.println("There is no account with provided ID.");
             login();
@@ -116,7 +143,7 @@ public class UserInterface {
                     String ID = user.getPerson().getID();
                     registration.registerUser(ID, Arrays.toString(password));
                     System.out.println("You registration process has been successfully completed.");
-                    System.out.println("accounts.Account number: " + account.getAccountNumber());
+                    System.out.println("Account number: " + account.getAccountNumber());
                     System.out.println("ID: " + ID);
                     return true;
                 }
@@ -134,10 +161,9 @@ public class UserInterface {
         System.out.println("==================================================");
     }
 
-    private void addUserAndAccountToBank(User user, Account account) {
-        bank.addUser(user);
+    private void addAccountToBank(Account account) {
         bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        TransactionHistoryToCSV.write(new ArrayList<>(), "transaction_history_" + account.getAccountNumber());
+        TransactionHistoryToCSV.write(new ArrayList<>(), new File("transaction_history_" + account.getAccountNumber()).getAbsolutePath());
         FileManipulator.saveDataToFile();
     }
 
@@ -150,7 +176,7 @@ public class UserInterface {
     }
 
     private void printLoginMessage() {
-        System.out.println("Enter your user ID and password, to log in.");
+        System.out.println("Enter your user ID and password, to log in. Type (X) to exit.");
     }
 
     protected static void printLogo() {
