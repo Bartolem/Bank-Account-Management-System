@@ -14,7 +14,9 @@ import validation.NumberValidator;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 import static transaction.TransactionTypes.*;
@@ -231,8 +233,43 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void viewHistory() {
-        for (Transaction transaction : account.getTransactionHistory()) {
-            System.out.println(transaction + "\n");
+        System.out.println("Select time frame:");
+        System.out.println("(1) Day");
+        System.out.println("(2) Week");
+        System.out.println("(3) Month");
+        System.out.println("(4) Year");
+        System.out.println("(5) All");
+        System.out.println("(X) Exit");
+        UserInterface.printCursor();
+
+        LocalDate date = LocalDate.now();
+
+        while (true) {
+            switch (getScanner().nextLine()) {
+                case "1" -> {
+                    account.getTransactionsForDay(date).forEach(System.out::println);
+                    return;
+                }
+                case "2" -> {
+                    account.getTransactionsForWeek(date).forEach(System.out::println);
+                    return;
+                }
+                case "3" -> {
+                    account.getTransactionsForMonth(date).forEach(System.out::println);
+                    return;
+                }
+                case "4" -> {
+                    account.getTransactionsForYear(date).forEach(System.out::println);
+                    return;
+                }
+                case "5" -> {
+                    account.getTransactionHistory().forEach(System.out::println);
+                    return;
+                }
+                case "x", "X" -> {
+                    return;
+                }
+            }
         }
     }
 

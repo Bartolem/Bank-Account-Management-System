@@ -5,6 +5,8 @@ import currencies.CurrencyCodes;
 import currencies.CurrencyFormatter;
 import file_manipulation.TransactionHistoryToCSV;
 import transaction.Transaction;
+import transaction.TransactionComparators;
+import transaction.TransactionDateRanges;
 import transaction.TransactionTypes;
 import users.User;
 
@@ -15,10 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Account {
     private final CurrencyCodes currencyCode;
@@ -248,6 +248,62 @@ public abstract class Account {
 
     protected void saveTransactionHistoryToFile() {
         TransactionHistoryToCSV.write(transactionHistory, new File("transactions/transaction_history_" + this.accountNumber + ".csv").getAbsolutePath());
+    }
+
+    public List<Transaction> getTransactionsSortedByDate() {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactionHistory);
+        Collections.sort(sortedTransactions);
+        return sortedTransactions;
+    }
+
+    public List<Transaction> getTransactionsSortedByAmount() {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactionHistory);
+        sortedTransactions.sort(TransactionComparators.byAmount());
+        return sortedTransactions;
+    }
+
+    public List<Transaction> getTransactionsSortedByType() {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactionHistory);
+        sortedTransactions.sort(TransactionComparators.byType());
+        return sortedTransactions;
+    }
+
+    public List<Transaction> filterTransactionsByType(TransactionTypes type) {
+        return transactionHistory.stream()
+                .filter(transaction -> transaction.getType() == type)
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> filterTransactionsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return transactionHistory.stream()
+                .filter(transaction -> !transaction.getDate().isBefore(startDate) && !transaction.getDate().isAfter(endDate))
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> filterTransactionsByAmountRange(BigDecimal minAmount, BigDecimal maxAmount) {
+        return transactionHistory.stream()
+                .filter(transaction -> transaction.getAmount().compareTo(minAmount) >= 0 && transaction.getAmount().compareTo(maxAmount) <= 0)
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> getTransactionsForDay(LocalDate date) {
+        LocalDateTime[] range = TransactionDateRanges.getDayRange(date);
+        return filterTransactionsByDateRange(range[0], range[1]);
+    }
+
+    public List<Transaction> getTransactionsForWeek(LocalDate date) {
+        LocalDateTime[] range = TransactionDateRanges.getWeekRange(date);
+        return filterTransactionsByDateRange(range[0], range[1]);
+    }
+
+    public List<Transaction> getTransactionsForMonth(LocalDate date) {
+        LocalDateTime[] range = TransactionDateRanges.getMonthRange(date);
+        return filterTransactionsByDateRange(range[0], range[1]);
+    }
+
+    public List<Transaction> getTransactionsForYear(LocalDate date) {
+        LocalDateTime[] range = TransactionDateRanges.getYearRange(date);
+        return filterTransactionsByDateRange(range[0], range[1]);
     }
 
     @Override

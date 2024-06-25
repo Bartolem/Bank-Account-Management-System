@@ -18,7 +18,7 @@ public class TransactionHistoryToCSV {
                 String line = String.format("%d,%s,%s,%s,%s\n",
                         transaction.getAccountNumber(),
                         transaction.getType(),
-                        transaction.getDate(),
+                        transaction.getFormattedDate(),
                         transaction.getAmount(),
                         transaction.getCurrencyCode());
 
