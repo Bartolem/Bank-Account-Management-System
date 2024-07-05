@@ -50,8 +50,7 @@ public class UserInterface {
                     accountCreation();
                     FileManipulator.loadDataFromFile();
                     break;
-                case "X":
-                case "x":
+                case "x", "X":
                     // Exit
                     break loop;
             }
@@ -112,8 +111,7 @@ public class UserInterface {
         if (bank.getUser(ID).hasRole(ADMIN)) {
             if (login.verifyUser()) {
                 // Open admin panel using only ID
-                AdminPanel adminPanel = new AdminPanel(ID, scanner);
-                adminPanel.start();
+                new AdminPanel(ID, scanner).start();
                 FileManipulator.saveDataToFile();
             } else login();
         } else if (bank.getUser(ID).hasRole(ACCOUNT_OWNER)) {
@@ -121,8 +119,7 @@ public class UserInterface {
             int accountNumber = Integer.parseInt(scanner.nextLine());
             if (login.verifyAccount(accountNumber)) {
                 // Open account owner panel using ID, and account number
-                AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber, userCreation);
-                ownerPanel.start();
+                new AccountOwnerPanel(ID, scanner, accountNumber, userCreation, this).start();
                 FileManipulator.saveDataToFile();
             } else login();
         }

@@ -6,6 +6,7 @@ import currencies.CurrencyFormatter;
 import file_manipulation.AccountsToCSV;
 import file_manipulation.CSVToTransactionHistory;
 import transaction.Transaction;
+import transaction.TransactionTypes;
 import users.Address;
 import users.Person;
 import users.PersonDetail;
@@ -26,45 +27,45 @@ public class AccountOwnerPanel extends UserPanel {
     private final Account account;
     private final UserCreation userCreation;
     private final Authentication authentication;
+    private List<Transaction> transactions;
+    private final UserInterface userInterface;
 
-    public AccountOwnerPanel(String ID, Scanner scanner, int accountNumber, UserCreation userCreation) {
+    public AccountOwnerPanel(String ID, Scanner scanner, int accountNumber, UserCreation userCreation, UserInterface userInterface) {
         super(ID, scanner);
         this.user = getUser();
         this.account = getBank().getAccount(accountNumber);
         this.userCreation = userCreation;
         this.authentication = Authentication.getInstance();
+        this.transactions = account.getTransactionHistory();
+        this.userInterface = userInterface;
     }
 
     @Override
     public void start() {
         loadFromFile();
         greetings();
-        loop:while (true) {
-            UserInterface.printBorder();
-            System.out.printf("Account number: %32d \n", account.getAccountNumber());
-            UserInterface.printBorder();
-            System.out.printf("Balance: %40s \n", account.getFormattedBalanceWithCurrency());
-            UserInterface.printBorder();
-            System.out.println("\nChoose action");
-            System.out.println("(1) Deposit");
-            System.out.println("(2) Withdraw");
-            System.out.println("(3) Transfer");
-            System.out.println("(4) View transactions history");
-            System.out.println("(5) Settings");
-            System.out.println("(X) Log out");
-            UserInterface.printCursor();
-            String action = getScanner().nextLine();
-
-            switch (action) {
-                case "1" -> deposit();
-                case "2" -> withdraw();
-                case "3" -> transfer();
-                case "4" -> viewHistory();
-                case "5" -> settings();
-                case "x", "X" -> {
-                    break loop;
-                }
-            }
+        System.out.println();
+        UserInterface.printBorder();
+        System.out.printf("Account number: %32d \n", account.getAccountNumber());
+        UserInterface.printBorder();
+        System.out.printf("Balance: %40s \n", account.getFormattedBalanceWithCurrency());
+        UserInterface.printBorder();
+        System.out.println("\nChoose action");
+        System.out.println("(1) Deposit");
+        System.out.println("(2) Withdraw");
+        System.out.println("(3) Transfer");
+        System.out.println("(4) View transactions history");
+        System.out.println("(5) Settings");
+        System.out.println("(X) Log out");
+        UserInterface.printCursor();
+        String action = getScanner().nextLine();
+        switch (action) {
+            case "1" -> deposit();
+            case "2" -> withdraw();
+            case "3" -> transfer();
+            case "4" -> viewHistory();
+            case "5" -> settings();
+            case "x", "X" -> userInterface.start();
         }
     }
 
@@ -232,8 +233,8 @@ public class AccountOwnerPanel extends UserPanel {
         System.out.println(oldDetail + " changed to -> " + validatedPersonalDetail);
     }
 
-    private void viewHistory() {
-        System.out.println("Select time frame:");
+    private void selectTimeFrame(List<Transaction> transactions) {
+        System.out.println("Select time frame");
         System.out.println("(1) Day");
         System.out.println("(2) Week");
         System.out.println("(3) Month");
@@ -247,30 +248,100 @@ public class AccountOwnerPanel extends UserPanel {
         while (true) {
             switch (getScanner().nextLine()) {
                 case "1" -> {
-                    account.getTransactionsForDay(date).forEach(System.out::println);
-                    return;
+                    account.getTransactionsForDay(date, transactions).forEach(transaction -> {
+                        UserInterface.printBorder();
+                        System.out.println(transaction);
+                    });
+                    UserInterface.printBorder();
+                    viewHistory();
                 }
                 case "2" -> {
-                    account.getTransactionsForWeek(date).forEach(System.out::println);
-                    return;
+                    account.getTransactionsForWeek(date, transactions).forEach(transaction -> {
+                        UserInterface.printBorder();
+                        System.out.println(transaction);
+                    });
+                    UserInterface.printBorder();
+                    viewHistory();
                 }
                 case "3" -> {
-                    account.getTransactionsForMonth(date).forEach(System.out::println);
-                    return;
+                    account.getTransactionsForMonth(date, transactions).forEach(transaction -> {
+                        UserInterface.printBorder();
+                        System.out.println(transaction);
+                    });
+                    UserInterface.printBorder();
+                    viewHistory();
                 }
                 case "4" -> {
-                    account.getTransactionsForYear(date).forEach(System.out::println);
-                    return;
+                    account.getTransactionsForYear(date, transactions).forEach(transaction -> {
+                        UserInterface.printBorder();
+                        System.out.println(transaction);
+                    });
+                    UserInterface.printBorder();
+                    viewHistory();
                 }
                 case "5" -> {
-                    account.getTransactionHistory().forEach(System.out::println);
-                    return;
+                    account.getTransactionHistory().forEach(transaction -> {
+                        UserInterface.printBorder();
+                        System.out.println(transaction);
+                    });
+                    UserInterface.printBorder();
+                    viewHistory();
                 }
                 case "x", "X" -> {
                     return;
                 }
             }
         }
+    }
+
+    private void viewHistory() {
+        System.out.println("(1) Select time frame");
+        System.out.println("(2) Sort by amount");
+        System.out.println("(3) Filter by type");
+        System.out.println("(4) Filter by amount range");
+        System.out.println("(X) Exit");
+        UserInterface.printCursor();
+
+        switch (getScanner().nextLine()) {
+            case "1" -> selectTimeFrame(transactions);
+            case "2" -> {
+                this.transactions = account.getTransactionsSortedByAmount(transactions);
+                start();
+            }
+            case "3" -> {
+                this.transactions = getTransactionHistoryFilteredByType();
+                start();
+            }
+            case "4" -> {
+//                this.transactions = account.filterTransactionsByAmountRange();
+                start();
+            }
+            case "x", "X" -> start();
+
+        }
+    }
+
+    private List<Transaction> getTransactionHistoryFilteredByType() {
+        System.out.println("Choose transaction type: ");
+        Arrays.stream(values())
+                .forEach(value -> System.out.printf("(%d) %s\n", value.ordinal()+1, value.getName()));
+        System.out.println("(X) Exit");
+        UserInterface.printCursor();
+
+        TransactionTypes type = null;
+
+        switch (getScanner().nextLine()) {
+            case "1" -> type = DEPOSIT;
+            case "2" -> type = WITHDRAW;
+            case "3" -> type = TRANSFER;
+            case "x", "X" -> start();
+            default -> {
+                System.out.println("Wrong input.");
+                getTransactionHistoryFilteredByType();
+            }
+        }
+
+        return account.filterTransactionsByType(type);
     }
 
     private void changePassword() {

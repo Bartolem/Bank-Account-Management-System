@@ -250,20 +250,20 @@ public abstract class Account {
         TransactionHistoryToCSV.write(transactionHistory, new File("transactions/transaction_history_" + this.accountNumber + ".csv").getAbsolutePath());
     }
 
-    public List<Transaction> getTransactionsSortedByDate() {
-        List<Transaction> sortedTransactions = new ArrayList<>(transactionHistory);
+    public List<Transaction> getTransactionsSortedByDate(List<Transaction> transactions) {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactions);
         Collections.sort(sortedTransactions);
         return sortedTransactions;
     }
 
-    public List<Transaction> getTransactionsSortedByAmount() {
-        List<Transaction> sortedTransactions = new ArrayList<>(transactionHistory);
+    public List<Transaction> getTransactionsSortedByAmount(List<Transaction> transactions) {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactions);
         sortedTransactions.sort(TransactionComparators.byAmount());
         return sortedTransactions;
     }
 
-    public List<Transaction> getTransactionsSortedByType() {
-        List<Transaction> sortedTransactions = new ArrayList<>(transactionHistory);
+    public List<Transaction> getTransactionsSortedByType(List<Transaction> transactions) {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactions);
         sortedTransactions.sort(TransactionComparators.byType());
         return sortedTransactions;
     }
@@ -274,36 +274,36 @@ public abstract class Account {
                 .collect(Collectors.toList());
     }
 
-    public List<Transaction> filterTransactionsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        return transactionHistory.stream()
+    public List<Transaction> filterTransactionsByDateRange(LocalDateTime startDate, LocalDateTime endDate, List<Transaction> transactions) {
+        return transactions.stream()
                 .filter(transaction -> !transaction.getDate().isBefore(startDate) && !transaction.getDate().isAfter(endDate))
                 .collect(Collectors.toList());
     }
 
-    public List<Transaction> filterTransactionsByAmountRange(BigDecimal minAmount, BigDecimal maxAmount) {
-        return transactionHistory.stream()
+    public List<Transaction> filterTransactionsByAmountRange(BigDecimal minAmount, BigDecimal maxAmount, List<Transaction> transactions) {
+        return transactions.stream()
                 .filter(transaction -> transaction.getAmount().compareTo(minAmount) >= 0 && transaction.getAmount().compareTo(maxAmount) <= 0)
                 .collect(Collectors.toList());
     }
 
-    public List<Transaction> getTransactionsForDay(LocalDate date) {
+    public List<Transaction> getTransactionsForDay(LocalDate date, List<Transaction> transactions) {
         LocalDateTime[] range = TransactionDateRanges.getDayRange(date);
-        return filterTransactionsByDateRange(range[0], range[1]);
+        return filterTransactionsByDateRange(range[0], range[1], transactions);
     }
 
-    public List<Transaction> getTransactionsForWeek(LocalDate date) {
+    public List<Transaction> getTransactionsForWeek(LocalDate date, List<Transaction> transactions) {
         LocalDateTime[] range = TransactionDateRanges.getWeekRange(date);
-        return filterTransactionsByDateRange(range[0], range[1]);
+        return filterTransactionsByDateRange(range[0], range[1], transactions);
     }
 
-    public List<Transaction> getTransactionsForMonth(LocalDate date) {
+    public List<Transaction> getTransactionsForMonth(LocalDate date, List<Transaction> transactions) {
         LocalDateTime[] range = TransactionDateRanges.getMonthRange(date);
-        return filterTransactionsByDateRange(range[0], range[1]);
+        return filterTransactionsByDateRange(range[0], range[1], transactions);
     }
 
-    public List<Transaction> getTransactionsForYear(LocalDate date) {
+    public List<Transaction> getTransactionsForYear(LocalDate date, List<Transaction> transactions) {
         LocalDateTime[] range = TransactionDateRanges.getYearRange(date);
-        return filterTransactionsByDateRange(range[0], range[1]);
+        return filterTransactionsByDateRange(range[0], range[1], transactions);
     }
 
     @Override
