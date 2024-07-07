@@ -135,30 +135,17 @@ public class AccountOwnerPanel extends UserPanel {
         System.out.println("(X) Exit");
         UserInterface.printCursor();
 
-        while (true) {
-            switch (getScanner().nextLine()) {
-                case "1" -> {
-                    changeDailyLimit();
-                    return;
-                }
-                case "2" -> {
-                    changeMonthlyLimit();
-                    return;
-                }
-                case "3" -> {
-                    updatePersonalInformation();
-                    return;
-                }
-                case "4" -> {
-                    changePassword();
-                    return;
-                }
-                case "x", "X" -> {
-                    return;
-                }
+        switch (getScanner().nextLine()) {
+            case "1" -> changeDailyLimit();
+            case "2" -> changeMonthlyLimit();
+            case "3" -> updatePersonalInformation();
+            case "4" -> changePassword();
+            case "x", "X" -> start();
+            default -> {
+                printWrongInputMessage();
+                settings();
             }
         }
-
     }
 
     private void changeMonthlyLimit() {
@@ -280,7 +267,7 @@ public class AccountOwnerPanel extends UserPanel {
                     viewHistory();
                 }
                 case "5" -> {
-                    account.getTransactionHistory().forEach(transaction -> {
+                    transactions.forEach(transaction -> {
                         UserInterface.printBorder();
                         System.out.println(transaction);
                     });
@@ -297,8 +284,10 @@ public class AccountOwnerPanel extends UserPanel {
     private void viewHistory() {
         System.out.println("(1) Select time frame");
         System.out.println("(2) Sort by amount");
-        System.out.println("(3) Filter by type");
+        System.out.println("(3) Sort by type");
         System.out.println("(4) Filter by amount range");
+        System.out.println("(5) Filter by type");
+        System.out.println("(6) Reset to default (removes filters and change sorting method to default - by date)");
         System.out.println("(X) Exit");
         UserInterface.printCursor();
 
@@ -309,15 +298,26 @@ public class AccountOwnerPanel extends UserPanel {
                 start();
             }
             case "3" -> {
-                this.transactions = getTransactionHistoryFilteredByType();
+                this.transactions = account.getTransactionsSortedByType(transactions);
                 start();
             }
             case "4" -> {
-//                this.transactions = account.filterTransactionsByAmountRange();
+                this.transactions = getTransactionHistoryFilteredByAmountRange();
+                start();
+            }
+            case "5" -> {
+                this.transactions = getTransactionHistoryFilteredByType();
+                start();
+            }
+            case "6" -> {
+                this.transactions = account.getTransactionHistory();
                 start();
             }
             case "x", "X" -> start();
-
+            default -> {
+                printWrongInputMessage();
+                viewHistory();
+            }
         }
     }
 
@@ -336,12 +336,31 @@ public class AccountOwnerPanel extends UserPanel {
             case "3" -> type = TRANSFER;
             case "x", "X" -> start();
             default -> {
-                System.out.println("Wrong input.");
+                printWrongInputMessage();
                 getTransactionHistoryFilteredByType();
             }
         }
 
         return account.filterTransactionsByType(type);
+    }
+
+    private void printWrongInputMessage() {
+        System.out.println("Wrong input.");
+    }
+
+    private List<Transaction> getTransactionHistoryFilteredByAmountRange() {
+        System.out.print("Provide the start of amount range: ");
+        String startOfRange = getScanner().nextLine();
+        String endOfRange = "";
+
+        if (NumberValidator.validate(startOfRange)) {
+            System.out.print("Provide the end of amount range: ");
+            endOfRange = getScanner().nextLine();
+            if (!NumberValidator.validate(endOfRange)) getTransactionHistoryFilteredByAmountRange();
+            else if (new BigDecimal(startOfRange).compareTo(new BigDecimal(endOfRange)) >-1) System.out.println("Start of the amount range must be smaller than end of the amount range.");
+        } else getTransactionHistoryFilteredByAmountRange();
+
+        return account.filterTransactionsByAmountRange(new BigDecimal(startOfRange), new BigDecimal(endOfRange), transactions);
     }
 
     private void changePassword() {

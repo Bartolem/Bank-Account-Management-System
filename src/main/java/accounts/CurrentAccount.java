@@ -46,11 +46,11 @@ public class CurrentAccount extends Account {
         BigDecimal availableBalance = getBalance().add(overdraftLimit);
 
         if (amount.compareTo(availableBalance) < 1) {
-            if (!checkDailyLimit(amount)) {
+            if (checkDailyLimit(amount)) {
                 System.out.println("Daily limit exceeded.");
                 return false;
             }
-            if (!checkMonthlyLimit(amount)) {
+            if (checkMonthlyLimit(amount)) {
                 System.out.println("Monthly limit exceeded.");
                 return false;
             }

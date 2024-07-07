@@ -158,12 +158,12 @@ public abstract class Account {
 
     public boolean checkDailyLimit(BigDecimal amount) {
         LocalDate today = LocalDate.now();
-        return getDailyUsage(today).add(amount).compareTo(dailyLimit) <= 0;
+        return getDailyUsage(today).add(amount).compareTo(dailyLimit) > 0;
     }
 
     public boolean checkMonthlyLimit(BigDecimal amount) {
         YearMonth currentMonth = YearMonth.now();
-        return getMonthlyUsage(currentMonth).add(amount).compareTo(monthlyLimit) <= 0;
+        return getMonthlyUsage(currentMonth).add(amount).compareTo(monthlyLimit) > 0;
     }
 
     public void block() {
@@ -201,11 +201,11 @@ public abstract class Account {
 
     public boolean withdraw(BigDecimal amount) {
         if (isPositiveAmount(amount) && isPositiveAmount(getBalance().subtract(amount))) {
-            if (!checkDailyLimit(amount)) {
+            if (checkDailyLimit(amount)) {
                 System.out.println("Daily limit exceeded");
                 return false;
             }
-            if (!checkMonthlyLimit(amount)) {
+            if (checkMonthlyLimit(amount)) {
                 System.out.println("Monthly limit exceeded");
                 return false;
             }

@@ -61,11 +61,11 @@ public class SavingsAccount extends Account {
     @Override
     public boolean withdraw(BigDecimal amount) {
         if ((getBalance().subtract(amount).compareTo(SavingsAccount.minBalance) > -1)) {
-            if (!checkDailyLimit(amount)) {
+            if (checkDailyLimit(amount)) {
                 System.out.println("Daily limit exceeded");
                 return false;
             }
-            if (!checkMonthlyLimit(amount)) {
+            if (checkMonthlyLimit(amount)) {
                 System.out.println("Monthly limit exceeded");
                 return false;
             }
