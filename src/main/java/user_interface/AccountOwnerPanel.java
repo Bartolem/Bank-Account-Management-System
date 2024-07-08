@@ -11,7 +11,7 @@ import users.Address;
 import users.Person;
 import users.PersonDetail;
 import users.User;
-import validation.NumberValidator;
+import validation.Validation;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -40,10 +40,14 @@ public class AccountOwnerPanel extends UserPanel {
         this.userInterface = userInterface;
     }
 
-    @Override
-    public void start() {
+    public void initialize() {
         loadFromFile();
         greetings();
+        start();
+    }
+
+    @Override
+    public void start() {
         System.out.println();
         UserInterface.printBorder();
         System.out.printf("Account number: %32d \n", account.getAccountNumber());
@@ -65,8 +69,13 @@ public class AccountOwnerPanel extends UserPanel {
             case "3" -> transfer();
             case "4" -> viewHistory();
             case "5" -> settings();
-            case "x", "X" -> userInterface.start();
+            case "x", "X" -> logout();
         }
+    }
+
+    private void logout() {
+        // Back to the start panel of application
+        userInterface.start();
     }
 
     private void deposit() {
@@ -75,15 +84,18 @@ public class AccountOwnerPanel extends UserPanel {
         String input = getScanner().nextLine();
         BigDecimal amount = new BigDecimal(0);
 
-        if (NumberValidator.validate(input)) {
+        if (input.equalsIgnoreCase("x")) start();
+        else if (Validation.validateNumber(input)) {
             amount = new BigDecimal(input);
-        } else {
-            deposit();
-        }
+        } else deposit();
         if (account.deposit(amount)) {
             printBalanceAfterTransaction(DEPOSIT.getOperator(), amount);
             saveToFile();
-        } else printFailedMessage(action);
+            start();
+        } else {
+            printFailedMessage(action);
+            start();
+        }
     }
 
     private void withdraw() {
@@ -92,15 +104,18 @@ public class AccountOwnerPanel extends UserPanel {
         String input = getScanner().nextLine();
         BigDecimal amount = new BigDecimal(0);
 
-        if (NumberValidator.validate(input)) {
+        if (input.equalsIgnoreCase("x")) start();
+        else if (Validation.validateNumber(input)) {
             amount = new BigDecimal(input);
-        } else {
-            withdraw();
-        }
+        } else withdraw();
         if (account.withdraw(amount)) {
             printBalanceAfterTransaction(WITHDRAW.getOperator(), amount);
             saveToFile();
-        } else printFailedMessage(action);
+            start();
+        } else {
+            printFailedMessage(action);
+            start();
+        }
     }
 
     private void transfer() {
@@ -109,11 +124,10 @@ public class AccountOwnerPanel extends UserPanel {
         String input = getScanner().nextLine();
         BigDecimal amount = new BigDecimal(0);
 
-        if (NumberValidator.validate(input)) {
+        if (input.equalsIgnoreCase("x")) start();
+        else if (Validation.validateNumber(input)) {
             amount = new BigDecimal(input);
-        } else {
-            transfer();
-        }
+        } else transfer();
 
         System.out.print("Enter the account number to which you want to make the transfer: ");
         String accountNumber = getScanner().nextLine();
@@ -124,7 +138,11 @@ public class AccountOwnerPanel extends UserPanel {
         if (account.transfer(amount, Integer.parseInt(accountNumber))) {
             printBalanceAfterTransaction(TRANSFER.getOperator(), amount);
             saveToFile();
-        } else printFailedMessage(action);
+            start();
+        } else {
+            printFailedMessage(action);
+            start();
+        }
     }
 
     private void settings() {
@@ -136,10 +154,22 @@ public class AccountOwnerPanel extends UserPanel {
         UserInterface.printCursor();
 
         switch (getScanner().nextLine()) {
-            case "1" -> changeDailyLimit();
-            case "2" -> changeMonthlyLimit();
-            case "3" -> updatePersonalInformation();
-            case "4" -> changePassword();
+            case "1" -> {
+                changeDailyLimit();
+                start();
+            }
+            case "2" -> {
+                changeMonthlyLimit();
+                start();
+            }
+            case "3" -> {
+                updatePersonalInformation();
+                start();
+            }
+            case "4" -> {
+                changePassword();
+                start();
+            }
             case "x", "X" -> start();
             default -> {
                 printWrongInputMessage();
@@ -158,7 +188,7 @@ public class AccountOwnerPanel extends UserPanel {
             System.out.print("Provided new monthly limit is empty! Try again.");
             settings();
         }
-        if (NumberValidator.validate(input)) account.setMonthlyLimit(new BigDecimal(input));
+        if (Validation.validateNumber(input)) account.setMonthlyLimit(new BigDecimal(input));
     }
 
     private void changeDailyLimit() {
@@ -171,7 +201,7 @@ public class AccountOwnerPanel extends UserPanel {
             System.out.print("Provided new daily limit is empty! Try again.");
             settings();
         }
-        if (NumberValidator.validate(input)) account.setDailyLimit(new BigDecimal(input));
+        if (Validation.validateNumber(input)) account.setDailyLimit(new BigDecimal(input));
     }
 
     private void updatePersonalInformation() {
@@ -184,35 +214,67 @@ public class AccountOwnerPanel extends UserPanel {
         switch (personDetail) {
             case FIRST_NAME -> {
                 oldDetail = person.getFirstName();
-                person.setFirstName(validatedPersonalDetail);
+                if (!validatedPersonalDetail.equals(oldDetail)) person.setFirstName(validatedPersonalDetail);
+                else {
+                    printSameDetailMessage();
+                    start();
+                }
             }
             case LAST_NAME -> {
                 oldDetail = person.getLastName();
-                person.setLastName(validatedPersonalDetail);
+                if (!validatedPersonalDetail.equals(oldDetail)) person.setLastName(validatedPersonalDetail);
+                else {
+                    printSameDetailMessage();
+                    start();
+                }
             }
             case STREET_ADDRESS -> {
                 oldDetail = address.getStreetAddress();
-                address.setStreetAddress(validatedPersonalDetail);
+                if (!validatedPersonalDetail.equals(oldDetail)) address.setStreetAddress(validatedPersonalDetail);
+                else {
+                    printSameDetailMessage();
+                    start();
+                }
             }
             case CITY -> {
                 oldDetail = address.getCity();
-                address.setCity(validatedPersonalDetail);
+                if (!validatedPersonalDetail.equals(oldDetail)) address.setCity(validatedPersonalDetail);
+                else {
+                    printSameDetailMessage();
+                    start();
+                }
             }
             case COUNTRY -> {
                 oldDetail = address.getCountry();
-                address.setCountry(validatedPersonalDetail);
+                if (!validatedPersonalDetail.equals(oldDetail)) address.setCountry(validatedPersonalDetail);
+                else {
+                    printSameDetailMessage();
+                    start();
+                }
             }
             case ZIP_CODE -> {
                 oldDetail = address.getZipCode();
-                address.setZipCode(validatedPersonalDetail);
+                if (!validatedPersonalDetail.equals(oldDetail)) address.setZipCode(validatedPersonalDetail);
+                else {
+                    printSameDetailMessage();
+                    start();
+                }
             }
             case EMAIL -> {
                 oldDetail = person.getEmail();
-                person.setEmail(validatedPersonalDetail);
+                if (!validatedPersonalDetail.equals(oldDetail)) person.setEmail(validatedPersonalDetail);
+                else {
+                    printSameDetailMessage();
+                    start();
+                }
             }
             case PHONE_NUMBER -> {
                 oldDetail = person.getPhone();
-                person.setPhone(validatedPersonalDetail);
+                if (!validatedPersonalDetail.equals(oldDetail)) person.setPhone(validatedPersonalDetail);
+                else {
+                    printSameDetailMessage();
+                    start();
+                }
             }
         }
 
@@ -232,52 +294,48 @@ public class AccountOwnerPanel extends UserPanel {
 
         LocalDate date = LocalDate.now();
 
-        while (true) {
-            switch (getScanner().nextLine()) {
-                case "1" -> {
-                    account.getTransactionsForDay(date, transactions).forEach(transaction -> {
-                        UserInterface.printBorder();
-                        System.out.println(transaction);
-                    });
+        switch (getScanner().nextLine()) {
+            case "1" -> {
+                account.getTransactionsForDay(date, transactions).forEach(transaction -> {
                     UserInterface.printBorder();
-                    viewHistory();
-                }
-                case "2" -> {
-                    account.getTransactionsForWeek(date, transactions).forEach(transaction -> {
-                        UserInterface.printBorder();
-                        System.out.println(transaction);
-                    });
-                    UserInterface.printBorder();
-                    viewHistory();
-                }
-                case "3" -> {
-                    account.getTransactionsForMonth(date, transactions).forEach(transaction -> {
-                        UserInterface.printBorder();
-                        System.out.println(transaction);
-                    });
-                    UserInterface.printBorder();
-                    viewHistory();
-                }
-                case "4" -> {
-                    account.getTransactionsForYear(date, transactions).forEach(transaction -> {
-                        UserInterface.printBorder();
-                        System.out.println(transaction);
-                    });
-                    UserInterface.printBorder();
-                    viewHistory();
-                }
-                case "5" -> {
-                    transactions.forEach(transaction -> {
-                        UserInterface.printBorder();
-                        System.out.println(transaction);
-                    });
-                    UserInterface.printBorder();
-                    viewHistory();
-                }
-                case "x", "X" -> {
-                    return;
-                }
+                    System.out.println(transaction);
+                });
+                UserInterface.printBorder();
+                viewHistory();
             }
+            case "2" -> {
+                account.getTransactionsForWeek(date, transactions).forEach(transaction -> {
+                    UserInterface.printBorder();
+                    System.out.println(transaction);
+                });
+                UserInterface.printBorder();
+                viewHistory();
+            }
+            case "3" -> {
+                account.getTransactionsForMonth(date, transactions).forEach(transaction -> {
+                    UserInterface.printBorder();
+                    System.out.println(transaction);
+                });
+                UserInterface.printBorder();
+                viewHistory();
+            }
+            case "4" -> {
+                account.getTransactionsForYear(date, transactions).forEach(transaction -> {
+                    UserInterface.printBorder();
+                    System.out.println(transaction);
+                });
+                UserInterface.printBorder();
+                viewHistory();
+            }
+            case "5" -> {
+                account.getTransactionHistory().forEach(transaction -> {
+                    UserInterface.printBorder();
+                    System.out.println(transaction);
+                });
+                UserInterface.printBorder();
+                viewHistory();
+            }
+            case "x", "X" -> start();
         }
     }
 
@@ -353,10 +411,10 @@ public class AccountOwnerPanel extends UserPanel {
         String startOfRange = getScanner().nextLine();
         String endOfRange = "";
 
-        if (NumberValidator.validate(startOfRange)) {
+        if (Validation.validateNumber(startOfRange)) {
             System.out.print("Provide the end of amount range: ");
             endOfRange = getScanner().nextLine();
-            if (!NumberValidator.validate(endOfRange)) getTransactionHistoryFilteredByAmountRange();
+            if (!Validation.validateNumber(endOfRange)) getTransactionHistoryFilteredByAmountRange();
             else if (new BigDecimal(startOfRange).compareTo(new BigDecimal(endOfRange)) >-1) System.out.println("Start of the amount range must be smaller than end of the amount range.");
         } else getTransactionHistoryFilteredByAmountRange();
 
@@ -388,7 +446,7 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void provideAmountMessage(String action) {
-        System.out.print("Provide the amount you want to " + action + ": ");
+        System.out.print("Provide the amount you want to " + action + ": (Type X to cancel) ");
     }
 
     private void printBalanceAfterTransaction(char operator, BigDecimal amount) {
@@ -398,6 +456,10 @@ public class AccountOwnerPanel extends UserPanel {
 
     private void printFailedMessage(String action) {
         System.out.println(action + " process failed.");
+    }
+
+    private void printSameDetailMessage() {
+        System.out.println("Provided new detail is the same as the current one. No changes has been made.");
     }
 
     private void loadFromFile() {

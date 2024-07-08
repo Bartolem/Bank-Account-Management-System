@@ -32,10 +32,14 @@ public class UserInterface {
         this.accountCreation = new AccountCreation(scanner);
     }
 
-    public void start() {
+    public void initialize() {
         FileManipulator.loadDataFromFile();
-        printLogo();
         System.out.println("Welcome to Bartolem's Online Banking Application.");
+        start();
+    }
+
+    public void start() {
+        printLogo();
 
         loop: while (true) {
             printStartingMessage();
@@ -48,7 +52,6 @@ public class UserInterface {
                 case "2":
                     // Create new account
                     accountCreation();
-                    FileManipulator.loadDataFromFile();
                     break;
                 case "x", "X":
                     // Exit
@@ -94,7 +97,7 @@ public class UserInterface {
 
     private void login() {
         printLoginMessage();
-        System.out.print("ID: ");
+        System.out.print("Enter your user ID: ");
         String ID = scanner.nextLine();
 
         if (ID.equalsIgnoreCase("X")) {
@@ -119,7 +122,7 @@ public class UserInterface {
             int accountNumber = Integer.parseInt(scanner.nextLine());
             if (login.verifyAccount(accountNumber)) {
                 // Open account owner panel using ID, and account number
-                new AccountOwnerPanel(ID, scanner, accountNumber, userCreation, this).start();
+                new AccountOwnerPanel(ID, scanner, accountNumber, userCreation, this).initialize();
                 FileManipulator.saveDataToFile();
             } else login();
         }

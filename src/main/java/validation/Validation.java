@@ -1,5 +1,6 @@
 package validation;
 
+import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,5 +23,15 @@ public class Validation {
         Pattern pattern = Pattern.compile("^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
+    }
+
+    public static boolean validateNumber(String number) {
+        try {
+            new BigDecimal(number);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println("Enter only numbers.");
+            return false;
+        }
     }
 }

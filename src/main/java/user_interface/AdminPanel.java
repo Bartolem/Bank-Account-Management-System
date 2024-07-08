@@ -5,7 +5,7 @@ import accounts.CurrentAccount;
 import accounts.SavingsAccount;
 import file_manipulation.*;
 import users.User;
-import validation.NumberValidator;
+import validation.Validation;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -108,21 +108,21 @@ public class AdminPanel extends UserPanel {
             case "1" -> {
                 System.out.print("Interest rate: ");
                 input = getScanner().nextLine();
-                if (NumberValidator.validate(input)) {
+                if (Validation.validateNumber(input)) {
                     SavingsAccount.setInterestRate(new BigDecimal((input)));
                 }
             }
             case "2" -> {
                 System.out.print("Minimal balance: ");
                 input = getScanner().nextLine();
-                if (NumberValidator.validate(input)) {
+                if (Validation.validateNumber(input)) {
                     SavingsAccount.setMinBalance(new BigDecimal(input));
                 }
             }
             case "3" -> {
                 System.out.print("Overdraft limit: ");
                 input = getScanner().nextLine();
-                if (NumberValidator.validate(input)) {
+                if (Validation.validateNumber(input)) {
                     CurrentAccount.setOverdraftLimit(new BigDecimal(input));
                 }
             }
