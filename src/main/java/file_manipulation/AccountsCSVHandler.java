@@ -5,13 +5,46 @@ import bank.Bank;
 import currencies.CurrencyCodes;
 import users.Admin;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Objects;
+import java.io.*;
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.logging.Logger;
 
-public class CSVToAccounts {
+public class AccountsCSVHandler {
+    private static final Logger LOGGER = Logger.getLogger(AccountNumberCSVHandler.class.getName());
+
+    public static void write(ArrayList<Account> accounts, String fileName) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            // Write headers
+            writer.write("Account type,Account number,Status,Owner ID,Owner personal name,Currency code,Balance,Creation date,Daily limit,Monthly limit,Daily usage,Monthly usage\n");
+
+            // Write account details
+            for (Account account : accounts) {
+                String line = String.format("%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                        account.getType(),
+                        account.getAccountNumber(),
+                        account.getStatus(),
+                        account.getUser().getPerson().getID(),
+                        account.getOwnerName(),
+                        account.getCurrencyCode(),
+                        account.getBalance(),
+                        account.getCreationDate(),
+                        account.getDailyLimit(),
+                        account.getMonthlyLimit(),
+                        account.getDailyUsage(LocalDate.now()),
+                        account.getMonthlyUsage(YearMonth.now()));
+
+                writer.write(line);
+            }
+            writer.close();
+            LOGGER.info("Accounts successfully saved to " + fileName);
+        } catch (IOException e) {
+            LOGGER.severe("Failed to save accounts to " + fileName + ": " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public static void read(Bank bank, String fileName) {
         try (BufferedReader reader =  new BufferedReader(new FileReader(fileName))) {
             String line = "";
@@ -43,8 +76,9 @@ public class CSVToAccounts {
                     case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
                 }
             }
-            System.out.println("Accounts successfully loaded from " + fileName);
+            LOGGER.info("Accounts successfully loaded from " + fileName);
         } catch (IOException e) {
+            LOGGER.severe("Failed to load account from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

@@ -2,12 +2,12 @@ package user_interface;
 
 import accounts.Account;
 import bank.Bank;
-import file_manipulation.CSVToTransactionHistory;
 import file_manipulation.FileManipulator;
 import file_manipulation.LogoLoader;
-import file_manipulation.TransactionHistoryToCSV;
+import file_manipulation.TransactionHistoryCSVHandler;
 import users.Admin;
 import users.User;
+import validation.Validation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -119,10 +119,10 @@ public class UserInterface {
             } else login();
         } else if (bank.getUser(ID).hasRole(ACCOUNT_OWNER)) {
             System.out.print("Account number: ");
-            int accountNumber = Integer.parseInt(scanner.nextLine());
-            if (login.verifyAccount(accountNumber)) {
+            String accountNumber = scanner.nextLine();
+            if (Validation.validateNumber(accountNumber) && login.verifyAccount(Integer.parseInt(accountNumber))) {
                 // Open account owner panel using ID, and account number
-                new AccountOwnerPanel(ID, scanner, accountNumber, userCreation, this).initialize();
+                new AccountOwnerPanel(ID, scanner, Integer.parseInt(accountNumber), userCreation, this).initialize();
                 FileManipulator.saveDataToFile();
             } else login();
         }
@@ -164,8 +164,8 @@ public class UserInterface {
 
     private void addAccountToBank(Account account) {
         bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        TransactionHistoryToCSV.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
-        CSVToTransactionHistory.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        TransactionHistoryCSVHandler.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        TransactionHistoryCSVHandler.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
         FileManipulator.saveDataToFile();
     }
 

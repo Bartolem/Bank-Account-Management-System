@@ -3,7 +3,7 @@ package accounts;
 import bank.Bank;
 import currencies.CurrencyCodes;
 import currencies.CurrencyFormatter;
-import file_manipulation.TransactionHistoryToCSV;
+import file_manipulation.TransactionHistoryCSVHandler;
 import transaction.Transaction;
 import transaction.TransactionComparators;
 import transaction.TransactionDateRanges;
@@ -157,13 +157,11 @@ public abstract class Account {
     }
 
     public boolean checkDailyLimit(BigDecimal amount) {
-        LocalDate today = LocalDate.now();
-        return getDailyUsage(today).add(amount).compareTo(dailyLimit) > 0;
+        return getDailyUsage(LocalDate.now()).add(amount).compareTo(dailyLimit) > 0;
     }
 
     public boolean checkMonthlyLimit(BigDecimal amount) {
-        YearMonth currentMonth = YearMonth.now();
-        return getMonthlyUsage(currentMonth).add(amount).compareTo(monthlyLimit) > 0;
+        return getMonthlyUsage(YearMonth.now()).add(amount).compareTo(monthlyLimit) > 0;
     }
 
     public void block() {
@@ -247,7 +245,7 @@ public abstract class Account {
     }
 
     protected void saveTransactionHistoryToFile() {
-        TransactionHistoryToCSV.write(transactionHistory, new File("transactions/transaction_history_" + this.accountNumber + ".csv").getAbsolutePath());
+        TransactionHistoryCSVHandler.write(transactionHistory, new File("transactions/transaction_history_" + this.accountNumber + ".csv").getAbsolutePath());
     }
 
     public List<Transaction> getTransactionsSortedByDate(List<Transaction> transactions) {
