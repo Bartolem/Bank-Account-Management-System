@@ -2,8 +2,10 @@ package file_manipulation;
 
 import bank.Bank;
 import currencies.CurrencyCodes;
+import logging.LoggerConfig;
 import transaction.Transaction;
 import transaction.TransactionTypes;
+import user_interface.UserInterface;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class TransactionHistoryCSVHandler {
-    private static final Logger LOGGER = Logger.getLogger(AccountNumberCSVHandler.class.getName());
+    private static final Logger LOGGER = LoggerConfig.getLogger();
 
     public static void write(List<Transaction> transactions, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
@@ -32,9 +34,9 @@ public class TransactionHistoryCSVHandler {
                 writer.write(line);
             }
             writer.close();
-            LOGGER.info("Transactions successfully saved to " + fileName);
+            if (UserInterface.isLoggingEnabled()) LOGGER.info("Transactions successfully saved to " + fileName);
         } catch (IOException e) {
-            LOGGER.severe("Failed to save transactions to " + fileName + ": " + e.getMessage());
+            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to save transactions to " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -56,9 +58,9 @@ public class TransactionHistoryCSVHandler {
                 CurrencyCodes currency = CurrencyCodes.valueOf(fileContent[4]);
                 Bank.getInstance().getAccount(accountNumber).addTransaction(new Transaction(accountNumber, type, date, amount, currency));
             }
-            LOGGER.info("Transactions successfully loaded from  " + fileName);
+            if (UserInterface.isLoggingEnabled()) LOGGER.info("Transactions successfully loaded from  " + fileName);
         } catch (IOException e) {
-            LOGGER.severe("Failed to load transactions from " + fileName + ": " + e.getMessage());
+            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load transactions from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

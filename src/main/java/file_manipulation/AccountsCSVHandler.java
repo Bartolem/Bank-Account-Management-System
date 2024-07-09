@@ -3,6 +3,8 @@ package file_manipulation;
 import accounts.*;
 import bank.Bank;
 import currencies.CurrencyCodes;
+import logging.LoggerConfig;
+import user_interface.UserInterface;
 import users.Admin;
 
 import java.io.*;
@@ -12,7 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 public class AccountsCSVHandler {
-    private static final Logger LOGGER = Logger.getLogger(AccountNumberCSVHandler.class.getName());
+    private static final Logger LOGGER = LoggerConfig.getLogger();
 
     public static void write(ArrayList<Account> accounts, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
@@ -38,9 +40,9 @@ public class AccountsCSVHandler {
                 writer.write(line);
             }
             writer.close();
-            LOGGER.info("Accounts successfully saved to " + fileName);
+            if (UserInterface.isLoggingEnabled()) LOGGER.info("Accounts successfully saved to " + fileName);
         } catch (IOException e) {
-            LOGGER.severe("Failed to save accounts to " + fileName + ": " + e.getMessage());
+            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to save accounts to " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -76,9 +78,9 @@ public class AccountsCSVHandler {
                     case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
                 }
             }
-            LOGGER.info("Accounts successfully loaded from " + fileName);
+            if (UserInterface.isLoggingEnabled()) LOGGER.info("Accounts successfully loaded from " + fileName);
         } catch (IOException e) {
-            LOGGER.severe("Failed to load account from " + fileName + ": " + e.getMessage());
+            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load account from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
