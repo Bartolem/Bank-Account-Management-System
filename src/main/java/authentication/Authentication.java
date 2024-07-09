@@ -1,6 +1,8 @@
 package authentication;
 
 import bank.Bank;
+import logging.LoggerConfig;
+import user_interface.UserInterface;
 import users.User;
 
 import java.io.*;
@@ -8,15 +10,17 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class Authentication {
+    private static final Logger LOGGER = LoggerConfig.getLogger();
     private final HashMap<String, String> userCredentials;
     private static Authentication authentication;
     private final String fileName;
 
     private Authentication() {
         this.userCredentials = new HashMap<>();
-        this.fileName = new File("user_credentials.csv").getAbsolutePath();
+        this.fileName = new File("users/user_credentials.csv").getAbsolutePath();
         loadUserCredentialsFromCSV(fileName);
     }
 
@@ -69,8 +73,9 @@ public class Authentication {
             for (HashMap.Entry<String, String> entry : userCredentials.entrySet()) {
                 writer.println(entry.getKey() + "," + entry.getValue());
             }
-            System.out.println("User credentials saved to " + fileName);
+            if (UserInterface.isLoggingEnabled()) LOGGER.info("User credentials saved to " + fileName);
         } catch (IOException e) {
+            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to save user credentials to " + fileName + ":" + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -84,7 +89,12 @@ public class Authentication {
                     userCredentials.put(parts[0], parts[1]);
                 }
             }
+            if (UserInterface.isLoggingEnabled()) LOGGER.info("User credentials successfully loaded from " + fileName);
+        } catch (FileNotFoundException e) {
+            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load user credentials from " + fileName + ": " + e.getMessage());
+            throw new RuntimeException(e + " The missing file may be due to a lack of setup. Try running application with '-setup' command argument.");
         } catch (IOException e) {
+            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load user credentials from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
