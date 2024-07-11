@@ -296,7 +296,7 @@ public class AccountOwnerPanel extends UserPanel {
 
         switch (getScanner().nextLine()) {
             case "1" -> {
-                account.getTransactionsForDay(date, transactions).forEach(transaction -> {
+                account.getTransactionsForDay(date).forEach(transaction -> {
                     UserInterface.printBorder();
                     System.out.println(transaction);
                 });
@@ -304,7 +304,7 @@ public class AccountOwnerPanel extends UserPanel {
                 viewHistory();
             }
             case "2" -> {
-                account.getTransactionsForWeek(date, transactions).forEach(transaction -> {
+                account.getTransactionsForWeek(date).forEach(transaction -> {
                     UserInterface.printBorder();
                     System.out.println(transaction);
                 });
@@ -312,7 +312,7 @@ public class AccountOwnerPanel extends UserPanel {
                 viewHistory();
             }
             case "3" -> {
-                account.getTransactionsForMonth(date, transactions).forEach(transaction -> {
+                account.getTransactionsForMonth(date).forEach(transaction -> {
                     UserInterface.printBorder();
                     System.out.println(transaction);
                 });
@@ -320,7 +320,7 @@ public class AccountOwnerPanel extends UserPanel {
                 viewHistory();
             }
             case "4" -> {
-                account.getTransactionsForYear(date, transactions).forEach(transaction -> {
+                account.getTransactionsForYear(date).forEach(transaction -> {
                     UserInterface.printBorder();
                     System.out.println(transaction);
                 });
@@ -352,11 +352,11 @@ public class AccountOwnerPanel extends UserPanel {
         switch (getScanner().nextLine()) {
             case "1" -> selectTimeFrame(transactions);
             case "2" -> {
-                this.transactions = account.getTransactionsSortedByAmount(transactions);
+                this.transactions = account.getTransactionsSortedByAmount();
                 start();
             }
             case "3" -> {
-                this.transactions = account.getTransactionsSortedByType(transactions);
+                this.transactions = account.getTransactionsSortedByType();
                 start();
             }
             case "4" -> {
@@ -418,7 +418,7 @@ public class AccountOwnerPanel extends UserPanel {
             else if (new BigDecimal(startOfRange).compareTo(new BigDecimal(endOfRange)) >-1) System.out.println("Start of the amount range must be smaller than end of the amount range.");
         } else getTransactionHistoryFilteredByAmountRange();
 
-        return account.filterTransactionsByAmountRange(new BigDecimal(startOfRange), new BigDecimal(endOfRange), transactions);
+        return account.filterTransactionsByAmountRange(new BigDecimal(startOfRange), new BigDecimal(endOfRange));
     }
 
     private void changePassword() {

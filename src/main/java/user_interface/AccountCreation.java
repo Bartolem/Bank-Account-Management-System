@@ -23,14 +23,14 @@ public class AccountCreation {
     private final Scanner scanner;
     private final UserInterface userInterface;
     private final UserCreation userCreation;
-    private final Registration registration;
+    private final RegistrationService registration;
     private final Bank bank;
 
     public AccountCreation(Scanner scanner, UserInterface userInterface) {
         this.scanner = scanner;
         this.userInterface = userInterface;
         this.userCreation = new UserCreation(scanner, userInterface);
-        this.registration = new Registration();
+        this.registration = new RegistrationService();
         this.bank = Bank.getInstance();
     }
 

@@ -6,11 +6,11 @@ import users.User;
 
 import java.util.Arrays;
 
-public class Registration {
+public class RegistrationService {
     private final Authentication authentication;
     public static final int MIN_ALLOWED_PASSWORD_LENGTH = 6;
 
-    public Registration() {
+    public RegistrationService() {
         this.authentication = Authentication.getInstance();
     }
 
@@ -28,7 +28,7 @@ public class Registration {
 
                 if (checkPasswordsEquality(Arrays.toString(password), Arrays.toString(System.console().readPassword()))) {
                     String ID = user.getPerson().getID();
-                    registerUser(ID, Arrays.toString(password));
+                    authentication.addUserCredentials(ID, Arrays.toString(password));
                     System.out.println("You registration process has been successfully completed.");
                     System.out.println("Account number: " + account.getAccountNumber());
                     System.out.println("ID: " + ID);
@@ -46,9 +46,5 @@ public class Registration {
 
     private boolean checkPasswordsEquality(String password, String repeatedPassword) {
         return password.equals(repeatedPassword);
-    }
-
-    private void registerUser(String ID, String password) {
-        authentication.addUserCredentials(ID, password);
     }
 }

@@ -56,7 +56,7 @@ public class TransactionHistoryCSVHandler {
                 LocalDateTime date = LocalDateTime.parse(fileContent[2], DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
                 BigDecimal amount = new BigDecimal(fileContent[3]);
                 CurrencyCodes currency = CurrencyCodes.valueOf(fileContent[4]);
-                Bank.getInstance().getAccount(accountNumber).addTransaction(new Transaction(accountNumber, type, date, amount, currency));
+                Bank.getInstance().getAccount(accountNumber).getTransactionManager().addTransaction(new Transaction(accountNumber, type, date, amount, currency));
             }
             LOGGER.finest("Transactions successfully loaded from  " + fileName);
         } catch (IOException e) {

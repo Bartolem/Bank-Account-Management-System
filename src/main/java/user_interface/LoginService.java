@@ -40,7 +40,7 @@ public class LoginService {
         char[] password = System.console().readPassword("Enter your password: ");
 
         if (bank.getUser(ID).hasRole(ADMIN)) {
-            if (verifyUser(ID, Arrays.toString(password))) {
+            if (authentication.authenticateUser(ID, Arrays.toString(password))) {
                 // Open admin panel using only ID
                 new AdminPanel(ID, scanner).start();
                 FileManipulator.saveDataToFile();
@@ -56,12 +56,8 @@ public class LoginService {
         }
     }
 
-    private boolean verifyUser(String userID, String password) {
-        return authentication.authenticateUser(userID, password);
-    }
-
     private boolean verifyAccount(int accountNumber, String userID, String password) {
-        if (verifyUser(userID, password)) {
+        if (authentication.authenticateUser(userID, password)) {
             if (Bank.getInstance().getAccount(accountNumber) != null) {
                 System.out.println("Successfully logged.");
                 return true;

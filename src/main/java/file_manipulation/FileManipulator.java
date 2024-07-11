@@ -2,11 +2,13 @@ package file_manipulation;
 
 import bank.Bank;
 import logging.LoggerConfig;
+import transaction.Transaction;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class FileManipulator {
@@ -22,6 +24,10 @@ public class FileManipulator {
         FileManipulator.createEmptyFile(Path.of("users/user_credentials.csv"));
         FileManipulator.createEmptyFile(Path.of("accounts/accounts.csv"));
         FileManipulator.createEmptyFile(Path.of("accounts/account_numbers.csv"));
+    }
+
+    public static void saveTransactionHistoryToFile(List<Transaction> transactionHistory, int accountNumber) {
+        TransactionHistoryCSVHandler.write(transactionHistory, new File("transactions/transaction_history_" + accountNumber + ".csv").getAbsolutePath());
     }
 
     public static void loadDataFromFile() {
