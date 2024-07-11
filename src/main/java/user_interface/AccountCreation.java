@@ -3,7 +3,7 @@ package user_interface;
 import accounts.*;
 import currencies.CurrencyCodes;
 import users.User;
-import validation.NumberValidator;
+import validation.Validation;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -108,7 +108,7 @@ public class AccountCreation {
                 printCursor();
 
                 String input = scanner.nextLine();
-                if (NumberValidator.validate(input)) {
+                if (Validation.validateNumber(input)) {
                     initialBalance = new BigDecimal(input);
                     break;
                 }

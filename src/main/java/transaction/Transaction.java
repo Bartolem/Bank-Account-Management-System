@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction> {
     private final int accountNumber;
     private final TransactionTypes type;
     private final LocalDateTime date;
@@ -29,8 +29,12 @@ public class Transaction {
         return type;
     }
 
-    public String getDate() {
+    public String getFormattedDate() {
         return date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+    }
+
+    public LocalDateTime getDate() {
+        return date;
     }
 
     public BigDecimal getAmount() {
@@ -43,6 +47,11 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "%s\nDate: %s\nAmount: %s\nCurrency: %s".formatted(type, getDate(), amount, currencyCode);
+        return "%s\nDate: %s\nAmount: %s\nCurrency: %s".formatted(type, getFormattedDate(), amount, currencyCode);
+    }
+
+    @Override
+    public int compareTo(Transaction other) {
+        return this.date.compareTo(other.date);
     }
 }

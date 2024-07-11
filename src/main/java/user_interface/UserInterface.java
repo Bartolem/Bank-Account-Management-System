@@ -2,12 +2,12 @@ package user_interface;
 
 import accounts.Account;
 import bank.Bank;
-import file_manipulation.CSVToTransactionHistory;
 import file_manipulation.FileManipulator;
 import file_manipulation.LogoLoader;
-import file_manipulation.TransactionHistoryToCSV;
+import file_manipulation.TransactionHistoryCSVHandler;
 import users.Admin;
 import users.User;
+import validation.Validation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,11 +32,14 @@ public class UserInterface {
         this.accountCreation = new AccountCreation(scanner);
     }
 
-    public void start() {
+    public void initialize() {
         FileManipulator.loadDataFromFile();
         printLogo();
         System.out.println("Welcome to Bartolem's Online Banking Application.");
+        start();
+    }
 
+    public void start() {
         loop: while (true) {
             printStartingMessage();
             printCursor();
@@ -48,10 +51,8 @@ public class UserInterface {
                 case "2":
                     // Create new account
                     accountCreation();
-                    FileManipulator.loadDataFromFile();
                     break;
-                case "X":
-                case "x":
+                case "x", "X":
                     // Exit
                     break loop;
             }
@@ -95,7 +96,7 @@ public class UserInterface {
 
     private void login() {
         printLoginMessage();
-        System.out.print("ID: ");
+        System.out.print("Enter your user ID: ");
         String ID = scanner.nextLine();
 
         if (ID.equalsIgnoreCase("X")) {
@@ -112,17 +113,15 @@ public class UserInterface {
         if (bank.getUser(ID).hasRole(ADMIN)) {
             if (login.verifyUser()) {
                 // Open admin panel using only ID
-                AdminPanel adminPanel = new AdminPanel(ID, scanner);
-                adminPanel.start();
+                new AdminPanel(ID, scanner).start();
                 FileManipulator.saveDataToFile();
             } else login();
         } else if (bank.getUser(ID).hasRole(ACCOUNT_OWNER)) {
             System.out.print("Account number: ");
-            int accountNumber = Integer.parseInt(scanner.nextLine());
-            if (login.verifyAccount(accountNumber)) {
+            String accountNumber = scanner.nextLine();
+            if (Validation.validateNumber(accountNumber) && login.verifyAccount(Integer.parseInt(accountNumber))) {
                 // Open account owner panel using ID, and account number
-                AccountOwnerPanel ownerPanel = new AccountOwnerPanel(ID, scanner, accountNumber, userCreation);
-                ownerPanel.start();
+                new AccountOwnerPanel(ID, scanner, Integer.parseInt(accountNumber), userCreation, this).initialize();
                 FileManipulator.saveDataToFile();
             } else login();
         }
@@ -164,8 +163,8 @@ public class UserInterface {
 
     private void addAccountToBank(Account account) {
         bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        TransactionHistoryToCSV.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
-        CSVToTransactionHistory.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        TransactionHistoryCSVHandler.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        TransactionHistoryCSVHandler.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
         FileManipulator.saveDataToFile();
     }
 

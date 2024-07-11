@@ -3,8 +3,10 @@ package accounts;
 import bank.Bank;
 import currencies.CurrencyCodes;
 import currencies.CurrencyFormatter;
-import file_manipulation.TransactionHistoryToCSV;
+import file_manipulation.TransactionHistoryCSVHandler;
 import transaction.Transaction;
+import transaction.TransactionComparators;
+import transaction.TransactionDateRanges;
 import transaction.TransactionTypes;
 import users.User;
 
@@ -15,10 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Account {
     private final CurrencyCodes currencyCode;
@@ -157,13 +157,11 @@ public abstract class Account {
     }
 
     public boolean checkDailyLimit(BigDecimal amount) {
-        LocalDate today = LocalDate.now();
-        return getDailyUsage(today).add(amount).compareTo(dailyLimit) <= 0;
+        return getDailyUsage(LocalDate.now()).add(amount).compareTo(dailyLimit) > 0;
     }
 
     public boolean checkMonthlyLimit(BigDecimal amount) {
-        YearMonth currentMonth = YearMonth.now();
-        return getMonthlyUsage(currentMonth).add(amount).compareTo(monthlyLimit) <= 0;
+        return getMonthlyUsage(YearMonth.now()).add(amount).compareTo(monthlyLimit) > 0;
     }
 
     public void block() {
@@ -201,11 +199,11 @@ public abstract class Account {
 
     public boolean withdraw(BigDecimal amount) {
         if (isPositiveAmount(amount) && isPositiveAmount(getBalance().subtract(amount))) {
-            if (!checkDailyLimit(amount)) {
+            if (checkDailyLimit(amount)) {
                 System.out.println("Daily limit exceeded");
                 return false;
             }
-            if (!checkMonthlyLimit(amount)) {
+            if (checkMonthlyLimit(amount)) {
                 System.out.println("Monthly limit exceeded");
                 return false;
             }
@@ -247,7 +245,63 @@ public abstract class Account {
     }
 
     protected void saveTransactionHistoryToFile() {
-        TransactionHistoryToCSV.write(transactionHistory, new File("transactions/transaction_history_" + this.accountNumber + ".csv").getAbsolutePath());
+        TransactionHistoryCSVHandler.write(transactionHistory, new File("transactions/transaction_history_" + this.accountNumber + ".csv").getAbsolutePath());
+    }
+
+    public List<Transaction> getTransactionsSortedByDate(List<Transaction> transactions) {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactions);
+        Collections.sort(sortedTransactions);
+        return sortedTransactions;
+    }
+
+    public List<Transaction> getTransactionsSortedByAmount(List<Transaction> transactions) {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactions);
+        sortedTransactions.sort(TransactionComparators.byAmount());
+        return sortedTransactions;
+    }
+
+    public List<Transaction> getTransactionsSortedByType(List<Transaction> transactions) {
+        List<Transaction> sortedTransactions = new ArrayList<>(transactions);
+        sortedTransactions.sort(TransactionComparators.byType());
+        return sortedTransactions;
+    }
+
+    public List<Transaction> filterTransactionsByType(TransactionTypes type) {
+        return transactionHistory.stream()
+                .filter(transaction -> transaction.getType() == type)
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> filterTransactionsByDateRange(LocalDateTime startDate, LocalDateTime endDate, List<Transaction> transactions) {
+        return transactions.stream()
+                .filter(transaction -> !transaction.getDate().isBefore(startDate) && !transaction.getDate().isAfter(endDate))
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> filterTransactionsByAmountRange(BigDecimal minAmount, BigDecimal maxAmount, List<Transaction> transactions) {
+        return transactions.stream()
+                .filter(transaction -> transaction.getAmount().compareTo(minAmount) >= 0 && transaction.getAmount().compareTo(maxAmount) <= 0)
+                .collect(Collectors.toList());
+    }
+
+    public List<Transaction> getTransactionsForDay(LocalDate date, List<Transaction> transactions) {
+        LocalDateTime[] range = TransactionDateRanges.getDayRange(date);
+        return filterTransactionsByDateRange(range[0], range[1], transactions);
+    }
+
+    public List<Transaction> getTransactionsForWeek(LocalDate date, List<Transaction> transactions) {
+        LocalDateTime[] range = TransactionDateRanges.getWeekRange(date);
+        return filterTransactionsByDateRange(range[0], range[1], transactions);
+    }
+
+    public List<Transaction> getTransactionsForMonth(LocalDate date, List<Transaction> transactions) {
+        LocalDateTime[] range = TransactionDateRanges.getMonthRange(date);
+        return filterTransactionsByDateRange(range[0], range[1], transactions);
+    }
+
+    public List<Transaction> getTransactionsForYear(LocalDate date, List<Transaction> transactions) {
+        LocalDateTime[] range = TransactionDateRanges.getYearRange(date);
+        return filterTransactionsByDateRange(range[0], range[1], transactions);
     }
 
     @Override

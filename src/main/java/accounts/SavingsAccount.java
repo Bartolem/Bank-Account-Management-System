@@ -2,7 +2,7 @@ package accounts;
 
 import bank.Bank;
 import currencies.CurrencyCodes;
-import file_manipulation.TransactionHistoryToCSV;
+import file_manipulation.TransactionHistoryCSVHandler;
 import transaction.Transaction;
 import transaction.TransactionTypes;
 import users.User;
@@ -61,11 +61,11 @@ public class SavingsAccount extends Account {
     @Override
     public boolean withdraw(BigDecimal amount) {
         if ((getBalance().subtract(amount).compareTo(SavingsAccount.minBalance) > -1)) {
-            if (!checkDailyLimit(amount)) {
+            if (checkDailyLimit(amount)) {
                 System.out.println("Daily limit exceeded");
                 return false;
             }
-            if (!checkMonthlyLimit(amount)) {
+            if (checkMonthlyLimit(amount)) {
                 System.out.println("Monthly limit exceeded");
                 return false;
             }
@@ -78,7 +78,7 @@ public class SavingsAccount extends Account {
             super.getTransactionHistory().add(new Transaction(getAccountNumber(), TransactionTypes.WITHDRAW, LocalDateTime.now(), amount, getCurrencyCode()));
             // Checks if the account exist in bank. Accounts created by unit testing are not included, so we don't need to save their transaction history.
             if (Bank.getInstance().contains(getAccountNumber())) {
-                TransactionHistoryToCSV.write(getTransactionHistory(), new File("transactions/transaction_history_" + getAccountNumber() + ".csv").getAbsolutePath());
+                TransactionHistoryCSVHandler.write(getTransactionHistory(), new File("transactions/transaction_history_" + getAccountNumber() + ".csv").getAbsolutePath());
             }
             return true;
         }
