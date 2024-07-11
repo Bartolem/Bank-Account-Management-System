@@ -16,12 +16,12 @@ public class Authentication {
     private static final Logger LOGGER = LoggerConfig.getLogger();
     private final HashMap<String, String> userCredentials;
     private static Authentication authentication;
-    private final String fileName;
+    private final String filePath;
 
     private Authentication() {
         this.userCredentials = new HashMap<>();
-        this.fileName = new File("users/user_credentials.csv").getAbsolutePath();
-        loadUserCredentialsFromCSV(fileName);
+        this.filePath = new File("users/user_credentials.csv").getAbsolutePath();
+        loadUserCredentialsFromCSV(filePath);
     }
 
     public static Authentication getInstance() {
@@ -37,7 +37,7 @@ public class Authentication {
 
     public void addUserCredentials(String ID, String password) {
         userCredentials.put(ID, hashPassword(password));
-        saveUserCredentialsToCSV(userCredentials, fileName);
+        saveUserCredentialsToCSV(userCredentials, filePath);
     }
 
     public boolean authenticateUser(String ID, String password) {
