@@ -1,29 +1,72 @@
 package user_interface;
 
 import accounts.*;
+import bank.Bank;
 import currencies.CurrencyCodes;
+import file_manipulation.FileManipulator;
+import file_manipulation.TransactionHistoryCSVHandler;
+import users.Admin;
 import users.User;
 import validation.Validation;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 import static accounts.AccountTypes.*;
+import static user_interface.UserInterface.printCursor;
 
 public class AccountCreation {
     private final Scanner scanner;
+    private final UserInterface userInterface;
+    private final UserCreation userCreation;
+    private final Registration registration;
+    private final Bank bank;
 
-    public AccountCreation(Scanner scanner) {
+    public AccountCreation(Scanner scanner, UserInterface userInterface) {
         this.scanner = scanner;
+        this.userInterface = userInterface;
+        this.userCreation = new UserCreation(scanner, userInterface);
+        this.registration = new Registration();
+        this.bank = Bank.getInstance();
     }
 
-    private void printCursor() {
-        System.out.print("> ");
+    public void register() {
+        System.out.println("Have you used our bank's services before? (y/n)");
+        printCursor();
+        String answer = scanner.nextLine();
+
+        User user;
+
+        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+            System.out.println("Enter your user ID: ");
+            printCursor();
+
+            String ID = scanner.nextLine();
+            user = bank.getUser(ID);
+
+            if (user == null) {
+                System.out.println("There is no user with provided ID.");
+                userInterface.start();
+            } else if (user.getNumberOfOwnedAccounts() == User.MAX_NUMBER_OF_ACCOUNTS) {
+                System.out.println("The limit for the maximum number of accounts to be created has been reached");
+                userInterface.start();
+            }
+        } else {
+            user = userCreation.createUser();
+            bank.addUser(user);
+            System.out.println(user);
+        }
+        Account account = createAccount(user);
+        if (registration.register(user, account)) {
+            addAccountToBank(account);
+        } else System.out.println("Registration process failed.");
     }
 
-    protected Account createAccount(User user) {
+    private Account createAccount(User user) {
         AccountTypes accountType = chooseAccountType();
         CurrencyCodes currencyCode = chooseCurrency();
         String initialBalance = String.valueOf(setInitialBalance());
@@ -118,5 +161,12 @@ public class AccountCreation {
         }
 
         return initialBalance;
+    }
+
+    private void addAccountToBank(Account account) {
+        bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
+        TransactionHistoryCSVHandler.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        TransactionHistoryCSVHandler.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        FileManipulator.saveDataToFile();
     }
 }
