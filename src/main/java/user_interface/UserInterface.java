@@ -23,15 +23,13 @@ public class UserInterface {
     private final Registration registration;
     private final UserCreation userCreation;
     private final AccountCreation accountCreation;
-    private static boolean loggingEnabled;
 
-    public UserInterface(boolean loggingEnabled) {
+    public UserInterface() {
         this.bank = Bank.getInstance();
         this.scanner = new Scanner(System.in);
         this.registration = new Registration();
         this.userCreation = new UserCreation(scanner, this);
         this.accountCreation = new AccountCreation(scanner);
-        UserInterface.loggingEnabled = loggingEnabled;
     }
 
     public void initialize() {
@@ -39,10 +37,6 @@ public class UserInterface {
         printLogo();
         System.out.println("Welcome to Bartolem's Online Banking Application.");
         start();
-    }
-
-    public static boolean isLoggingEnabled() {
-        return loggingEnabled;
     }
 
     public void start() {

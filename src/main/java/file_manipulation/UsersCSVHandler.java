@@ -43,9 +43,9 @@ public class UsersCSVHandler {
             }
 
             writer.close();
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Users successfully saved to " + fileName);
+            LOGGER.finest("Users successfully saved to " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to save users to " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to save users to " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -68,9 +68,9 @@ public class UsersCSVHandler {
 
                 bank.addUser(new User(person, ACCOUNT_OWNER));
             }
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Users successfully loaded from " + fileName);
+            LOGGER.finest("Users successfully loaded from " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load users from " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to load users from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

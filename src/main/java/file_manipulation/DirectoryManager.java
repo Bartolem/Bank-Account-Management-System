@@ -16,7 +16,7 @@ public class DirectoryManager {
             try {
                 // Attempt to create the directory
                 Files.createDirectories(directoryPath);
-                LOGGER.info("Directory created successfully: " + directoryPath);
+                LOGGER.finest("Directory created successfully: " + directoryPath);
             } catch (IOException e) {
                 System.out.println();
                 LOGGER.severe("Failed to create directory: " + directoryPath + ":" + e.getMessage());

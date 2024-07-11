@@ -34,9 +34,9 @@ public class TransactionHistoryCSVHandler {
                 writer.write(line);
             }
             writer.close();
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Transactions successfully saved to " + fileName);
+            LOGGER.finest("Transactions successfully saved to " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to save transactions to " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to save transactions to " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -58,9 +58,9 @@ public class TransactionHistoryCSVHandler {
                 CurrencyCodes currency = CurrencyCodes.valueOf(fileContent[4]);
                 Bank.getInstance().getAccount(accountNumber).addTransaction(new Transaction(accountNumber, type, date, amount, currency));
             }
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Transactions successfully loaded from  " + fileName);
+            LOGGER.finest("Transactions successfully loaded from  " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load transactions from " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to load transactions from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

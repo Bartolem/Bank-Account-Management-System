@@ -73,9 +73,9 @@ public class Authentication {
             for (HashMap.Entry<String, String> entry : userCredentials.entrySet()) {
                 writer.println(entry.getKey() + "," + entry.getValue());
             }
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("User credentials saved to " + fileName);
+            LOGGER.finest("User credentials saved to " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to save user credentials to " + fileName + ":" + e.getMessage());
+            LOGGER.severe("Failed to save user credentials to " + fileName + ":" + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -89,12 +89,12 @@ public class Authentication {
                     userCredentials.put(parts[0], parts[1]);
                 }
             }
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("User credentials successfully loaded from " + fileName);
+            LOGGER.finest("User credentials successfully loaded from " + fileName);
         } catch (FileNotFoundException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load user credentials from " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to load user credentials from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e + " The missing file may be due to a lack of setup. Try running application with '-setup' command argument.");
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load user credentials from " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to load user credentials from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

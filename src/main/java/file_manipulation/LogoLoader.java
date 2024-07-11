@@ -20,10 +20,10 @@ public class LogoLoader {
                 resultStringBuilder.append(line).append("\n");
             }
 
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Logo successfully loaded from " + fileName);
+            LOGGER.finest("Logo successfully loaded from " + fileName);
             return resultStringBuilder.toString();
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load logo from " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to load logo from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

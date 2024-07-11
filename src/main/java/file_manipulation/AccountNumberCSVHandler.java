@@ -21,9 +21,9 @@ public class AccountNumberCSVHandler {
             }
 
             writer.close();
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Account numbers successfully saved to " + fileName);
+            LOGGER.finest("Account numbers successfully saved to " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to save account numbers to " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to save account numbers to " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -40,9 +40,9 @@ public class AccountNumberCSVHandler {
                     accountNumbers.add(Integer.valueOf(number));
                 }
             }
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Account numbers successfully loaded from " + fileName);
+            LOGGER.finest("Account numbers successfully loaded from " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load account numbers from " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to load account numbers from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }

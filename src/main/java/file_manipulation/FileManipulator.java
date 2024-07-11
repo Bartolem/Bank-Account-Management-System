@@ -40,7 +40,7 @@ public class FileManipulator {
         try {
             if (Files.notExists(filePath)) {
                 Files.createFile(filePath);
-                LOGGER.info("File created successfully: " + filePath);
+                LOGGER.finest("File created successfully: " + filePath);
             } else {
                 LOGGER.info("File already exists: " + filePath);
             }

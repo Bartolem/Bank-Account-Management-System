@@ -4,7 +4,6 @@ import accounts.*;
 import bank.Bank;
 import currencies.CurrencyCodes;
 import logging.LoggerConfig;
-import user_interface.UserInterface;
 import users.Admin;
 
 import java.io.*;
@@ -40,9 +39,9 @@ public class AccountsCSVHandler {
                 writer.write(line);
             }
             writer.close();
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Accounts successfully saved to " + fileName);
+            LOGGER.finest("Accounts successfully saved to " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to save accounts to " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to save accounts to " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -78,9 +77,9 @@ public class AccountsCSVHandler {
                     case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
                 }
             }
-            if (UserInterface.isLoggingEnabled()) LOGGER.info("Accounts successfully loaded from " + fileName);
+            LOGGER.finest("Accounts successfully loaded from " + fileName);
         } catch (IOException e) {
-            if (UserInterface.isLoggingEnabled()) LOGGER.severe("Failed to load account from " + fileName + ": " + e.getMessage());
+            LOGGER.severe("Failed to load account from " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
     }
