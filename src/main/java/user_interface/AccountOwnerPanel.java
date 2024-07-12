@@ -16,8 +16,10 @@ import validation.Validation;
 import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import static transaction.TransactionTypes.*;
@@ -42,25 +44,16 @@ public class AccountOwnerPanel extends UserPanel {
 
     public void initialize() {
         loadFromFile();
+        checkDailyUsage();
+        checkMonthlyUsage();
         greetings();
         start();
     }
 
     @Override
     public void start() {
-        System.out.println();
-        UserInterface.printBorder();
-        System.out.printf("Account number: %32d \n", account.getAccountNumber());
-        UserInterface.printBorder();
-        System.out.printf("Balance: %40s \n", account.getFormattedBalanceWithCurrency());
-        UserInterface.printBorder();
-        System.out.println("\nChoose action");
-        System.out.println("(1) Deposit");
-        System.out.println("(2) Withdraw");
-        System.out.println("(3) Transfer");
-        System.out.println("(4) View transactions history");
-        System.out.println("(5) Settings");
-        System.out.println("(X) Log out");
+        printInfoMessage();
+        printStartMessage();
         UserInterface.printCursor();
         String action = getScanner().nextLine();
         switch (action) {
@@ -73,9 +66,32 @@ public class AccountOwnerPanel extends UserPanel {
         }
     }
 
+    private void printInfoMessage() {
+        UserInterface.printBorder();
+        System.out.printf("Account number: %32d \n", account.getAccountNumber());
+        UserInterface.printBorder();
+        System.out.printf("Balance: %40s \n", account.getFormattedBalanceWithCurrency());
+        UserInterface.printBorder();
+        System.out.printf("Daily usage: %30s/%s\n", account.getDailyUsage(LocalDate.now()), account.getDailyLimit());
+        UserInterface.printBorder();
+        System.out.printf("Monthly usage: %28s/%s\n", account.getMonthlyUsage(YearMonth.now()), account.getMonthlyLimit());
+        UserInterface.printBorder();
+    }
+
     private void logout() {
         // Back to the start panel of application
         userInterface.start();
+    }
+
+    private void printStartMessage() {
+        System.out.println();
+        System.out.println("\nChoose action");
+        System.out.println("(1) Deposit");
+        System.out.println("(2) Withdraw");
+        System.out.println("(3) Transfer");
+        System.out.println("(4) View transactions history");
+        System.out.println("(5) Settings");
+        System.out.println("(X) Log out");
     }
 
     private void deposit() {
@@ -204,6 +220,22 @@ public class AccountOwnerPanel extends UserPanel {
         if (Validation.validateNumber(input)) account.setDailyLimit(new BigDecimal(input));
     }
 
+    private void checkDailyUsage() {
+        Map<LocalDate, BigDecimal> dailyUsage = account.getLimitManager().getDailyUsage();
+        if (!dailyUsage.isEmpty() && !dailyUsage.containsKey(LocalDate.now())) {
+            account.getLimitManager().resetDailyUsage();
+            saveToFile();
+        }
+    }
+
+    private void checkMonthlyUsage() {
+        Map<YearMonth, BigDecimal> monthlyUsage = account.getLimitManager().getMonthlyUsage();
+        if (!monthlyUsage.isEmpty() && !monthlyUsage.containsKey(YearMonth.now())) {
+            account.getLimitManager().resetMonthlyUsage();
+            saveToFile();
+        }
+    }
+
     private void updatePersonalInformation() {
         Person person = user.getPerson();
         Address address = person.getAddress();
@@ -282,7 +314,7 @@ public class AccountOwnerPanel extends UserPanel {
         System.out.println(oldDetail + " changed to -> " + validatedPersonalDetail);
     }
 
-    private void selectTimeFrame(List<Transaction> transactions) {
+    private void selectTimeFrame() {
         System.out.println("Select time frame");
         System.out.println("(1) Day");
         System.out.println("(2) Week");
@@ -350,7 +382,7 @@ public class AccountOwnerPanel extends UserPanel {
         UserInterface.printCursor();
 
         switch (getScanner().nextLine()) {
-            case "1" -> selectTimeFrame(transactions);
+            case "1" -> selectTimeFrame();
             case "2" -> {
                 this.transactions = account.getTransactionsSortedByAmount();
                 start();
@@ -467,6 +499,6 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void saveToFile() {
-        AccountsCSVHandler.write(getBank().getAllAccounts(), "accounts.csv");
+        AccountsCSVHandler.write(getBank().getAllAccounts(), new File("accounts/accounts.csv").getAbsolutePath());
     }
 }

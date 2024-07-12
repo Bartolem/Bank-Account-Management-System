@@ -81,4 +81,14 @@ public class TransactionManager {
         LocalDateTime[] range = TransactionDateRanges.getYearRange(date);
         return filterTransactionsByDateRange(range[0], range[1]);
     }
+
+    public LocalDateTime getLastTransactionDate(TransactionTypes type) {
+        List<Transaction> filteredTransactionsByType = filterTransactionsByType(type);
+
+        if (filteredTransactionsByType.isEmpty()) {
+            return null;
+        }
+
+        return filteredTransactionsByType.get(filteredTransactionsByType.size() - 1).getDate();
+    }
 }

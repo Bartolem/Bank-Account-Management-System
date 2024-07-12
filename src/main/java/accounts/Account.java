@@ -25,7 +25,7 @@ public abstract class Account {
     private boolean blocked;
     private AccountStatus status;
     private final TransactionManager transactionManager;
-    private final LimitManager limitManager;
+    private LimitManager limitManager;
 
     public Account(User user, CurrencyCodes currencyCode, String balance) {
         this.currencyCode = currencyCode;
@@ -40,16 +40,13 @@ public abstract class Account {
         user.addOwnedAccount(this);
     }
 
-    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status, String dailyLimit, String monthlyLimit, String dailyUsage, String monthlyUsage) {
+    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status, LimitManager limitManager) {
         this(user, currencyCode, balance);
         this.accountNumber = accountNumber;
         this.creationDate = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         this.blocked = blocked;
         this.status = AccountStatus.valueOf(status);
-        this.limitManager.setDailyLimit(new BigDecimal(dailyLimit));
-        this.limitManager.setMonthlyLimit(new BigDecimal(monthlyLimit));
-        this.limitManager.updateDailyUsage(LocalDate.now(), new BigDecimal(dailyUsage));
-        this.limitManager.updateMonthlyUsage(YearMonth.now(), new BigDecimal(monthlyUsage));
+        this.limitManager = limitManager;
         user.addOwnedAccount(this);
     }
 

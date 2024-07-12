@@ -4,12 +4,17 @@ import accounts.*;
 import bank.Bank;
 import currencies.CurrencyCodes;
 import logging.LoggerConfig;
+import transaction.Transaction;
+import transaction.TransactionTypes;
 import users.Admin;
 
 import java.io.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class AccountsCSVHandler {
@@ -18,11 +23,16 @@ public class AccountsCSVHandler {
     public static void write(ArrayList<Account> accounts, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             // Write headers
-            writer.write("Account type,Account number,Status,Owner ID,Owner personal name,Currency code,Balance,Creation date,Daily limit,Monthly limit,Daily usage,Monthly usage\n");
+            writer.write("Account type,Account number,Status,Owner ID,Owner personal name,Currency code,Balance,Creation date,Daily limit,Monthly limit,Daily usage,Monthly usage,Last withdraw date\n");
 
             // Write account details
             for (Account account : accounts) {
-                String line = String.format("%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
+                String lastWithdraw = "";
+                LocalDateTime lastWithdrawDate = account.getTransactionManager().getLastTransactionDate(TransactionTypes.WITHDRAW);
+
+                if (lastWithdrawDate != null) lastWithdraw = String.valueOf(lastWithdrawDate);
+
+                String line = String.format("%s,%d,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
                         account.getType(),
                         account.getAccountNumber(),
                         account.getStatus(),
@@ -34,8 +44,8 @@ public class AccountsCSVHandler {
                         account.getDailyLimit(),
                         account.getMonthlyLimit(),
                         account.getDailyUsage(LocalDate.now()),
-                        account.getMonthlyUsage(YearMonth.now()));
-
+                        account.getMonthlyUsage(YearMonth.now()),
+                        lastWithdraw);
                 writer.write(line);
             }
             writer.close();
@@ -64,17 +74,21 @@ public class AccountsCSVHandler {
                 CurrencyCodes currencyCode = CurrencyCodes.valueOf(fileContent[5]);
                 String balance = fileContent[6];
                 String date = fileContent[7];
-                String dailyLimit = fileContent[8];
-                String monthlyLimit = fileContent[9];
-                String dailyUsage = fileContent[10];
-                String monthlyUsage = fileContent[11];
+                BigDecimal dailyLimit = new BigDecimal(fileContent[8]);
+                BigDecimal monthlyLimit = new BigDecimal(fileContent[9]);
+                BigDecimal dailyUsage = new BigDecimal(fileContent[10]);
+                BigDecimal monthlyUsage = new BigDecimal(fileContent[11]);
                 boolean blocked = status.equals(AccountStatus.BLOCKED.toString());
+
+                LimitManager limitManager = new LimitManager(dailyLimit, monthlyLimit);
+                limitManager.updateDailyUsage(LocalDate.now(), dailyUsage);
+                limitManager.updateMonthlyUsage(YearMonth.now(), monthlyUsage);
 
                 // Create accounts based on type
                 switch (accountType) {
-                    case STANDARD -> bank.addAccount(accountNumber, new StandardAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
-                    case CURRENT -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
-                    case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage), Admin.getInstance());
+                    case STANDARD -> bank.addAccount(accountNumber, new StandardAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, limitManager), Admin.getInstance());
+                    case CURRENT -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, limitManager), Admin.getInstance());
+                    case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, limitManager), Admin.getInstance());
                 }
             }
             LOGGER.finest("Accounts successfully loaded from " + fileName);

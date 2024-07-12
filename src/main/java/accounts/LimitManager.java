@@ -51,11 +51,27 @@ public class LimitManager {
         return getMonthlyUsage(YearMonth.now()).add(amount).compareTo(monthlyLimit) > 0;
     }
 
-    protected void updateDailyUsage(LocalDate date, BigDecimal amount) {
+    public Map<LocalDate, BigDecimal> getDailyUsage() {
+        return dailyUsage;
+    }
+
+    public void updateDailyUsage(LocalDate date, BigDecimal amount) {
         dailyUsage.put(date, getDailyUsage(date).add(amount));
     }
 
-    protected void updateMonthlyUsage(YearMonth month, BigDecimal amount) {
+    public Map<YearMonth, BigDecimal> getMonthlyUsage() {
+        return monthlyUsage;
+    }
+
+    public void updateMonthlyUsage(YearMonth month, BigDecimal amount) {
         monthlyUsage.put(month, getMonthlyUsage(month).add(amount));
+    }
+
+    public void resetDailyUsage() {
+        dailyUsage.clear();
+    }
+
+    public void resetMonthlyUsage() {
+        monthlyUsage.clear();
     }
 }

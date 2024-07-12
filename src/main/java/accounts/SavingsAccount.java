@@ -23,8 +23,8 @@ public class SavingsAccount extends Account {
         super(user, currencyCode, balance);
     }
 
-    public SavingsAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status, String dailyLimit, String monthlyLimit, String dailyUsage, String monthlyUsage) {
-        super(accountNumber, user, currencyCode, balance, date, blocked, status, dailyLimit, monthlyLimit, dailyUsage, monthlyUsage);
+    public SavingsAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status, LimitManager limitManager) {
+        super(accountNumber, user, currencyCode, balance, date, blocked, status, limitManager);
     }
 
     @Override
