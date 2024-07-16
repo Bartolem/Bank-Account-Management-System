@@ -218,46 +218,6 @@ public abstract class Account {
         return false;
     }
 
-    public List<Transaction> getTransactionsSortedByDate() {
-        return transactionManager.getTransactionsSortedByDate();
-    }
-
-    public List<Transaction> getTransactionsSortedByAmount() {
-        return transactionManager.getTransactionsSortedByAmount();
-    }
-
-    public List<Transaction> getTransactionsSortedByType() {
-        return transactionManager.getTransactionsSortedByType();
-    }
-
-    public List<Transaction> filterTransactionsByType(TransactionTypes type) {
-        return transactionManager.filterTransactionsByType(type);
-    }
-
-    public List<Transaction> filterTransactionsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        return transactionManager.filterTransactionsByDateRange(startDate, endDate);
-    }
-
-    public List<Transaction> filterTransactionsByAmountRange(BigDecimal minAmount, BigDecimal maxAmount) {
-        return transactionManager.filterTransactionsByAmountRange(minAmount, maxAmount);
-    }
-
-    public List<Transaction> getTransactionsForDay(LocalDate date) {
-        return transactionManager.getTransactionsForDay(date);
-    }
-
-    public List<Transaction> getTransactionsForWeek(LocalDate date) {
-        return transactionManager.getTransactionsForWeek(date);
-    }
-
-    public List<Transaction> getTransactionsForMonth(LocalDate date) {
-        return transactionManager.getTransactionsForMonth(date);
-    }
-
-    public List<Transaction> getTransactionsForYear(LocalDate date) {
-        return transactionManager.getTransactionsForYear(date);
-    }
-
     @Override
     public String toString() {
         return "\nAccount number: " + accountNumber +

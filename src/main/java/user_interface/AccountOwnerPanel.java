@@ -31,6 +31,7 @@ public class AccountOwnerPanel extends UserPanel {
     private final Authentication authentication;
     private List<Transaction> transactions;
     private final UserInterface userInterface;
+    private final TransactionManager transactionManager;
 
     public AccountOwnerPanel(String ID, Scanner scanner, int accountNumber, UserCreation userCreation, UserInterface userInterface) {
         super(ID, scanner);
@@ -40,6 +41,7 @@ public class AccountOwnerPanel extends UserPanel {
         this.authentication = Authentication.getInstance();
         this.transactions = account.getTransactionHistory();
         this.userInterface = userInterface;
+        this.transactionManager = account.getTransactionManager();
     }
 
     public void initialize() {
@@ -328,7 +330,7 @@ public class AccountOwnerPanel extends UserPanel {
 
         switch (getScanner().nextLine()) {
             case "1" -> {
-                account.getTransactionsForDay(date).forEach(transaction -> {
+                transactionManager.getTransactionsForDay(date, transactions).forEach(transaction -> {
                     UserInterface.printBorder();
                     System.out.println(transaction);
                 });
@@ -336,7 +338,7 @@ public class AccountOwnerPanel extends UserPanel {
                 viewHistory();
             }
             case "2" -> {
-                account.getTransactionsForWeek(date).forEach(transaction -> {
+                transactionManager.getTransactionsForWeek(date, transactions).forEach(transaction -> {
                     UserInterface.printBorder();
                     System.out.println(transaction);
                 });
@@ -344,7 +346,7 @@ public class AccountOwnerPanel extends UserPanel {
                 viewHistory();
             }
             case "3" -> {
-                account.getTransactionsForMonth(date).forEach(transaction -> {
+                transactionManager.getTransactionsForMonth(date, transactions).forEach(transaction -> {
                     UserInterface.printBorder();
                     System.out.println(transaction);
                 });
@@ -352,7 +354,7 @@ public class AccountOwnerPanel extends UserPanel {
                 viewHistory();
             }
             case "4" -> {
-                account.getTransactionsForYear(date).forEach(transaction -> {
+                transactionManager.getTransactionsForYear(date, transactions).forEach(transaction -> {
                     UserInterface.printBorder();
                     System.out.println(transaction);
                 });
@@ -384,11 +386,11 @@ public class AccountOwnerPanel extends UserPanel {
         switch (getScanner().nextLine()) {
             case "1" -> selectTimeFrame();
             case "2" -> {
-                this.transactions = account.getTransactionsSortedByAmount();
+                this.transactions = transactionManager.getTransactionsSortedByAmount(transactions);
                 start();
             }
             case "3" -> {
-                this.transactions = account.getTransactionsSortedByType();
+                this.transactions = transactionManager.getTransactionsSortedByType(transactions);
                 start();
             }
             case "4" -> {
@@ -431,7 +433,7 @@ public class AccountOwnerPanel extends UserPanel {
             }
         }
 
-        return account.filterTransactionsByType(type);
+        return transactionManager.filterTransactionsByType(type);
     }
 
     private void printWrongInputMessage() {
@@ -450,7 +452,7 @@ public class AccountOwnerPanel extends UserPanel {
             else if (new BigDecimal(startOfRange).compareTo(new BigDecimal(endOfRange)) >-1) System.out.println("Start of the amount range must be smaller than end of the amount range.");
         } else getTransactionHistoryFilteredByAmountRange();
 
-        return account.filterTransactionsByAmountRange(new BigDecimal(startOfRange), new BigDecimal(endOfRange));
+        return transactionManager.filterTransactionsByAmountRange(new BigDecimal(startOfRange), new BigDecimal(endOfRange), transactions);
     }
 
     private void changePassword() {

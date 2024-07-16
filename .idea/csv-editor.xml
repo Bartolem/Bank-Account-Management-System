@@ -3,13 +3,6 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\out\artifacts\BankAccountManagementSystem_jar\accounts.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\out\artifacts\BankAccountManagementSystem_jar\accounts\account_numbers.csv">
           <value>
             <Attribute>
