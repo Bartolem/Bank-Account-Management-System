@@ -10,8 +10,8 @@ public class StandardAccount extends Account {
         super(user, currencyCode, balance);
     }
 
-    public StandardAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status, LimitManager limitManager) {
-        super(accountNumber, user, currencyCode, balance, date, blocked, status, limitManager);
+    public StandardAccount(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
+        super(accountNumber, user, currencyCode, balance, date, blocked, status);
     }
 
     @Override

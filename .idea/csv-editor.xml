@@ -17,6 +17,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\out\artifacts\BankAccountManagementSystem_jar\transaction_limits\limits_30007906.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\out\artifacts\BankAccountManagementSystem_jar\transaction_limits\monthly_limits\limits_30007906.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\out\artifacts\BankAccountManagementSystem_jar\transactions\transaction_history_30007906.csv">
           <value>
             <Attribute>

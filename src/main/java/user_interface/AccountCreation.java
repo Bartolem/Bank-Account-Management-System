@@ -4,14 +4,11 @@ import accounts.*;
 import bank.Bank;
 import currencies.CurrencyCodes;
 import file_manipulation.FileManipulator;
-import file_manipulation.TransactionHistoryCSVHandler;
 import users.Admin;
 import users.User;
 import validation.Validation;
 
-import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
@@ -165,8 +162,8 @@ public class AccountCreation {
 
     private void addAccountToBank(Account account) {
         bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        TransactionHistoryCSVHandler.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
-        TransactionHistoryCSVHandler.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        FileManipulator.saveTransactionHistoryToFile(account.getTransactionHistory(), account.getAccountNumber());
+        FileManipulator.saveTransactionLimitToFile(account);
         FileManipulator.saveDataToFile();
     }
 }

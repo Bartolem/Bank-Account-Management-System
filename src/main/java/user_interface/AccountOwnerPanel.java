@@ -1,10 +1,10 @@
 package user_interface;
 
-import accounts.*;
+import accounts.Account;
+import accounts.TransactionManager;
 import authentication.Authentication;
 import currencies.CurrencyFormatter;
-import file_manipulation.AccountsCSVHandler;
-import file_manipulation.TransactionHistoryCSVHandler;
+import file_manipulation.FileManipulator;
 import transaction.Transaction;
 import transaction.TransactionTypes;
 import users.Address;
@@ -13,7 +13,6 @@ import users.PersonDetail;
 import users.User;
 import validation.Validation;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -499,10 +498,12 @@ public class AccountOwnerPanel extends UserPanel {
     }
 
     private void loadFromFile() {
-        TransactionHistoryCSVHandler.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
+        FileManipulator.loadTransactionHistoryFromFile(account.getAccountNumber());
+        FileManipulator.loadTransactionLimitFromFile(account);
     }
 
     private void saveToFile() {
-        AccountsCSVHandler.write(getBank().getAllAccounts(), new File("accounts/accounts.csv").getAbsolutePath());
+         FileManipulator.saveTransactionHistoryToFile(transactions, account.getAccountNumber());
+         FileManipulator.saveTransactionLimitToFile(account);
     }
 }

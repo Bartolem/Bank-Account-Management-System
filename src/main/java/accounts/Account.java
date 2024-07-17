@@ -21,18 +21,18 @@ public abstract class Account {
     private int accountNumber;
     private BigDecimal balance;
     private final User user;
-    private LocalDateTime creationDate;
+    private LocalDate creationDate;
     private boolean blocked;
     private AccountStatus status;
     private final TransactionManager transactionManager;
-    private LimitManager limitManager;
+    private final LimitManager limitManager;
 
     public Account(User user, CurrencyCodes currencyCode, String balance) {
         this.currencyCode = currencyCode;
         this.accountNumber = AccountNumber.getNumber();
         this.balance = new BigDecimal(balance);
         this.user = user;
-        this.creationDate = LocalDateTime.now();
+        this.creationDate = LocalDate.now();
         this.blocked = false;
         this.status = AccountStatus.ACTIVE;
         this.transactionManager = new TransactionManager();
@@ -40,13 +40,12 @@ public abstract class Account {
         user.addOwnedAccount(this);
     }
 
-    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status, LimitManager limitManager) {
+    public Account(int accountNumber, User user, CurrencyCodes currencyCode, String balance, String date, boolean blocked, String status) {
         this(user, currencyCode, balance);
         this.accountNumber = accountNumber;
-        this.creationDate = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        this.creationDate = LocalDate.parse(date);
         this.blocked = blocked;
         this.status = AccountStatus.valueOf(status);
-        this.limitManager = limitManager;
         user.addOwnedAccount(this);
     }
 
@@ -98,7 +97,11 @@ public abstract class Account {
         return accountNumber;
     }
 
-    public String getCreationDate() {
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public String getFormattedCreationDate() {
         return creationDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
     }
 
