@@ -4,7 +4,6 @@ import accounts.*;
 import bank.Bank;
 import currencies.CurrencyCodes;
 import logging.LoggerConfig;
-import transaction.Transaction;
 import transaction.TransactionTypes;
 import users.Admin;
 
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class AccountsCSVHandler {

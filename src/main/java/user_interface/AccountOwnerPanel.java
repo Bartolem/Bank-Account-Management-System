@@ -461,7 +461,9 @@ public class AccountOwnerPanel extends UserPanel {
         if (authentication.authenticateUser(user.getPerson().getID(), Arrays.toString(oldPassword))) {
             char[] newPassword = System.console().readPassword("Enter new password: ");
 
-            if (Arrays.equals(oldPassword, newPassword)) {
+            if (newPassword.length < RegistrationService.MIN_ALLOWED_PASSWORD_LENGTH) {
+                System.out.println("The new password should consist of at least 6 characters.");
+            } else if (Arrays.equals(oldPassword, newPassword)) {
                 System.out.println("The new password should be different from the old one.");
             } else {
                 char[] repeatedPassword = System.console().readPassword("Repeat new password: ");
