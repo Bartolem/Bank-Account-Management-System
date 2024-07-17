@@ -6,30 +6,20 @@ import file_manipulation.FileManipulator;
 import file_manipulation.LogoLoader;
 import file_manipulation.TransactionHistoryCSVHandler;
 import users.Admin;
-import users.User;
-import validation.Validation;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
-import static authentication.Role.ACCOUNT_OWNER;
-import static authentication.Role.ADMIN;
-
 public class UserInterface {
-    private final Bank bank;
     private final Scanner scanner;
-    private final Registration registration;
-    private final UserCreation userCreation;
     private final AccountCreation accountCreation;
+    private final LoginService loginService;
 
     public UserInterface() {
-        this.bank = Bank.getInstance();
         this.scanner = new Scanner(System.in);
-        this.registration = new Registration();
-        this.userCreation = new UserCreation(scanner, this);
-        this.accountCreation = new AccountCreation(scanner);
+        this.accountCreation = new AccountCreation(scanner, this);
+        this.loginService = new LoginService(this, scanner);
     }
 
     public void initialize() {
@@ -46,11 +36,11 @@ public class UserInterface {
             switch (scanner.nextLine()) {
                 case "1":
                     // Log in to the system
-                    login();
+                    loginService.login();
                     break;
                 case "2":
                     // Create new account
-                    accountCreation();
+                    accountCreation.register();
                     break;
                 case "x", "X":
                     // Exit
@@ -58,99 +48,12 @@ public class UserInterface {
             }
         }
 
+        exitApplication();
+    }
+
+    private void exitApplication() {
         scanner.close();
         System.exit(0);
-    }
-
-    private void accountCreation() {
-        System.out.println("Have you used our bank's services before? (y/n)");
-        printCursor();
-        String answer = scanner.nextLine();
-
-        User user;
-
-        if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
-            System.out.println("Enter your user ID: ");
-            printCursor();
-
-            String ID = scanner.nextLine();
-            user = bank.getUser(ID);
-
-            if (user == null) {
-                System.out.println("There is no user with provided ID.");
-                start();
-            } else if (user.getNumberOfOwnedAccounts() == User.MAX_NUMBER_OF_ACCOUNTS) {
-                System.out.println("The limit for the maximum number of accounts to be created has been reached");
-                start();
-            }
-        } else {
-            user = userCreation.createUser();
-            bank.addUser(user);
-            System.out.println(user);
-        }
-        Account account = accountCreation.createAccount(user);
-        if (register(user, account)) {
-            addAccountToBank(account);
-        } else System.out.println("Registration process failed.");
-    }
-
-    private void login() {
-        printLoginMessage();
-        System.out.print("Enter your user ID: ");
-        String ID = scanner.nextLine();
-
-        if (ID.equalsIgnoreCase("X")) {
-            start();
-        }
-        if (bank.getUser(ID) == null) {
-            System.out.println("There is no account with provided ID.");
-            login();
-        }
-
-        char[] password = System.console().readPassword("Enter your password: ");
-
-        Login login = new Login(ID, Arrays.toString(password));
-        if (bank.getUser(ID).hasRole(ADMIN)) {
-            if (login.verifyUser()) {
-                // Open admin panel using only ID
-                new AdminPanel(ID, scanner).start();
-                FileManipulator.saveDataToFile();
-            } else login();
-        } else if (bank.getUser(ID).hasRole(ACCOUNT_OWNER)) {
-            System.out.print("Account number: ");
-            String accountNumber = scanner.nextLine();
-            if (Validation.validateNumber(accountNumber) && login.verifyAccount(Integer.parseInt(accountNumber))) {
-                // Open account owner panel using ID, and account number
-                new AccountOwnerPanel(ID, scanner, Integer.parseInt(accountNumber), userCreation, this).initialize();
-                FileManipulator.saveDataToFile();
-            } else login();
-        }
-    }
-
-    private boolean register(User user, Account account) {
-        while (true) {
-            System.out.println("Provide password for your new account.");
-            printCursor();
-            char[] password = System.console().readPassword("Enter your password: ");
-
-            if (!registration.checkPasswordLength(Arrays.toString(password))) {
-                System.out.println("Password need be at least 5 characters long.");
-            } else {
-                System.out.println("Confirm provided password.");
-                printCursor();
-
-                if (registration.checkPasswordsEquality(Arrays.toString(password), Arrays.toString(System.console().readPassword()))) {
-                    String ID = user.getPerson().getID();
-                    registration.registerUser(ID, Arrays.toString(password));
-                    System.out.println("You registration process has been successfully completed.");
-                    System.out.println("Account number: " + account.getAccountNumber());
-                    System.out.println("ID: " + ID);
-                    return true;
-                }
-
-                System.out.println("Try again.");
-            }
-        }
     }
 
     protected static void printCursor() {
@@ -161,13 +64,6 @@ public class UserInterface {
         System.out.println("==================================================");
     }
 
-    private void addAccountToBank(Account account) {
-        bank.addAccount(account.getAccountNumber(), account, Admin.getInstance());
-        TransactionHistoryCSVHandler.write(new ArrayList<>(), new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
-        TransactionHistoryCSVHandler.read(new File("transactions/transaction_history_" + account.getAccountNumber() + ".csv").getAbsolutePath());
-        FileManipulator.saveDataToFile();
-    }
-
     private void printStartingMessage() {
         System.out.println();
         System.out.println("Choose right option.");
@@ -176,7 +72,7 @@ public class UserInterface {
         System.out.println("(X) Exit.");
     }
 
-    private void printLoginMessage() {
+    public static void printLoginMessage() {
         System.out.println("Enter your user ID and password, to log in. Type (X) to exit.");
     }
 
