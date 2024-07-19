@@ -37,7 +37,7 @@ public class AccountOwnerPanel extends UserPanel {
         this.user = getUser();
         this.account = getBank().getAccount(accountNumber);
         this.userCreation = userCreation;
-        this.authentication = Authentication.getInstance();
+        this.authentication = Authentication.getInstance(Authentication.DEFAULT_CREDENTIALS_PATH);
         this.transactions = account.getTransactionHistory();
         this.userInterface = userInterface;
         this.transactionManager = account.getTransactionManager();

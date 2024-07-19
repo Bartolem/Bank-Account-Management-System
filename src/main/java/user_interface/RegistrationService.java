@@ -4,6 +4,7 @@ import accounts.Account;
 import authentication.Authentication;
 import users.User;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class RegistrationService {
@@ -11,7 +12,7 @@ public class RegistrationService {
     public static final int MIN_ALLOWED_PASSWORD_LENGTH = 6;
 
     public RegistrationService() {
-        this.authentication = Authentication.getInstance();
+        this.authentication = Authentication.getInstance(Authentication.DEFAULT_CREDENTIALS_PATH);
     }
 
     public boolean register(User user, Account account) {

@@ -18,7 +18,7 @@ public class LoginService {
     private final Bank bank;
 
     public LoginService(UserInterface userInterface, Scanner scanner) {
-        this.authentication = Authentication.getInstance();
+        this.authentication = Authentication.getInstance(Authentication.DEFAULT_CREDENTIALS_PATH);
         this.userInterface = userInterface;
         this.scanner = scanner;
         this.bank = Bank.getInstance();
