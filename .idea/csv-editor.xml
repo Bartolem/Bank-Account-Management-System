@@ -45,6 +45,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\out\artifacts\BankAccountManagementSystem_jar\users\user_credentials.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\out\artifacts\BankAccountManagementSystem_jar\users\users.csv">
           <value>
             <Attribute>

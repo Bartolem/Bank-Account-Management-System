@@ -72,7 +72,7 @@ public class CurrentAccount extends Account {
 
     @Override
     public String toString() {
-        return super.toString() + "(" + TYPE + ")" + " (" + getStatus() + ")" +
+        return super.toString() + "\n(" + TYPE + ")" + " (" + getStatus() + ")" +
                 "\nOverdraft limit: " + getOverdraftLimit();
     }
 }
