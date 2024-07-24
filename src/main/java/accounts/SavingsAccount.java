@@ -87,7 +87,7 @@ public class SavingsAccount extends Account {
 
     @Override
     public String toString() {
-        return super.toString() + "(" + TYPE + ")" + " (" + getStatus() + ")" +
+        return super.toString() + "\n(" + TYPE + ")" + " (" + getStatus() + ")" +
                 "\nInterest rate: " + getInterestRate() + "%" +
                 "\nMinimal balance allowed: " + getMinBalance();
     }

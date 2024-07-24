@@ -55,9 +55,11 @@ class SavingsAccountTest {
     void withdraw() {
         savingsAccount.withdraw(BigDecimal.valueOf(3000));
         assertEquals(new BigDecimal("7000.00"), savingsAccount.getBalance());
+    }
 
-        savingsAccount.withdraw(BigDecimal.valueOf(6000));
-        assertEquals(new BigDecimal("1000.00"), savingsAccount.getBalance());
+    @Test
+    void withdrawUnsuccessfulBecauseOfDailyLimit() {
+        assertFalse(savingsAccount.withdraw(BigDecimal.valueOf(6000)));
     }
 
     @Test

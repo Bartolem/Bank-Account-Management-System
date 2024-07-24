@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -51,7 +52,7 @@ public class FileManipulator {
     public static void loadDataFromFile() {
         UsersCSVHandler.read(Bank.getInstance(), new File("users/users.csv").getAbsolutePath());
         AccountsCSVHandler.read(Bank.getInstance(), new File("accounts/accounts.csv").getAbsolutePath());
-        AccountNumberCSVHandler.read(Bank.getInstance().getAccountNumbers(), new File("accounts/account_numbers.csv").getAbsolutePath());
+        AccountNumberCSVHandler.read(new HashSet<>(), new File("accounts/account_numbers.csv").getAbsolutePath());
     }
 
     public static void saveDataToFile() {

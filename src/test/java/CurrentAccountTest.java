@@ -33,9 +33,8 @@ class CurrentAccountTest {
 
     @Test
     void withdrawWhenAmountIsBiggerThanBalance() {
-        System.out.println(currentAccount.getBalance());
-        currentAccount.withdraw(BigDecimal.valueOf(5500));
-        assertEquals(new BigDecimal("-500.00"), currentAccount.getBalance());
+        currentAccount.withdraw(BigDecimal.valueOf(5000));
+        assertEquals(new BigDecimal("0.00"), currentAccount.getBalance());
     }
 
     @Test
@@ -51,7 +50,12 @@ class CurrentAccountTest {
 
     @Test
     void withdrawSuccessfulWhenAmountIsBiggerThanBalance() {
-        assertTrue(currentAccount.withdraw(BigDecimal.valueOf(5500)));
+        assertTrue(currentAccount.withdraw(BigDecimal.valueOf(1500)));
+    }
+
+    @Test
+    void withdrawUnsuccessfulBecauseOfDailyLimit() {
+        assertFalse(currentAccount.withdraw(BigDecimal.valueOf(5500)));
     }
 
     @Test

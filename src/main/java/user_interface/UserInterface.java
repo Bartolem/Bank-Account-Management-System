@@ -1,14 +1,8 @@
 package user_interface;
 
-import accounts.Account;
-import bank.Bank;
 import file_manipulation.FileManipulator;
 import file_manipulation.LogoLoader;
-import file_manipulation.TransactionHistoryCSVHandler;
-import users.Admin;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UserInterface {

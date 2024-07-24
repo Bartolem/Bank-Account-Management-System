@@ -4,21 +4,16 @@ import accounts.*;
 import bank.Bank;
 import currencies.CurrencyCodes;
 import logging.LoggerConfig;
-import transaction.TransactionTypes;
 import users.Admin;
 
 import java.io.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 public class AccountsCSVHandler {
     private static final Logger LOGGER = LoggerConfig.getLogger();
 
-    public static void write(ArrayList<Account> accounts, String fileName) {
+    public static void write(Collection<Account> accounts, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             // Write headers
             writer.write("Account type,Account number,Status,Owner ID,Owner personal name,Currency code,Balance,Creation date\n");

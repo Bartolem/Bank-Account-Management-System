@@ -72,6 +72,7 @@ public class AdminPanel extends UserPanel {
 
     private void removeAccount() {
         getBank().remove(verifyAccountNumber(), user);
+        System.out.println("Account successfully deleted from bank.");
         FileManipulator.saveDataToFile();
     }
 
@@ -94,7 +95,10 @@ public class AdminPanel extends UserPanel {
     }
 
     private void showTransactionHistory() {
-        System.out.println(getBank().getAccount(verifyAccountNumber()).getTransactionHistory());
+        Account account = getBank().getAccount(verifyAccountNumber());
+        FileManipulator.loadTransactionHistoryFromFile(account.getAccountNumber());
+        FileManipulator.loadTransactionLimitFromFile(account);
+        System.out.println(account.getTransactionHistory());
     }
 
     private void setSystemSettings() {
@@ -153,6 +157,7 @@ public class AdminPanel extends UserPanel {
         System.out.println("(4) Print all users");
         System.out.println("(5) Print all account types");
         System.out.println("(6) Print all available currencies");
+        System.out.println("(7) Print all user roles");
         System.out.println("(X) Quit");
         UserInterface.printCursor();
 
@@ -163,6 +168,7 @@ public class AdminPanel extends UserPanel {
             case "4" -> getBank().printUsers();
             case "5" -> getBank().printAccountTypes();
             case "6" -> getBank().printCurrencies();
+            case "7" -> getBank().printRoles();
             case "X, x" -> start();
         }
     }
