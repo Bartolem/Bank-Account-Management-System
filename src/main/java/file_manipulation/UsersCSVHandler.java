@@ -2,14 +2,13 @@ package file_manipulation;
 
 import bank.Bank;
 import logging.LoggerConfig;
-import user_interface.UserInterface;
 import users.Address;
 import users.Admin;
 import users.Person;
 import users.User;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import static authentication.Role.ACCOUNT_OWNER;
@@ -18,7 +17,7 @@ import static authentication.Role.ADMIN;
 public class UsersCSVHandler {
     private static final Logger LOGGER = LoggerConfig.getLogger();
 
-    public static void write(ArrayList<User> users, String fileName) {
+    public static void write(Collection<User> users, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             // Write headers
             writer.write("ID,First name,Last name,Date of birth,Street Address,City,Country,Zip code,E-mail,Phone number\n");

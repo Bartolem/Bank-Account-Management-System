@@ -5,9 +5,7 @@ import authentication.Role;
 import currencies.CurrencyCodes;
 import users.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 public class Bank {
     private final HashMap<Integer, Account> accounts;
@@ -72,16 +70,16 @@ public class Bank {
         return users.get(ID);
     }
 
-    public ArrayList<Account> getAllAccounts() {
-        return new ArrayList<>(accounts.values());
+    public Collection<Account> getAllAccounts() {
+        return accounts.values();
     }
 
-    public ArrayList<User> getAllUsers() {
-        return new ArrayList<>(users.values());
+    public Collection<User> getAllUsers() {
+        return users.values();
     }
 
-    public ArrayList<Integer> getAccountNumbers() {
-        return new ArrayList<>(accounts.keySet());
+    public Set<Integer> getAccountNumbers() {
+        return accounts.keySet();
     }
 
     public void remove(int accountNumber, User user) {
