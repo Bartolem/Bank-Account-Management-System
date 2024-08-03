@@ -2,21 +2,22 @@
 The Bank Account Management System is a Java-based command line application designed to manage various bank accounts.
 
 ## Table of Contents
-* [Introduction]
-* [Used technologies]
-* [Description]
-* [Features]
-* [Architecture]
-* [Getting Started]
-* [Usage]
-* [License]
+* [Introduction](https://github.com/Bartolem/Bank-Account-Management-System#introduction)
+* [Used technologies](https://github.com/Bartolem/Bank-Account-Management-System#used%20technologies)
+* [Description](https://github.com/Bartolem/Bank-Account-Management-System#description)
+* [Features](https://github.com/Bartolem/Bank-Account-Management-System#features)
+* [Architecture](https://github.com/Bartolem/Bank-Account-Management-System#architecture)
+* [Getting Started](https://github.com/Bartolem/Bank-Account-Management-System#getting%20started)
+* [Usage](https://github.com/Bartolem/Bank-Account-Management-System#usage)
+* [License](https://github.com/Bartolem/Bank-Account-Management-System#license)
 
 ## Introduction
-This is my first Java project. I did this for educational purposes. 
+This is my first Java project. I did this for educational purposes. Through developing the Bank Account Management System, I gained extensive experience in Java programming, including mastering object-oriented principles, design patterns like Singleton, and best practices in testing and file handling. I also learned to manage date and time operations, handle compound interest calculations, and implement role-based user authentication, while refining my skills in data structures, modular design, version control, and problem-solving.
 
 ## Used technologies
 * Java
 * Maven
+* JUnit 5
   
 ## Description
 The Bank Account Management System allows users to perform transactions such as deposits, withdrawals, and transfers, calculate interest for savings accounts, and handle user authentication. The system is designed with modularity and extensibility in mind, allowing for easy addition of new account types and features.
@@ -46,17 +47,11 @@ The system is built using a modular architecture, with the following key compone
 * Download the jar file from: https://github.com/Bartolem/Bank-Account-Management-System/releases
 * Put the jar file in the chosen directory
 * Open the command line and change the directory by providing the current directory path
-* Setup the application from the command line:
-  ```
-  java -jar BankAccountManagementSystem.jar -setup
-  ```
-
+* Setup the application from the command line: ```java -jar BankAccountManagementSystem.jar -setup```
+  
 ## Usage
-* You can run the application from the command line:
-  ```
-  java -jar BankAccountManagementSystem.jar
-  ```
-* If you want to run the application with the logging enabled:
-   ```
-  java -jar BankAccountManagementSystem.jar -log
-  ```
+* You can run the application from the command line:  ```java -jar BankAccountManagementSystem.jar```
+* If you want to run the application with the logging enabled: ```java -jar BankAccountManagementSystem.jar -log```
+  
+## License
+This project is licensed under the MIT License.
