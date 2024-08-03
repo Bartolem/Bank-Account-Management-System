@@ -7,6 +7,9 @@ import logging.LoggerConfig;
 import users.Admin;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.logging.Logger;
 
@@ -16,19 +19,12 @@ public class AccountsCSVHandler {
     public static void write(Collection<Account> accounts, String fileName) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             // Write headers
-            writer.write("Account type,Account number,Status,Owner ID,Owner personal name,Currency code,Balance,Creation date\n");
+            writer.write("Account type,Account number,Status,Owner ID,Owner personal name,Currency code,Balance,Creation date,Last interest date\n");
 
             // Write account details
             for (Account account : accounts) {
-                String line = String.format("%s,%d,%s,%s,%s,%s,%s,%s\n",
-                        account.getType(),
-                        account.getAccountNumber(),
-                        account.getStatus(),
-                        account.getUser().getPerson().getID(),
-                        account.getOwnerName(),
-                        account.getCurrencyCode(),
-                        account.getBalance(),
-                        account.getCreationDate());
+                String line = getAccountData(account);
+
                 writer.write(line);
             }
             writer.close();
@@ -37,6 +33,25 @@ public class AccountsCSVHandler {
             LOGGER.severe("Failed to save accounts to " + fileName + ": " + e.getMessage());
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    private static String getAccountData(Account account) {
+        String lastInterestDate = "";
+
+        if (account instanceof SavingsAccount savingsAccount) {
+            lastInterestDate = savingsAccount.getLastInterestDate();
+        }
+
+        return String.format("%s,%d,%s,%s,%s,%s,%s,%s,%s\n",
+                account.getType(),
+                account.getAccountNumber(),
+                account.getStatus(),
+                account.getUser().getPerson().getID(),
+                account.getOwnerName(),
+                account.getCurrencyCode(),
+                account.getBalance(),
+                account.getCreationDate(),
+                lastInterestDate);
     }
 
     public static void read(Bank bank, String fileName) {
@@ -57,13 +72,17 @@ public class AccountsCSVHandler {
                 CurrencyCodes currencyCode = CurrencyCodes.valueOf(fileContent[5]);
                 String balance = fileContent[6];
                 String date = fileContent[7];
+                String lastInterestDate = "";
+                if (fileContent.length > 8) {
+                     lastInterestDate = fileContent[8];
+                }
                 boolean blocked = status.equals(AccountStatus.BLOCKED.toString());
 
                 // Create accounts based on type
                 switch (accountType) {
                     case STANDARD -> bank.addAccount(accountNumber, new StandardAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
                     case CURRENT -> bank.addAccount(accountNumber, new CurrentAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
-                    case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status), Admin.getInstance());
+                    case SAVINGS -> bank.addAccount(accountNumber, new SavingsAccount(accountNumber, bank.getUser(ownerID), currencyCode, balance, date, blocked, status, lastInterestDate), Admin.getInstance());
                 }
             }
             LOGGER.finest("Accounts successfully loaded from " + fileName);
