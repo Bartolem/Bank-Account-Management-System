@@ -2,14 +2,14 @@
 The Bank Account Management System is a Java-based command line application designed to manage various bank accounts.
 
 ## Table of Contents
-* [Introduction](https://github.com/Bartolem/Bank-Account-Management-System#introduction)
-* [Used technologies](https://github.com/Bartolem/Bank-Account-Management-System#used%20technologies)
-* [Description](https://github.com/Bartolem/Bank-Account-Management-System#description)
-* [Features](https://github.com/Bartolem/Bank-Account-Management-System#features)
-* [Architecture](https://github.com/Bartolem/Bank-Account-Management-System#architecture)
-* [Getting Started](https://github.com/Bartolem/Bank-Account-Management-System#getting%20started)
-* [Usage](https://github.com/Bartolem/Bank-Account-Management-System#usage)
-* [License](https://github.com/Bartolem/Bank-Account-Management-System#license)
+* [Introduction](#introduction)
+* [Used technologies](#used%20technologies)
+* [Description](#description)
+* [Features](#features)
+* [Architecture](#architecture)
+* [Getting Started](#getting%20started)
+* [Usage](#usage)
+* [License](#license)
 
 ## Introduction
 This is my first Java project. I did this for educational purposes. Through developing the Bank Account Management System, I gained extensive experience in Java programming, including mastering object-oriented principles, design patterns like Singleton, and best practices in testing and file handling. I also learned to manage date and time operations, handle compound interest calculations, and implement role-based user authentication, while refining my skills in data structures, modular design, version control, and problem-solving.
